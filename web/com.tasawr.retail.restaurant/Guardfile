@@ -1,0 +1,4 @@
+
+
+guard 'coffeescript', :input => 'coffeescripts', :output => 'js'
+guard 'sass', :input => 'coffeescripts', :output => 'js'

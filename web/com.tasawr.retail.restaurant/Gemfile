@@ -1,0 +1,7 @@
+source 'https://rubygems.org'
+
+gem 'sass', :github => 'nex3/sass'
+gem 'guard'
+gem 'guard-sass', :require => false
+gem 'guard-coffeescript'
+gem 'rb-readline'

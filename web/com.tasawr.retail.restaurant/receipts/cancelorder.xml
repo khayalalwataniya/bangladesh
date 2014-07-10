@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<output>
+
+
+    <%
+
+    order = orderCancelModel.sendToPrinter;
+    for (var i = 0; i < order.length; i++){
+    printer = order[i][0];
+    %>
+    <ticket printer = "<%= printer %>">
+        <line><text>The order has been cancelled </text></line>
+        <line><text>for the following reason:</text></line>
+        <line></line>
+        <line><text><%= orderCancelModel.message %></text></line>
+        <line><text>-------------------------------</text></line>
+        <line></line>
+        <line><text>Order Details</text></line>
+        <%
+        for (var j = 0; j < order[i][1].length; j++) {
+
+        %>
+
+        <line></line>
+        <line><text>Product Code: </text><text><%= OB.UTIL.encodeXMLComponent(order[i][1][j][0]) %></text></line>
+        <line><text>Quantity: </text><text><%= OB.UTIL.encodeXMLComponent(order[i][1][j][2].toString()) %></text></line>    <%
+        if(!(order[i][1][j][3] == "")){
+        %>
+        <line><text>Description: </text><text><%= OB.UTIL.encodeXMLComponent(order[i][1][j][3]) %></text></line>
+        <%
+        }
+        %>
+
+        <%
+
+        }
+        %>
+
+    </ticket>
+
+    <%
+    }
+    %>
+
+
+</output>

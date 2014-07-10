@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+  <database name="MODIFIED TABLE M_ATTRIBUTEVALUE">
+    <table name="M_ATTRIBUTEVALUE" primaryKey="M_ATTRIBUTEVALUE_KEY">
+      <column name="EM_TSRR_ADDPRICE" primaryKey="false" required="false" type="DECIMAL" size="14,4" autoIncrement="false">
+        <default><![CDATA[0]]></default>
+        <onCreateDefault/>
+      </column>
+    </table>
+  </database>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<output>
+<%
+var printers = order.printerProperty.split(' ');
+for (var i = 0; i < printers.length; i++){
+  printer = printers[i];
+%>
+  <ticket printer = "<%= printer %>">
+    <line></line>
+    <line><text>Message: </text> <text><%= OB.UTIL.encodeXMLComponent(order.message) %></text></line>
+    <line><text>Product Code: </text> <text><%= OB.UTIL.encodeXMLComponent(order.printCode) %></text></line>
+    <line> <text>Product Quantity: </text><text><%= OB.UTIL.encodeXMLComponent(order.productQty) %></text></line>
+    <line> <text>Product Description: </text><text><%= OB.UTIL.encodeXMLComponent(order.description) %></text></line>
+  </ticket>
+
+  <%
+}
+  %>
+
+</output>

@@ -1,0 +1,190 @@
+.span-cal {
+  margin: 5px;
+  height: 200px;
+  width: 370px;
+  position: relative;
+  display: inline-block;
+  background: #eaeaea;
+  border-top: 2px solid #aaa;
+  border-bottom: 2px solid #dedede;
+  padding: 10px;
+}
+
+h4 {
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+  line-height: 32px;
+  font-size: 32px;
+  margin: 0 auto;
+  padding-bottom: 10px;
+}
+
+.attribute-header {
+  background-color: #F5FFFA;
+  border: 1px solid #FFFAFA;
+  color: #333;
+  text-align: center;
+  height: 40px;
+  padding-top: 5px;
+}
+
+.attributes-container button.empty {
+  background-color: #DCDCDC;
+}
+
+button.webpos-table .btn-icon {
+  height: 32px;
+}
+
+button.webpos-table.empty {
+  background-color: #6cb33f;
+}
+
+button.webpos-table.active {
+  background-color: #ADD8E6;
+}
+
+.badge {
+  display: inline-block;
+  min-width: 10px;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  background-color: #777;
+  border-radius: 10px;
+}
+
+button.webpos-table.locked .btn-icon.icon, button.webpos-table.locked .onyx-icon{
+  opacity: 0.5;
+}
+
+button.webpos-table.locked {
+  border: 10px dashed #f8941d;
+  color: #fff;
+}
+
+button.webpos-table {
+  height: 270px;
+  display: block;
+  color: #333;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 32px;
+  border: 1px solid #4D4D55;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+button.btnlink:disabled {
+  cursor: not-allowed;
+  background-color: #ccc;
+  opacity: 1;
+  color: #AAAAAA;
+}
+
+button.webpos-table.active .icon {
+  background-image:url("../../../../../../web/com.tasawr.retail.restaurant/images/group.png");
+  height: 45px;
+}
+
+button.webpos-table .text.label {
+  font-size: 18px;
+  font-weight: bolder;
+}
+
+button.webpos-table .text {
+  font-size: 18px;
+  line-height: 18px;
+  font-weight: normal;
+  display: block;
+  margin: 0px auto;
+  padding: 5px;
+}
+button.webpos-table .text.locker{
+  margin-bottom: 5px;
+}
+button.webpos-table .small-icon {
+  background-position: right center;
+  background-repeat: no-repeat;
+}
+
+.important {
+  font-weight: bold !important;
+}
+
+button.empty .small-icon {
+  background-position: center center;
+  min-height: 10px;
+}
+
+button.empty .icon {
+  background-image:url("../../../../../../web/com.tasawr.retail.restaurant/images/table.png");
+}
+
+button.locked .icon {
+  background-image:url("../../../../../../web/com.tasawr.retail.restaurant/images/table-b.png");
+}
+
+button.empty.btn-down,
+button.empty:active {
+  opacity: 1;
+}
+
+.rpad {
+  padding-right: 20px;
+}
+
+.pad {
+  padding-left: 20px;
+}
+
+.rmargin {
+  margin-right: 20px;
+}
+
+.lmargin {
+  margin-left: 20px;
+}
+
+.bordered {
+  border: 1px solid red;
+}
+
+.attribute {
+  background-color: rgba(18, 134, 140, 0.95) !important;
+}
+
+.onyx-icon, .onyx-icon-toggle{margin: 0px 10px;}
+
+.outer-box {
+  color: #333;
+  border: 2px solid orange;
+  padding: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+.inner-box {
+  border: 2px solid lightblue;
+  padding: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.inner-box-v {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.inner-box-h {
+  margin-left: 2px;
+  margin-right: 2px;
+}

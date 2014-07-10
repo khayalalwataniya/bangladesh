@@ -1,0 +1,154 @@
+.label-important, .badge-important {
+  background-color: #b94a48; }
+
+/*==================================================
+ * big boxed buttons
+ * ===============================================*/
+.btn-boxed button {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px;
+  background: #eaeaea;
+  border-top: 2px solid #aaa;
+  border-bottom: 2px solid #dedede;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  box-shadow: inset 0px 8px 24px #cbcbcb;
+  -webkit-box-shadow: inset 0px 8px 24px #cbcbcb;
+  -moz-box-shadow: inset 0px 8px 24px #cbcbcb;
+  padding: 10px; }
+
+.btn-boxed div {
+  display: block;
+  background-color: #ffffff;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#d7d7d7));
+  background-image: -webkit-linear-gradient(top, white, #d7d7d7);
+  background-image: -moz-linear-gradient(top, white, #d7d7d7);
+  background-image: -ms-linear-gradient(top, white, #d7d7d7);
+  background-image: -o-linear-gradient(top, white, #d7d7d7);
+  color: #c3c3c3;
+  position: relative;
+  text-align: center;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  box-shadow: 0px 0px 1px #aaa, inset 0px 0px 1px #fff;
+  -webkit-box-shadow: 0px 0px 1px #aaa, inset 0px 0px 1px #fff;
+  -moz-box-shadow: 0px 0px 1px #aaa, inset 0px 0px 1px #fff;
+  text-shadow: #fff 1px 2px 3px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold; }
+
+/**** important *****/
+.btn-circle.important a, .btn-rounded.important a, .btn-boxed.important a, button.important a {
+  background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#bdddff));
+  background-image: -webkit-linear-gradient(top, white, #bdddff);
+  background-image: -moz-linear-gradient(top, white, #bdddff);
+  background-image: -ms-linear-gradient(top, white, #bdddff);
+  background-image: -o-linear-gradient(top, white, #bdddff);
+  box-shadow: 0px 3px 8px #9dc8f3, inset 0px 2px 3px #fff;
+  -webkit-box-shadow: 0px 3px 8px #9dc8f3, inset 0px 2px 3px #fff;
+  -moz-box-shadow: 0px 3px 8px #9dc8f3, inset 0px 2px 3px #fff;
+  text-shadow: #fff 1px 2px 3px; }
+
+/**** info *****/
+.btn-circle.info a, .btn-rounded.info a, .btn-boxed.info a, button.info a {
+  background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#c8f2ff));
+  background-image: -webkit-linear-gradient(top, white, #c8f2ff);
+  background-image: -moz-linear-gradient(top, white, #c8f2ff);
+  background-image: -ms-linear-gradient(top, white, #c8f2ff);
+  background-image: -o-linear-gradient(top, white, #c8f2ff);
+  box-shadow: 0px 3px 8px #60c5e3, inset 0px 2px 3px #fff;
+  -webkit-box-shadow: 0px 3px 8px #60c5e3, inset 0px 2px 3px #fff;
+  -moz-box-shadow: 0px 3px 8px #60c5e3, inset 0px 2px 3px #fff;
+  text-shadow: #fff 1px 2px 3px; }
+
+/**** success *****/
+.btn-circle.success a, .btn-rounded.success a, .btn-boxed.success a, button.success a {
+  background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#c7ffc7));
+  background-image: -webkit-linear-gradient(top, white, #c7ffc7);
+  background-image: -moz-linear-gradient(top, white, #c7ffc7);
+  background-image: -ms-linear-gradient(top, white, #c7ffc7);
+  background-image: -o-linear-gradient(top, white, #c7ffc7);
+  box-shadow: 0px 3px 8px #5fe35f, inset 0px 2px 3px #fff;
+  -webkit-box-shadow: 0px 3px 8px #5fe35f, inset 0px 2px 3px #fff;
+  -moz-box-shadow: 0px 3px 8px #5fe35f, inset 0px 2px 3px #fff;
+  text-shadow: #fff 1px 2px 3px; }
+
+/**** warning *****/
+.btn-circle.warning a, .btn-rounded.warning a, .btn-boxed.warning a, button.warning a {
+  background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#ffe8c7));
+  background-image: -webkit-linear-gradient(top, white, #ffe8c7);
+  background-image: -moz-linear-gradient(top, white, #ffe8c7);
+  background-image: -ms-linear-gradient(top, white, #ffe8c7);
+  background-image: -o-linear-gradient(top, white, #ffe8c7);
+  box-shadow: 0px 3px 8px #e3ac5f, inset 0px 2px 3px #fff;
+  -webkit-box-shadow: 0px 3px 8px #e3ac5f, inset 0px 2px 3px #fff;
+  -moz-box-shadow: 0px 3px 8px #e3ac5f, inset 0px 2px 3px #fff;
+  text-shadow: #fff 1px 2px 3px; }
+
+/**** danger *****/
+.btn-circle.danger a, .btn-rounded.danger a, .btn-boxed.danger a, button.danger a {
+  background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#ffcac7));
+  background-image: -webkit-linear-gradient(top, white, #ffcac7);
+  background-image: -moz-linear-gradient(top, white, #ffcac7);
+  background-image: -ms-linear-gradient(top, white, #ffcac7);
+  background-image: -o-linear-gradient(top, white, #ffcac7);
+  box-shadow: 0px 3px 8px #e3665f, inset 0px 2px 3px #fff;
+  -webkit-box-shadow: 0px 3px 8px #e3665f, inset 0px 2px 3px #fff;
+  -moz-box-shadow: 0px 3px 8px #e3665f, inset 0px 2px 3px #fff;
+  text-shadow: #fff 1px 2px 3px; }
+
+/**** inverse *****/
+.btn-circle.inverse a, .btn-rounded.inverse a, .btn-boxed.inverse a, button.inverse a {
+  background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#918f8f));
+  background-image: -webkit-linear-gradient(top, white, #918f8f);
+  background-image: -moz-linear-gradient(top, white, #918f8f);
+  background-image: -ms-linear-gradient(top, white, #918f8f);
+  background-image: -o-linear-gradient(top, white, #918f8f);
+  box-shadow: 0px 3px 8px #626161, inset 0px 2px 3px #fff;
+  -webkit-box-shadow: 0px 3px 8px #626161, inset 0px 2px 3px #fff;
+  -moz-box-shadow: 0px 3px 8px #626161, inset 0px 2px 3px #fff;
+  text-shadow: #fff 1px 2px 3px; }
+
+/********** +++++  ***************/
+.btn-circle, .btn-rounded, .btn-boxed {
+  margin: 0px;
+  padding: 0px;
+  buttonst-style: none;
+  text-align: center;
+  padding: 15px 0px; }
+
+.btn-circle button, .btn-rounded button, .btn-boxed button {
+  margin-bottom: 15px; }
+
+.btn-circle a i, .btn-rounded a i, .btn-boxed a i {
+  font-size: 30px;
+  font-weight: bold; }
+
+.btn-circle button a img, .btn-rounded button a img, .btn-boxed button a img {
+  width: 45%;
+  height: 45%;
+  vertical-align: middle; }
+
+.btn-circle a:hover, .btn-circle .active a, .btn-circle .active a:hover, .btn-rounded a:hover, .btn-rounded .active a, .btn-rounded .active a:hover, .btn-boxed a:hover, .btn-boxed .active a, .btn-boxed .active a:hover {
+  text-decoration: none;
+  text-shadow: #fff 0px 2px 1px;
+  color: #454545;
+  background: rgba(255, 255, 255, 0.4); }
+
+.btn-circle a:focus, .btn-rounded a:focus, .btn-boxed a:focus {
+  outline: none; }
+
+.btn-circle .badge, .btn-rounded .badge, .btn-boxed .badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding-top: 4px;
+  padding-bottom: 4px; }
+
+.btn-rounded .badge, .btn-boxed .badge {
+  top: 10px;
+  right: -10px; }
