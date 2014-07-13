@@ -41,7 +41,7 @@ enyo.kind
         OB.POS.hwserver.print templatereceipt,
           order: fireModel
         OB.UTIL.showSuccess "Line fired"
-        enyo.Signals.send "onTransmission", {message: 'fire', cid: keyboard.line.cid}
+        enyo.Signals.send "onTransmission", {message: 'fired', cid: keyboard.line.cid}
 
       else
         OB.UTIL.showError "No printer is assigned to this product"
