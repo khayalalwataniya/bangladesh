@@ -61,9 +61,6 @@
       <foreign-key foreignTable="OBPOS_APPLICATIONS" name="TSRR_PRINTPRODCODE_APP">
         <reference local="OBPOS_APPLICATIONS_ID" foreign="OBPOS_APPLICATIONS_ID"/>
       </foreign-key>
-      <unique name="TSRR_PRINTPRODCODE_UN">
-        <unique-column name="PRINT_CODE"/>
-      </unique>
       <check name="TSRR_PRNTPRDCD_ISACTIVE_CHK"><![CDATA[ISACTIVE IN ('Y', 'N')]]></check>
     </table>
   </database>

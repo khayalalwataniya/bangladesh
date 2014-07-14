@@ -32,7 +32,7 @@
         tag: 'p'
       }, {
         name: 'locker',
-        classes: 'text locker',
+        classes: 'text locker hidden',
         content: '',
         tag: 'p'
       }, {
@@ -65,16 +65,16 @@
       return this.$.lockIcon.setSrc('../../web/com.tasawr.retail.restaurant/images/lock.png');
     },
     setChairs: function(chairs) {
-      return this.$.chairs.setContent('Total Chairs: <span class="badge">' + chairs + '</span>');
+      return this.$.chairs.setContent('Chairs: <span class="badge">' + chairs + '</span>');
     },
     setOrderCount: function(orderCount) {
-      return this.$.orderCount.setContent('Total Orders: <span class="badge">' + orderCount + '</span>');
+      return this.$.orderCount.setContent('Orders: <span class="badge">' + orderCount + '</span>');
     },
     setLabel: function(label) {
       return this.$.label.setContent(label);
     },
     setAmount: function(amount) {
-      this.$.amount.setContent('Total: <span class="badge">' + amount.toFixed(2) + '</span> ' + OB.POS.modelterminal.get('currency')._identifier);
+      this.$.amount.setContent(OB.POS.modelterminal.get('currency')._identifier + ' <span class="badge">' + amount.toFixed(2) + '</span> ');
       if (amount !== 0) {
         return this.$.bookingIcon.setSrc('../../web/com.tasawr.retail.restaurant/images/waiter.png');
       }

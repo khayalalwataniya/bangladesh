@@ -50,7 +50,7 @@
       criteria = {
         restaurantTable: this.model.id
       };
-      return OB.Dal.find(OB.Model.BookingInfo, criteria, (function(bookingInfos) {
+      OB.Dal.find(OB.Model.BookingInfo, criteria, (function(bookingInfos) {
         var bi, localOrderId, _i, _len, _ref, _results;
         if (bookingInfos && bookingInfos.length > 0) {
           tableComponent.setOrderCount(bookingInfos.length);

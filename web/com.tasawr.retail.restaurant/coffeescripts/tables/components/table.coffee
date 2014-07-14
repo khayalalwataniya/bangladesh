@@ -32,7 +32,6 @@ enyo.kind
     tableComponent.setSmoking @model.get 'smokingType'
     tableComponent.setAmount myTable.amount
 
-
     if @model.get 'locked'
       console.log 'table ' + @model.get('name') + ' is locked'
       tableComponent.removeClass 'empty'
@@ -71,6 +70,7 @@ enyo.kind
         OB.info 'no booking info found'
     ), =>
       console.error 'something went wrong while fetching booking info for table : ' + @model.get 'name'
+    return
 
 
 enyo.kind

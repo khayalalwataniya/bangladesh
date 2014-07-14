@@ -155,4 +155,87 @@
     getBookingInfoByOrder: getBookingInfoByOrder
   };
 
+  enyo.kind({
+    name: "OB.UI.OrderHeader",
+    classes: "row-fluid",
+    published: {
+      order: null
+    },
+    style: "font-size: 95%; background-color: #ffffff; border-bottom: 1px solid #cccccc;",
+    components: [
+      {
+        classes: "row-fluid",
+        components: [
+          {
+            style: "font-size: 95%; background-color: #ffffff; border-bottom: 1px solid #cccccc;",
+            components: [
+              {
+                kind: "TSRR.Main.UI.LineLabel",
+                content: "Aktueller Benutzer:"
+              }, {
+                kind: "TSRR.Main.UI.TSRR.MainQuickLogout",
+                name: "qlobutton",
+                style: "font-size: 90%; float: right;"
+              }, {
+                kind: "TSRR.Main.UI.TSRR.MainQuickLock",
+                name: "qlbutton",
+                style: "font-size: 90%; float: right;"
+              }, {
+                style: "font-size: 90%; clear:both;"
+              }
+            ]
+          }
+        ]
+      }, {
+        classes: "row-fluid",
+        components: [
+          {
+            style: "font-size: 95%; background-color: #ffffff; border-bottom: 1px solid #cccccc;",
+            components: [
+              {
+                kind: "TSRR.Main.UI.LineLabel",
+                content: "Aktueller Verkäufer:"
+              }, {
+                kind: "TSRR.Main.UI.TSRR.MainSalesRepresentative",
+                name: "srbutton",
+                style: "font-size: 90%; float: right;"
+              }, {
+                style: "font-size: 90%; clear:both;"
+              }
+            ]
+          }
+        ]
+      }, {
+        classes: "row-fluid",
+        components: [
+          {
+            style: "font-size: 95%; background-color: #ffffff; border-bottom: 1px solid #cccccc;",
+            components: [
+              {
+                kind: "TSRR.Main.UI.LineLabel",
+                content: "Aktueller Kunde:"
+              }, {
+                kind: "TSRR.Main.UI.TSRR.MainBusinessPartner",
+                name: "bpbutton",
+                style: "font-size: 90%; float: right;"
+              }, {
+                kind: "TSRR.Main.UI.LineLabel",
+                name: "lblfidelity",
+                content: "10 Sterne"
+              }, {
+                style: "clear:both;"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    orderChanged: function(oldValue) {
+      this.$.bpbutton.setOrder(this.order);
+      this.$.srbutton.setOrder(this.order);
+      this.$.qlbutton.setOrder(this.order);
+      this.$.qlobutton.setOrder(this.order);
+    }
+  });
+
 }).call(this);

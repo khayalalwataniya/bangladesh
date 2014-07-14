@@ -6,46 +6,29 @@ enyo.kind
   stateless: true
 
   lockTable: (tableId) ->
-    data =
-      data: [
-        _entityName: "TSRR_Table"
-        id: tableId
-        locked: 'Y'
-        locker: OB.POS.modelterminal.usermodel.get('id')
-      ]
-    console.info 'posting to TSRR_Table info api'
-    console.info data
-    $.ajax "../../org.openbravo.service.json.jsonrest/TSRR_Table",
-      data: JSON.stringify(data)
-      type: "PUT"
-      processData: false
-      contentType: "application/json"
-      success: (resp) ->
-        console.info resp
-      error: ->
-        OB.UTIL.showWarning 'could not post Table API'
-        console.log arguments
+    errorCallback = (tx, error) ->
+      OB.error tx
+      OB.error error
+      return
+    successCallbackTables = (tbl) ->
+      console.info 'inside TSRR.Main.UI.UnLockButton successCallbackTables'
+      console.info tbl
+      tbl.set 'locked', true
+      tbl.set 'locker', OB.POS.modelterminal.usermodel.get('id')
+      tbl.save()
+      tbl.trigger 'sync'
+      OB.UTIL.showSuccess '[DONE] table with ID: "' + tbl.id + '" has been locked succussfully'
+      return
+
+    OB.Dal.get OB.Model.Table, tableId, successCallbackTables, errorCallback
     return
 
 
   action: (keyboard, txt) ->
     me = @
-    criteria =
-      orderidlocal: keyboard.receipt.get('id')
-    OB.Dal.find OB.Model.BookingInfo, criteria, ((bookingsFound) -> #OB.Dal.find success
-      console.log 'dal resp'
-      console.log bookingsFound
-      if bookingsFound and bookingsFound.length > 0
-        bi = bookingsFound.at 0
-        tableId = bi.get 'restaurantTable'
-        me.lockTable(tableId) if OB.POS.modelterminal.get("connectedToERP")
-        # TODO: move it to i18N message
-        OB.UTIL.showSuccess '[DONE] table with ID: "' + tableId + '" has been locked succussfully'
-      else
-        OB.UTIL.showWarning 'no booking found with'
-        console.log criteria
-    ), ->
-      console.log arguments
+    currentTable = keyboard.receipt.get('restaurantTable')
+    if currentTable
+      me.lockTable(currentTable.id)
     keyboard.receipt.trigger('scan')
     return
 
@@ -54,46 +37,28 @@ enyo.kind
   stateless: true
 
   unlockTable: (tableId) ->
-    data =
-      data: [
-        _entityName: "TSRR_Table"
-        id: tableId
-        locked: 'N'
-        locker: OB.POS.modelterminal.usermodel.get('id')
-      ]
-    console.info 'posting to TSRR_Table info api'
-    console.info data
-    $.ajax "../../org.openbravo.service.json.jsonrest/TSRR_Table",
-      data: JSON.stringify(data)
-      type: "PUT"
-      processData: false
-      contentType: "application/json"
-      success: (resp) ->
-        console.info resp
-      error: ->
-        OB.UTIL.showWarning 'could not post Table API'
-        console.log arguments
-    return
+    errorCallback = (tx, error) ->
+      OB.error tx
+      OB.error error
+      return
+    successCallbackUnlockTables = (tbl) ->
+      console.info 'inside TSRR.Main.UI.UnLockButton successCallbackTables'
+      console.info tbl.get 'tsrrSection'
+      tbl.set 'locked', false
+      tbl.set 'locker', OB.POS.modelterminal.usermodel.get('id')
+      tbl.save()
+      tbl.trigger 'sync'
+      OB.UTIL.showSuccess '[DONE] table with ID: "' + tbl.id + '" has been unlocked succussfully'
+      return
 
+    OB.Dal.get OB.Model.Table, tableId, successCallbackUnlockTables, errorCallback
+    return
 
   action: (keyboard, txt) ->
     me = @
-    criteria =
-      orderidlocal: keyboard.receipt.get('id')
-    OB.Dal.find OB.Model.BookingInfo, criteria, ((bookingsFound) -> #OB.Dal.find success
-      console.log 'dal resp'
-      console.log bookingsFound
-      if bookingsFound and bookingsFound.length > 0
-        bi = bookingsFound.at 0
-        tableId = bi.get 'restaurantTable'
-        me.unlockTable(tableId) if OB.POS.modelterminal.get("connectedToERP")
-        # TODO: move it to i18N message
-        OB.UTIL.showSuccess '[DONE] table with ID: "' + tableId + '" has been locked succussfully'
-      else
-        OB.UTIL.showWarning 'no booking found with'
-        console.log criteria
-    ), ->
-      console.log arguments
+    currentTable = keyboard.receipt.get('restaurantTable')
+    if currentTable
+      me.unlockTable(currentTable.id)
     keyboard.receipt.trigger('scan')
     return
 

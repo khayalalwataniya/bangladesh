@@ -67,7 +67,7 @@ class  BookingInfo extends OB.Data.ExtensibleModel
 		return
 
 	clearWith: (_bookingInfo) ->
-		me = this
+		me = @
 		undf = undefined
 		if _bookingInfo is null
 			@set "id", null

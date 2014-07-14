@@ -11,8 +11,8 @@
 
 h4 {
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
-  line-height: 32px;
-  font-size: 32px;
+  line-height: 24px;
+  font-size: 24px;
   margin: 0 auto;
   padding-bottom: 10px; }
 
@@ -54,7 +54,7 @@ button.webpos-table.locked .btn-icon.icon, button.webpos-table.locked .onyx-icon
   opacity: 0.5; }
 
 button.webpos-table.locked {
-  border: 10px dashed #f8941d;
+  border: 5px dashed #f8941d;
   color: #fff; }
 
 button.webpos-table {
@@ -85,15 +85,12 @@ button.webpos-table .text.label {
   font-weight: bolder; }
 
 button.webpos-table .text {
-  font-size: 18px;
-  line-height: 18px;
+  font-size: 16px;
+  line-height: 16px;
   font-weight: normal;
   display: block;
   margin: 0px auto;
   padding: 5px; }
-
-button.webpos-table .text.locker {
-  margin-bottom: 5px; }
 
 button.webpos-table .small-icon {
   background-position: right center;

@@ -3,57 +3,29 @@
     name: "TSRR.Main.UI.LockButton",
     stateless: true,
     lockTable: function(tableId) {
-      var data;
-      data = {
-        data: [
-          {
-            _entityName: "TSRR_Table",
-            id: tableId,
-            locked: 'Y',
-            locker: OB.POS.modelterminal.usermodel.get('id')
-          }
-        ]
+      var errorCallback, successCallbackTables;
+      errorCallback = function(tx, error) {
+        OB.error(tx);
+        OB.error(error);
       };
-      console.info('posting to TSRR_Table info api');
-      console.info(data);
-      $.ajax("../../org.openbravo.service.json.jsonrest/TSRR_Table", {
-        data: JSON.stringify(data),
-        type: "PUT",
-        processData: false,
-        contentType: "application/json",
-        success: function(resp) {
-          return console.info(resp);
-        },
-        error: function() {
-          OB.UTIL.showWarning('could not post Table API');
-          return console.log(arguments);
-        }
-      });
+      successCallbackTables = function(tbl) {
+        console.info('inside TSRR.Main.UI.UnLockButton successCallbackTables');
+        console.info(tbl);
+        tbl.set('locked', true);
+        tbl.set('locker', OB.POS.modelterminal.usermodel.get('id'));
+        tbl.save();
+        tbl.trigger('sync');
+        OB.UTIL.showSuccess('[DONE] table with ID: "' + tbl.id + '" has been locked succussfully');
+      };
+      OB.Dal.get(OB.Model.Table, tableId, successCallbackTables, errorCallback);
     },
     action: function(keyboard, txt) {
-      var criteria, me;
+      var currentTable, me;
       me = this;
-      criteria = {
-        orderidlocal: keyboard.receipt.get('id')
-      };
-      OB.Dal.find(OB.Model.BookingInfo, criteria, (function(bookingsFound) {
-        var bi, tableId;
-        console.log('dal resp');
-        console.log(bookingsFound);
-        if (bookingsFound && bookingsFound.length > 0) {
-          bi = bookingsFound.at(0);
-          tableId = bi.get('restaurantTable');
-          if (OB.POS.modelterminal.get("connectedToERP")) {
-            me.lockTable(tableId);
-          }
-          return OB.UTIL.showSuccess('[DONE] table with ID: "' + tableId + '" has been locked succussfully');
-        } else {
-          OB.UTIL.showWarning('no booking found with');
-          return console.log(criteria);
-        }
-      }), function() {
-        return console.log(arguments);
-      });
+      currentTable = keyboard.receipt.get('restaurantTable');
+      if (currentTable) {
+        me.lockTable(currentTable.id);
+      }
       keyboard.receipt.trigger('scan');
     }
   });
@@ -62,57 +34,29 @@
     name: "TSRR.Main.UI.UnLockButton",
     stateless: true,
     unlockTable: function(tableId) {
-      var data;
-      data = {
-        data: [
-          {
-            _entityName: "TSRR_Table",
-            id: tableId,
-            locked: 'N',
-            locker: OB.POS.modelterminal.usermodel.get('id')
-          }
-        ]
+      var errorCallback, successCallbackUnlockTables;
+      errorCallback = function(tx, error) {
+        OB.error(tx);
+        OB.error(error);
       };
-      console.info('posting to TSRR_Table info api');
-      console.info(data);
-      $.ajax("../../org.openbravo.service.json.jsonrest/TSRR_Table", {
-        data: JSON.stringify(data),
-        type: "PUT",
-        processData: false,
-        contentType: "application/json",
-        success: function(resp) {
-          return console.info(resp);
-        },
-        error: function() {
-          OB.UTIL.showWarning('could not post Table API');
-          return console.log(arguments);
-        }
-      });
+      successCallbackUnlockTables = function(tbl) {
+        console.info('inside TSRR.Main.UI.UnLockButton successCallbackTables');
+        console.info(tbl.get('tsrrSection'));
+        tbl.set('locked', false);
+        tbl.set('locker', OB.POS.modelterminal.usermodel.get('id'));
+        tbl.save();
+        tbl.trigger('sync');
+        OB.UTIL.showSuccess('[DONE] table with ID: "' + tbl.id + '" has been unlocked succussfully');
+      };
+      OB.Dal.get(OB.Model.Table, tableId, successCallbackUnlockTables, errorCallback);
     },
     action: function(keyboard, txt) {
-      var criteria, me;
+      var currentTable, me;
       me = this;
-      criteria = {
-        orderidlocal: keyboard.receipt.get('id')
-      };
-      OB.Dal.find(OB.Model.BookingInfo, criteria, (function(bookingsFound) {
-        var bi, tableId;
-        console.log('dal resp');
-        console.log(bookingsFound);
-        if (bookingsFound && bookingsFound.length > 0) {
-          bi = bookingsFound.at(0);
-          tableId = bi.get('restaurantTable');
-          if (OB.POS.modelterminal.get("connectedToERP")) {
-            me.unlockTable(tableId);
-          }
-          return OB.UTIL.showSuccess('[DONE] table with ID: "' + tableId + '" has been locked succussfully');
-        } else {
-          OB.UTIL.showWarning('no booking found with');
-          return console.log(criteria);
-        }
-      }), function() {
-        return console.log(arguments);
-      });
+      currentTable = keyboard.receipt.get('restaurantTable');
+      if (currentTable) {
+        me.unlockTable(currentTable.id);
+      }
       keyboard.receipt.trigger('scan');
     }
   });

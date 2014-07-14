@@ -4,8 +4,6 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   Table = (function(_super) {
-    var errorCallback, successCallback;
-
     __extends(Table, _super);
 
     function Table() {
@@ -35,7 +33,7 @@
         attributes = JSON.parse(attributes.json);
         attributes.id = tableId;
       }
-      if (attributes && attributes.tsrrSection) {
+      if (attributes) {
         this.set("undo", attributes.undo);
         if (attributes.id) {
           this.set("id", attributes.id);
@@ -85,7 +83,7 @@
     };
 
     Table.prototype.save = function() {
-      var me, undoCopy, _ref1;
+      var me, undoCopy;
       me = this;
       undoCopy = void 0;
       if (this.attributes.json) {
@@ -93,7 +91,9 @@
       }
       undoCopy = this.get("undo");
       this.unset("undo");
-      this.set('tsrrSection', (_ref1 = this.get('tsrrSection')) != null ? _ref1.id : void 0);
+      if (this.attributes.tsrrSection) {
+        this.set('tsrrSection', this.get('tsrrSection'));
+      }
       this.set('name', this.get('name'));
       this.set('chairs', this.get('chairs'));
       this.set('smokingType', this.get('smokingType'));
@@ -101,7 +101,7 @@
       this.set('locker', this.get('locker'));
       if (!OB.POS.modelterminal.get("preventOrderSave")) {
         OB.Dal.save(this, (function() {
-          return me.trigger("sync");
+          return console.log('DONE');
         }), function() {
           console.error(arguments);
         });
@@ -109,97 +109,25 @@
       this.set("undo", undoCopy);
     };
 
-    Table.prototype.postToOrderAPI = function(salesOrder) {
-      var me, now, orderData;
+    Table.prototype.saveTable = function(silent) {
+      var me;
       me = this;
-      now = new Date();
-      orderData = {
-        data: [
-          {
-            "_entityName": "Order",
-            "modelorder": salesOrder.id,
-            "documentType": OB.POS.modelterminal.attributes.terminal.terminalType.documentType,
-            "transactionDocument": OB.POS.modelterminal.attributes.terminal.terminalType.documentType,
-            "orderDate": OB.I18N.formatDate(now),
-            "accountingDate": OB.I18N.formatDate(now),
-            "businessPartner": OB.POS.modelterminal.attributes.businessPartner.id,
-            "partnerAddress": OB.POS.modelterminal.attributes.businessPartner.attributes.locId,
-            "currency": OB.POS.modelterminal.attributes.currency.id,
-            "paymentTerms": OB.POS.modelterminal.attributes.terminal.defaultbp_paymentterm,
-            "warehouse": OB.POS.modelterminal.attributes.terminal.warehouse,
-            "priceList": OB.POS.modelterminal.attributes.terminal.priceList,
-            "documentStatus": "DR",
-            "organization": OB.POS.modelterminal.attributes.businessPartner.attributes.organization,
-            "session": OB.POS.modelterminal.get("session")
-          }
-        ]
-      };
-      OB.info('posting to salesOrder api');
-      OB.info(orderData);
-      return $.ajax("../../org.openbravo.service.json.jsonrest/Order", {
-        data: JSON.stringify(orderData),
-        type: "POST",
-        processData: false,
-        contentType: "application/json",
-        success: function(rsp) {
-          OB.info('salesOrder posted successfully with ID: ');
-          TSRR.Tables.Config.currentRemoteOrderId = arguments[0].response.data[0].id;
-          return me.postToBookingAPI(me, salesOrder, TSRR.Tables.Config.currentRemoteOrderId);
-        },
-        error: function() {
-          console.error('could not post salesOrder');
-          return console.log(arguments);
-        }
-      });
-    };
-
-    Table.prototype.postToBookingAPI = function(restaurantTable, localOrder, currentRemoteOrderId) {
-      var data;
-      data = {
-        data: [
-          {
-            _entityName: "TSRR_BookingInfo",
-            restaurantTable: restaurantTable.id,
-            businessPartner: OB.POS.modelterminal.attributes.businessPartner.id,
-            salesOrder: currentRemoteOrderId,
-            orderidlocal: localOrder.id
-          }
-        ]
-      };
-      OB.info('posting to booking info api');
-      OB.info(data);
-      return $.ajax("../../org.openbravo.service.json.jsonrest/TSRR_BookingInfo", {
-        data: JSON.stringify(data),
-        type: "POST",
-        processData: false,
-        contentType: "application/json",
-        success: function(resp) {
-          var bId, bi;
-          bId = arguments[0].response.data[0].id;
-          OB.info('bookingInfo posted successfully with BID: ' + bId);
-          console.log(arguments);
-          bi = new OB.Model.BookingInfo();
-          bi.set('businessPartner', OB.POS.modelterminal.attributes.businessPartner);
-          bi.set('salesOrder', localOrder);
-          bi.set('orderidlocal', currentRemoteOrderId);
-          bi.set('restaurantTable', restaurantTable);
-          bi.set('ebid', bId);
-          bi.set('id', bId);
-          return bi.save();
-        },
-        error: function() {
-          console.error('could not post BookingInfo');
-          return console.log(arguments);
-        }
-      });
-    };
-
-    successCallback = function(model) {
-      return console.info(arguments);
-    };
-
-    errorCallback = function(tx, error) {
-      return console.error(arguments);
+      if (this.attributes.tsrrSection) {
+        this.set('tsrrSection', this.get('tsrrSection'));
+      }
+      this.set('name', this.get('name'));
+      this.set('chairs', this.get('chairs'));
+      this.set('smokingType', this.get('smokingType'));
+      this.set('locked', this.get('locked'));
+      this.set('locker', this.get('locker'));
+      this.set("_identifier", this.get("name"));
+      if (!OB.POS.modelterminal.get("preventOrderSave")) {
+        OB.Dal.save(this, (function() {
+          return console.log('DONE');
+        }), function() {
+          console.error(arguments);
+        });
+      }
     };
 
     Table.prototype.clearWith = function(_table) {

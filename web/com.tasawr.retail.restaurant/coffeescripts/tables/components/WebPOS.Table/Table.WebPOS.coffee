@@ -30,7 +30,7 @@ enyo.kind
     tag: 'p'
   ,
     name: 'locker'
-    classes: 'text locker'
+    classes: 'text locker hidden'
     content: ''
     tag: 'p'
   ,
@@ -65,16 +65,16 @@ enyo.kind
     @$.lockIcon.setSrc '../../web/com.tasawr.retail.restaurant/images/lock.png'
 
   setChairs: (chairs) ->
-    @$.chairs.setContent 'Total Chairs: <span class="badge">' + chairs + '</span>'
+    @$.chairs.setContent 'Chairs: <span class="badge">' + chairs + '</span>'
 
   setOrderCount: (orderCount) ->
-    @$.orderCount.setContent 'Total Orders: <span class="badge">' + orderCount + '</span>'
+    @$.orderCount.setContent 'Orders: <span class="badge">' + orderCount + '</span>'
 
   setLabel: (label) ->
     @$.label.setContent label
 
   setAmount: (amount) ->
-    @$.amount.setContent('Total: <span class="badge">' + amount.toFixed(2) + '</span> ' + OB.POS.modelterminal.get('currency')._identifier)
+    @$.amount.setContent( OB.POS.modelterminal.get('currency')._identifier + ' <span class="badge">' + amount.toFixed(2) + '</span> ')
     @$.bookingIcon.setSrc('../../web/com.tasawr.retail.restaurant/images/waiter.png') unless amount is 0
 
   setSmoking: (smoking) ->
