@@ -43,7 +43,7 @@ enyo.kind
         OB.POS.hwserver.print templatereceipt,
           order: cancelModel
         OB.UTIL.showSuccess "Line cancelled"
-        enyo.Signals.send "onTransmission", {message: 'cancel', cid: keyboard.line.cid}
+        enyo.Signals.send "onTransmission", {message: 'cancelled', cid: keyboard.line.cid}
 
       else
         OB.UTIL.showError "No printer is assigned to this product"

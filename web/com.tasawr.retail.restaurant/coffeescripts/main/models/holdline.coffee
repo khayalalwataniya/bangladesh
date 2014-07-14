@@ -44,7 +44,7 @@ enyo.kind
           order: holdModel
 
         OB.UTIL.showSuccess "Line on hold"
-        enyo.Signals.send "onTransmission", {message: 'hold', cid: keyboard.line.cid}
+        enyo.Signals.send "onTransmission", {message: 'held', cid: keyboard.line.cid}
 
       else
         OB.UTIL.showError "No printer is assigned to this product"
