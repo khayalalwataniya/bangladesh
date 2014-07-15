@@ -50,7 +50,7 @@ OB.UI.ModalReceiptPropertiesImpl.extend initComponents: ->
     fetchDataFunction: (args) ->
       me = this
       actualTable = undefined
-      OB.Dal.find OB.Model.Table, null, ((data, args) ->
+      OB.Dal.find OB.Model.Table, tsrrSection: JSON.parse(window.localStorage.getItem('currentSection')).id, ((data, args) ->
         if data.length > 0
           me.dataReadyFunction data, args
         else

@@ -43,6 +43,7 @@ enyo.kind
     style: "clear: both;"
   ]
   initComponents: ->
+    me = @
     @inherited arguments
     @$.checkBoxColumn.hide()
     @$.product.setContent @model.get("product").get("_identifier")
@@ -65,12 +66,13 @@ enyo.kind
           style: "clear: both;"
         ]
 
-    if (localStorage.getItem @model.cid) is null
-      console.error @model.cid
-      @$.sendstatus.setContent 'Not sent'
-      localStorage.setItem @model.cid, 'Not sent'
-    else
-      @$.sendstatus.setContent localStorage.getItem @model.cid
+    unless @model.cid is null
+      if window.localStorage.getItem(@model.cid) is null
+        console.log @model.cid
+        @$.sendstatus.setContent 'Not sent'
+        window.localStorage.setItem @model.cid, 'Not sent'
+      else
+        @$.sendstatus.setContent localStorage.getItem @model.cid
 
     if @model.get("promotions")
       enyo.forEach @model.get("promotions"), ((d) ->

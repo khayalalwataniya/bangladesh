@@ -59,7 +59,9 @@
           var actualTable, me;
           me = this;
           actualTable = void 0;
-          OB.Dal.find(OB.Model.Table, null, (function(data, args) {
+          OB.Dal.find(OB.Model.Table, {
+            tsrrSection: JSON.parse(window.localStorage.getItem('currentSection')).id
+          }, (function(data, args) {
             if (data.length > 0) {
               me.dataReadyFunction(data, args);
             } else {

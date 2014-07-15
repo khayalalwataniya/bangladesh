@@ -50,8 +50,9 @@
             order: sendModel
           });
           OB.UTIL.showSuccess("Line sent");
+          debugger;
           return enyo.Signals.send("onTransmission", {
-            message: 'send',
+            message: 'sent',
             cid: keyboard.line.cid
           });
         } else {

@@ -49,7 +49,7 @@
           });
           OB.UTIL.showSuccess("Line on hold");
           return enyo.Signals.send("onTransmission", {
-            message: 'hold',
+            message: 'held',
             cid: keyboard.line.cid
           });
         } else {

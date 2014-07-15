@@ -145,17 +145,24 @@
     sendButton: function(inSender, inEvent) {
       var lines, sendToPrinter, templatereceipt;
       lines = this.args.keyboard.receipt.attributes.lines;
+      debugger;
       sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines);
       templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate);
       OB.POS.hwserver.print(templatereceipt, {
         order: sendToPrinter
+      });
+      _.each(lines.models, function(model) {
+        return enyo.Signals.send("onTransmission", {
+          message: 'sent',
+          cid: model.cid
+        });
       });
       OB.UTIL.showSuccess("Orders sent to printers successfully");
       return this.hide();
     },
     cancelButton: function(keyboard, inEvent) {
       return this.doShowPopup({
-        popup: "TSRR.UI.CancelOrderReasonPopup",
+        popup: "TSRR_UI_CancelOrderReasonPopup",
         args: {
           message: "",
           keyboard: keyboard
@@ -219,7 +226,7 @@
     action: function(keyboard, txt) {
       window.keyboard = keyboard;
       return keyboard.doShowPopup({
-        popup: "TSRR.UI.SendCancelOrderPopup",
+        popup: "TSRR_UI_SendCancelOrderPopup",
         args: {
           message: "",
           keyboard: keyboard
@@ -232,7 +239,7 @@
 
   OB.UI.WindowView.registerPopup("OB.OBPOSPointOfSale.UI.PointOfSale", {
     kind: "TSRR.UI.SendCancelOrderPopup",
-    name: "TSRR.UI.SendCancelOrderPopup"
+    name: "TSRR_UI_SendCancelOrderPopup"
   });
 
   enyo.kind({
@@ -285,14 +292,18 @@
           message: this.message
         }
       });
-      OB.UTIL.showSuccess("Orders sent to printers successfully");
+      _.each(lines.models, function(model) {
+        return enyo.Signals.send("onTransmission", {
+          message: 'cancelled',
+          cid: model.cid
+        });
+      });
+      OB.UTIL.showSuccess("Order cancelled");
+      this.parent.$.TSRR_UI_SendCancelOrderPopup.hide();
       return this.hide();
     },
     cancelButtonPressed: function(inSender, inEvent) {
-      window.ins = inSender;
-      window.ine = inEvent;
-      window.ths = this;
-      console.log('cancel button was pressed');
+      this.parent.$.TSRR_UI_SendCancelOrderPopup.hide();
       return this.hide();
     },
     init: function(model) {
@@ -338,7 +349,7 @@
 
   OB.UI.WindowView.registerPopup("OB.OBPOSPointOfSale.UI.PointOfSale", {
     kind: "TSRR.UI.CancelOrderReasonPopup",
-    name: "TSRR.UI.CancelOrderReasonPopup"
+    name: "TSRR_UI_CancelOrderReasonPopup"
   });
 
 }).call(this);

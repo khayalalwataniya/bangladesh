@@ -32,27 +32,6 @@ class Table extends OB.Data.ExtensibleModel
       @clearTableAttributes()
     return
 
-
-#  initialize: (attributes) ->
-#    tableId = undefined
-#    if attributes and attributes.id and attributes.json
-#      tableId = attributes.id
-#      attributes = JSON.parse(attributes.json)
-#      attributes.id = tableId
-#    if attributes AND attributes.tsrrSection
-#      @set "tsrrSection", attributes.tsrrSection
-#    if attributes
-#      @set "undo", attributes.undo
-#      @set "id", attributes.id if attributes.id
-#      @set "name", attributes.name if attributes.name
-#      @set "chairs", attributes.chairs if attributes.chairs
-#      @set "smokingType", attributes.smokingType if attributes.smokingType
-#      @set "locked", attributes.locked if attributes.locked
-#      @set "locker", attributes.locker if attributes.locker
-#    else
-#      @clearTableAttributes()
-#    return
-
   clear: ->
     @clearTableAttributes()
     @trigger "change"
@@ -74,7 +53,7 @@ class Table extends OB.Data.ExtensibleModel
     delete @attributes.json  if @attributes.json # Needed to avoid recursive inclusions of itself !!!
     undoCopy = @get("undo")
     @unset "undo"
-    @.set 'tsrrSection', @get 'tsrrSection' if @attributes.tsrrSection
+    @.set 'tsrrSection', @get('tsrrSection') if @attributes.tsrrSection
     @.set 'name', @get 'name'
     @.set 'chairs', @get 'chairs'
     @.set 'smokingType', @get 'smokingType'
@@ -82,6 +61,7 @@ class Table extends OB.Data.ExtensibleModel
     @.set 'locker', @get 'locker'
     unless OB.POS.modelterminal.get("preventOrderSave")
       OB.Dal.save @, (->
+        me.trigger 'sync'
         console.log 'DONE'
       ), ->
         console.error arguments
@@ -101,6 +81,7 @@ class Table extends OB.Data.ExtensibleModel
     @set "_identifier", @get("name")
     unless OB.POS.modelterminal.get("preventOrderSave")
       OB.Dal.save @, (->
+        me.trigger 'sync'
         console.log 'DONE'
       ), ->
         console.error arguments
@@ -147,6 +128,7 @@ class Table extends OB.Data.ExtensibleModel
     salesOrder = orderList.newOrder()
     salesOrder.set 'bp', businessPartner
     salesOrder.set 'restaurantTable', me
+    #salesOrder.set 'restaurantTable$_identifier', me.name
     salesOrder.save()
     bi = new OB.Model.BookingInfo()
     bi.set 'businessPartner', businessPartner

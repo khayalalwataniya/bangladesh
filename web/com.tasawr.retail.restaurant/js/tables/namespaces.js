@@ -41,10 +41,10 @@
       console.log(salesOrder);
       OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
     });
-    OB.MobileApp.model.hookManager.registerHook("OBPOS_OrderDetailContentHook", function(args, callbacks) {
+    OB.MobileApp.model.hookManager.registerHook("OBPOS_PreAddProductToOrder", function(args, callbacks) {
       var salesOrder;
-      console.log("calling... OBPOS_OrderDetailContentHook hook");
-      salesOrder = args.order;
+      console.log("calling... OBPOS_PreAddProductToOrder hook");
+      salesOrder = args.receipt;
       OB.Dal.find(OB.Model.BookingInfo, {
         salesOrder: salesOrder.id
       }, (function(collection) {
@@ -96,7 +96,7 @@
     };
     OB.Dal.find(OB.Model.Order, criteria, (function(ordersNotPaid) {
       var currentOrder, loadOrderStr;
-      currentOrder = {};
+      currentOrder = void 0;
       loadOrderStr = void 0;
       if (!ordersNotPaid || ordersNotPaid.length === 0) {
         orderlist.addFirstOrder();
@@ -108,7 +108,9 @@
           currentOrder = ordersNotPaid.models[0];
         }
         orderlist.load(currentOrder);
-        TSRR.Tables.Config.currentOrder = currentOrder;
+        if (currentOrder) {
+          TSRR.Tables.Config.currentOrder = currentOrder;
+        }
         if (currentOrder) {
           loadOrderStr = OB.I18N.getLabel("OBPOS_Order") + currentOrder.get("documentNo") + OB.I18N.getLabel("OBPOS_Loaded");
         }

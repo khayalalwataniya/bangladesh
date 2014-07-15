@@ -2,7 +2,37 @@
   enyo.kind({
     name: "TSRR.Main.UI.LockButton",
     stateless: true,
-    lockTable: function(tableId) {
+    lockTableAjax: function(table) {
+      var data;
+      data = {
+        data: [
+          {
+            _entityName: "TSRR_Table",
+            id: table.id,
+            locked: 'Y',
+            locker: OB.POS.modelterminal.usermodel.get('id')
+          }
+        ]
+      };
+      console.info('posting to TSRR_Table info api');
+      console.info(data);
+      $.ajax("../../org.openbravo.service.json.jsonrest/TSRR_Table", {
+        data: JSON.stringify(data),
+        type: "PUT",
+        processData: false,
+        contentType: "application/json",
+        success: function(resp) {
+          console.info('DONE');
+          return OB.UTIL.showSuccess('[DONE] table with name: "' + table.name + '" has been locked succussfully');
+        },
+        error: function() {
+          OB.UTIL.showWarning('could not post Table API');
+          return console.log(arguments);
+        }
+      });
+      table;
+    },
+    lockTable: function(me, table) {
       var errorCallback, successCallbackTables;
       errorCallback = function(tx, error) {
         OB.error(tx);
@@ -14,17 +44,17 @@
         tbl.set('locked', true);
         tbl.set('locker', OB.POS.modelterminal.usermodel.get('id'));
         tbl.save();
+        me.lockTableAjax(table);
         tbl.trigger('sync');
-        OB.UTIL.showSuccess('[DONE] table with ID: "' + tbl.id + '" has been locked succussfully');
       };
-      OB.Dal.get(OB.Model.Table, tableId, successCallbackTables, errorCallback);
+      OB.Dal.get(OB.Model.Table, table.id, successCallbackTables, errorCallback);
     },
     action: function(keyboard, txt) {
       var currentTable, me;
       me = this;
       currentTable = keyboard.receipt.get('restaurantTable');
       if (currentTable) {
-        me.lockTable(currentTable.id);
+        me.lockTable(me, currentTable);
       }
       keyboard.receipt.trigger('scan');
     }
@@ -33,7 +63,37 @@
   enyo.kind({
     name: "TSRR.Main.UI.UnLockButton",
     stateless: true,
-    unlockTable: function(tableId) {
+    unlockTableAjax: function(table) {
+      var data;
+      data = {
+        data: [
+          {
+            _entityName: "TSRR_Table",
+            id: table.id,
+            locked: 'N',
+            locker: OB.POS.modelterminal.usermodel.get('id')
+          }
+        ]
+      };
+      console.info('posting to TSRR_Table info api');
+      console.info(data);
+      $.ajax("../../org.openbravo.service.json.jsonrest/TSRR_Table", {
+        data: JSON.stringify(data),
+        type: "PUT",
+        processData: false,
+        contentType: "application/json",
+        success: function(resp) {
+          console.info('DONE');
+          return OB.UTIL.showSuccess('[DONE] table with name: "' + table.name + '" has been unlocked succussfully');
+        },
+        error: function() {
+          OB.UTIL.showWarning('could not post Table API');
+          return console.log(arguments);
+        }
+      });
+      table;
+    },
+    unlockTable: function(me, table) {
       var errorCallback, successCallbackUnlockTables;
       errorCallback = function(tx, error) {
         OB.error(tx);
@@ -45,17 +105,17 @@
         tbl.set('locked', false);
         tbl.set('locker', OB.POS.modelterminal.usermodel.get('id'));
         tbl.save();
+        me.unlockTableAjax(table);
         tbl.trigger('sync');
-        OB.UTIL.showSuccess('[DONE] table with ID: "' + tbl.id + '" has been unlocked succussfully');
       };
-      OB.Dal.get(OB.Model.Table, tableId, successCallbackUnlockTables, errorCallback);
+      OB.Dal.get(OB.Model.Table, table.id, successCallbackUnlockTables, errorCallback);
     },
     action: function(keyboard, txt) {
       var currentTable, me;
       me = this;
       currentTable = keyboard.receipt.get('restaurantTable');
       if (currentTable) {
-        me.unlockTable(currentTable.id);
+        me.unlockTable(me, currentTable);
       }
       keyboard.receipt.trigger('scan');
     }

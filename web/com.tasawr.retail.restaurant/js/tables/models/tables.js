@@ -101,6 +101,7 @@
       this.set('locker', this.get('locker'));
       if (!OB.POS.modelterminal.get("preventOrderSave")) {
         OB.Dal.save(this, (function() {
+          me.trigger('sync');
           return console.log('DONE');
         }), function() {
           console.error(arguments);
@@ -123,6 +124,7 @@
       this.set("_identifier", this.get("name"));
       if (!OB.POS.modelterminal.get("preventOrderSave")) {
         OB.Dal.save(this, (function() {
+          me.trigger('sync');
           return console.log('DONE');
         }), function() {
           console.error(arguments);

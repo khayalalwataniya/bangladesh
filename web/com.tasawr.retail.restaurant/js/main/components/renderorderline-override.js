@@ -49,6 +49,8 @@
       }
     ],
     initComponents: function() {
+      var me;
+      me = this;
       this.inherited(arguments);
       this.$.checkBoxColumn.hide();
       this.$.product.setContent(this.model.get("product").get("_identifier"));
@@ -75,8 +77,14 @@
           ]
         });
       }
-      if ((localStorage.getItem(this.model.cid)) === null) {
-        this.$.sendstatus.setContent('Not sent');
+      if (this.model.cid !== null) {
+        if (window.localStorage.getItem(this.model.cid) === null) {
+          console.log(this.model.cid);
+          this.$.sendstatus.setContent('Not sent');
+          window.localStorage.setItem(this.model.cid, 'Not sent');
+        } else {
+          this.$.sendstatus.setContent(localStorage.getItem(this.model.cid));
+        }
       }
       if (this.model.get("promotions")) {
         enyo.forEach(this.model.get("promotions"), (function(d) {
@@ -109,10 +117,10 @@
     },
     transmission: function(inSender, inPayload) {
       this.inherited(arguments);
-      $("li.selected").first().children().last().children().filter(function(index) {
-        return index === 5;
-      }).text(inPayload.message);
-      return localStorage.setItem(inPayload.cid, inPayload.message);
+      if (this.model.cid === inPayload.cid) {
+        this.container.children[0].controls[5].setContent(inPayload.message);
+        return localStorage.setItem(inPayload.cid, inPayload.message);
+      }
     },
     changeEditMode: function(inSender, inEvent) {
       this.addRemoveClass("btnselect-orderline-edit", inEvent.edit);

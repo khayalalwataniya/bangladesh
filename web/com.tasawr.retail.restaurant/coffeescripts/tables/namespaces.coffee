@@ -39,9 +39,9 @@ if OB.MobileApp.model.hookManager
     OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
     return
 
-  OB.MobileApp.model.hookManager.registerHook "OBPOS_OrderDetailContentHook", (args, callbacks) ->
-    console.log "calling... OBPOS_OrderDetailContentHook hook"
-    salesOrder = args.order
+  OB.MobileApp.model.hookManager.registerHook "OBPOS_PreAddProductToOrder", (args, callbacks) ->
+    console.log "calling... OBPOS_PreAddProductToOrder hook"
+    salesOrder = args.receipt
     OB.Dal.find OB.Model.BookingInfo,
       salesOrder: salesOrder.id
     , ((collection) -> # inline callback
@@ -90,7 +90,7 @@ OB.OBPOSPointOfSale.Model.PointOfSale::loadUnpaidOrders = ->
     hasbeenpaid: "N"
     session: OB.POS.modelterminal.get("session")
   OB.Dal.find OB.Model.Order, criteria, ((ordersNotPaid) -> #OB.Dal.find success
-    currentOrder = {}
+    currentOrder = undefined
     loadOrderStr = undefined
     if not ordersNotPaid or ordersNotPaid.length is 0
 
@@ -106,7 +106,7 @@ OB.OBPOSPointOfSale.Model.PointOfSale::loadUnpaidOrders = ->
       else
         currentOrder = ordersNotPaid.models[0]
       orderlist.load currentOrder
-      TSRR.Tables.Config.currentOrder = currentOrder
+      TSRR.Tables.Config.currentOrder = currentOrder if currentOrder
       loadOrderStr = OB.I18N.getLabel("OBPOS_Order") + currentOrder.get("documentNo") + OB.I18N.getLabel("OBPOS_Loaded") if currentOrder
       OB.UTIL.showAlert.display loadOrderStr, OB.I18N.getLabel("OBPOS_Info") if loadOrderStr
     return

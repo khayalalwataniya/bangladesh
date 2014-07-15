@@ -5,7 +5,33 @@ enyo.kind
   name: "TSRR.Main.UI.LockButton"
   stateless: true
 
-  lockTable: (tableId) ->
+  lockTableAjax: (table) ->
+    data =
+      data: [
+        _entityName: "TSRR_Table"
+        id: table.id
+        locked: 'Y'
+        locker: OB.POS.modelterminal.usermodel.get('id')
+      ]
+    console.info 'posting to TSRR_Table info api'
+    console.info data
+    $.ajax "../../org.openbravo.service.json.jsonrest/TSRR_Table",
+      data: JSON.stringify(data)
+      type: "PUT"
+      processData: false
+      contentType: "application/json"
+      success: (resp) ->
+        console.info 'DONE'
+        OB.UTIL.showSuccess '[DONE] table with name: "' + table.name + '" has been locked succussfully'
+      error: ->
+        OB.UTIL.showWarning 'could not post Table API'
+        console.log arguments
+    table
+    return
+
+
+
+  lockTable: (me, table) ->
     errorCallback = (tx, error) ->
       OB.error tx
       OB.error error
@@ -16,11 +42,12 @@ enyo.kind
       tbl.set 'locked', true
       tbl.set 'locker', OB.POS.modelterminal.usermodel.get('id')
       tbl.save()
+      me.lockTableAjax(table)
       tbl.trigger 'sync'
-      OB.UTIL.showSuccess '[DONE] table with ID: "' + tbl.id + '" has been locked succussfully'
+
       return
 
-    OB.Dal.get OB.Model.Table, tableId, successCallbackTables, errorCallback
+    OB.Dal.get OB.Model.Table, table.id, successCallbackTables, errorCallback
     return
 
 
@@ -28,7 +55,7 @@ enyo.kind
     me = @
     currentTable = keyboard.receipt.get('restaurantTable')
     if currentTable
-      me.lockTable(currentTable.id)
+      me.lockTable(me, currentTable)
     keyboard.receipt.trigger('scan')
     return
 
@@ -36,7 +63,33 @@ enyo.kind
   name: "TSRR.Main.UI.UnLockButton"
   stateless: true
 
-  unlockTable: (tableId) ->
+  unlockTableAjax: (table) ->
+    data =
+      data: [
+        _entityName: "TSRR_Table"
+        id: table.id
+        locked: 'N'
+        locker: OB.POS.modelterminal.usermodel.get('id')
+      ]
+    console.info 'posting to TSRR_Table info api'
+    console.info data
+    $.ajax "../../org.openbravo.service.json.jsonrest/TSRR_Table",
+      data: JSON.stringify(data)
+      type: "PUT"
+      processData: false
+      contentType: "application/json"
+      success: (resp) ->
+        console.info 'DONE'
+        OB.UTIL.showSuccess '[DONE] table with name: "' + table.name + '" has been unlocked succussfully'
+      error: ->
+        OB.UTIL.showWarning 'could not post Table API'
+        console.log arguments
+
+    table
+    return
+
+
+  unlockTable: (me, table) ->
     errorCallback = (tx, error) ->
       OB.error tx
       OB.error error
@@ -47,18 +100,19 @@ enyo.kind
       tbl.set 'locked', false
       tbl.set 'locker', OB.POS.modelterminal.usermodel.get('id')
       tbl.save()
+      me.unlockTableAjax(table)
       tbl.trigger 'sync'
-      OB.UTIL.showSuccess '[DONE] table with ID: "' + tbl.id + '" has been unlocked succussfully'
       return
 
-    OB.Dal.get OB.Model.Table, tableId, successCallbackUnlockTables, errorCallback
+    OB.Dal.get OB.Model.Table, table.id, successCallbackUnlockTables, errorCallback
     return
 
   action: (keyboard, txt) ->
     me = @
     currentTable = keyboard.receipt.get('restaurantTable')
     if currentTable
-      me.unlockTable(currentTable.id)
+      me.unlockTable(me, currentTable)
+
     keyboard.receipt.trigger('scan')
     return
 

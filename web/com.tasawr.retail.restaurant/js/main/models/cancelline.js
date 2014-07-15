@@ -49,7 +49,7 @@
           });
           OB.UTIL.showSuccess("Line cancelled");
           return enyo.Signals.send("onTransmission", {
-            message: 'cancel',
+            message: 'cancelled',
             cid: keyboard.line.cid
           });
         } else {

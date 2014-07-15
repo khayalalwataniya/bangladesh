@@ -47,7 +47,7 @@
           });
           OB.UTIL.showSuccess("Line fired");
           return enyo.Signals.send("onTransmission", {
-            message: 'fire',
+            message: 'fired',
             cid: keyboard.line.cid
           });
         } else {
