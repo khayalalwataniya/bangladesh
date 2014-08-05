@@ -33,7 +33,7 @@
         attributes = JSON.parse(attributes.json);
         attributes.id = bookinginfoId;
       }
-      if (attributes && attributes.salesOrder) {
+      if (attributes) {
         this.set("undo", attributes.undo);
         if (attributes.id) {
           this.set("id", attributes.id);
@@ -79,7 +79,7 @@
     };
 
     BookingInfo.prototype.save = function() {
-      var me, undoCopy, _ref1, _ref2, _ref3;
+      var me, undoCopy;
       me = this;
       undoCopy = void 0;
       if (this.attributes.json) {
@@ -87,11 +87,20 @@
       }
       undoCopy = this.get("undo");
       this.unset("undo");
-      this.set('restaurantTable', (_ref1 = this.get('restaurantTable')) != null ? _ref1.id : void 0);
-      this.set('businessPartner', (_ref2 = this.get('businessPartner')) != null ? _ref2.id : void 0);
-      this.set('salesOrder', (_ref3 = this.get('salesOrder')) != null ? _ref3.id : void 0);
+      if (this.attributes.restaurantTable) {
+        this.set('restaurantTable', this.get('restaurantTable').id);
+      }
+      if (this.attributes.businessPartner) {
+        this.set('businessPartner', this.get('businessPartner').id);
+      }
+      if (this.attributes.salesOrder) {
+        this.set('salesOrder', this.get('salesOrder').id);
+      }
       this.set('orderidlocal', this.get('orderidlocal'));
       this.set('ebid', this.get('ebid'));
+      if (this.attributes.id) {
+        this.set("_identifier", this.get("id"));
+      }
       if (!OB.POS.modelterminal.get("preventOrderSave")) {
         OB.Dal.save(this, (function() {
           return me.trigger("sync");
@@ -100,6 +109,33 @@
         });
       }
       this.set("undo", undoCopy);
+    };
+
+    BookingInfo.prototype.saveBookingInfo = function(silent) {
+      var me;
+      me = this;
+      if (this.attributes.restaurantTable) {
+        this.set('restaurantTable', this.get('restaurantTable').id);
+      }
+      if (this.attributes.businessPartner) {
+        this.set('businessPartner', this.get('businessPartner').id);
+      }
+      if (this.attributes.salesOrder) {
+        this.set('salesOrder', this.get('salesOrder').id);
+      }
+      this.set('orderidlocal', this.get('orderidlocal'));
+      this.set('ebid', this.get('ebid'));
+      if (this.attributes.id) {
+        this.set("_identifier", this.get("id"));
+      }
+      if (!OB.POS.modelterminal.get("preventOrderSave")) {
+        OB.Dal.save(this, (function() {
+          me.trigger('sync');
+          return console.log('DONE');
+        }), function() {
+          console.error(arguments);
+        });
+      }
     };
 
     BookingInfo.prototype.clearWith = function(_bookingInfo) {

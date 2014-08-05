@@ -41,19 +41,23 @@ if OB.MobileApp.model.hookManager
 
   OB.MobileApp.model.hookManager.registerHook "OBPOS_PreAddProductToOrder", (args, callbacks) ->
     console.log "calling... OBPOS_PreAddProductToOrder hook"
-    salesOrder = args.receipt
+    me = @
+    me.order = args.receipt
+    bi = undefined
     OB.Dal.find OB.Model.BookingInfo,
-      salesOrder: salesOrder.id
+      salesOrder: me.order.get('id')
     , ((collection) -> # inline callback
+        console.info collection
         if collection and collection.length > 0
-          bi = collection.models[0]
+          bi = collection.at 0
         else
+          console.log 'no booking found for this order'
           bi = new OB.Model.BookingInfo()
           bi.set 'businessPartner', OB.POS.modelterminal.attributes.businessPartner
-          bi.set 'salesOrder', salesOrder
-          bi.set 'orderidlocal', salesOrder.id
+          bi.set 'salesOrder', me.order
+          bi.set 'orderidlocal', me.order.get('id')
           bi.set 'restaurantTable', TSRR.Tables.Config.currentTable
-          bi.set 'ebid', salesOrder.id
+          bi.set 'ebid', me.order.get('id')
           bi.save()
         return
       ), error

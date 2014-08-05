@@ -115,8 +115,8 @@ enyo.kind
 
 
   sendButton: (inSender, inEvent) ->
+    @hide()
     lines = @args.keyboard.receipt.attributes.lines
-    debugger
     sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines)
     templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate)
     OB.POS.hwserver.print templatereceipt,
@@ -126,9 +126,10 @@ enyo.kind
       enyo.Signals.send "onTransmission", {message: 'sent', cid: model.cid}
 
     OB.UTIL.showSuccess "Orders sent to printers successfully"
-    @hide()
+
 
   cancelButton: (keyboard, inEvent) ->
+    @hide()
     @doShowPopup
       popup: "TSRR_UI_CancelOrderReasonPopup"
       args:

@@ -42,22 +42,25 @@
       OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
     });
     OB.MobileApp.model.hookManager.registerHook("OBPOS_PreAddProductToOrder", function(args, callbacks) {
-      var salesOrder;
+      var bi, me;
       console.log("calling... OBPOS_PreAddProductToOrder hook");
-      salesOrder = args.receipt;
+      me = this;
+      me.order = args.receipt;
+      bi = void 0;
       OB.Dal.find(OB.Model.BookingInfo, {
-        salesOrder: salesOrder.id
+        salesOrder: me.order.get('id')
       }, (function(collection) {
-        var bi;
+        console.info(collection);
         if (collection && collection.length > 0) {
-          bi = collection.models[0];
+          bi = collection.at(0);
         } else {
+          console.log('no booking found for this order');
           bi = new OB.Model.BookingInfo();
           bi.set('businessPartner', OB.POS.modelterminal.attributes.businessPartner);
-          bi.set('salesOrder', salesOrder);
-          bi.set('orderidlocal', salesOrder.id);
+          bi.set('salesOrder', me.order);
+          bi.set('orderidlocal', me.order.get('id'));
           bi.set('restaurantTable', TSRR.Tables.Config.currentTable);
-          bi.set('ebid', salesOrder.id);
+          bi.set('ebid', me.order.get('id'));
           bi.save();
         }
       }), error);

@@ -15,7 +15,7 @@ class  BookingInfo extends OB.Data.ExtensibleModel
       bookinginfoId = attributes.id
       attributes = JSON.parse(attributes.json)
       attributes.id = bookinginfoId
-    if attributes and attributes.salesOrder
+    if attributes
       @set "undo", attributes.undo
       @set "id", attributes.id if attributes.id
       @set "restaurantTable", attributes.restaurantTable if attributes.restaurantTable
@@ -51,11 +51,12 @@ class  BookingInfo extends OB.Data.ExtensibleModel
     delete @attributes.json  if @attributes.json # Needed to avoid recursive inclusions of itself !!!
     undoCopy = @get("undo")
     @unset "undo"
-    @.set 'restaurantTable', (@get 'restaurantTable')?.id
-    @.set 'businessPartner', (@get 'businessPartner')?.id
-    @.set 'salesOrder', (@get 'salesOrder')?.id
-    @.set 'orderidlocal', @get 'orderidlocal'
-    @.set 'ebid', @get 'ebid'
+    @.set 'restaurantTable', @get('restaurantTable').id if @attributes.restaurantTable
+    @.set 'businessPartner', @get('businessPartner').id  if @attributes.businessPartner
+    @.set 'salesOrder', @get('salesOrder').id if @attributes.salesOrder
+    @.set 'orderidlocal', @get('orderidlocal')
+    @.set 'ebid', @get('ebid')
+    @set "_identifier", @get("id") if @attributes.id
     unless OB.POS.modelterminal.get("preventOrderSave")
       OB.Dal.save @, (->
         me.trigger "sync"
@@ -65,6 +66,24 @@ class  BookingInfo extends OB.Data.ExtensibleModel
 
     @set "undo", undoCopy
     return
+
+  saveBookingInfo: (silent) ->
+    me = @
+    @.set 'restaurantTable', @get('restaurantTable').id if @attributes.restaurantTable
+    @.set 'businessPartner', @get('businessPartner').id if @attributes.businessPartner
+    @.set 'salesOrder', @get('salesOrder').id if @attributes.salesOrder
+    @.set 'orderidlocal', @get('orderidlocal')
+    @.set 'ebid', @get('ebid')
+    @set "_identifier", @get("id") if @attributes.id
+    unless OB.POS.modelterminal.get("preventOrderSave")
+      OB.Dal.save @, (->
+        me.trigger 'sync'
+        console.log 'DONE'
+      ), ->
+        console.error arguments
+        return
+    return
+
 
   clearWith: (_bookingInfo) ->
     me = @

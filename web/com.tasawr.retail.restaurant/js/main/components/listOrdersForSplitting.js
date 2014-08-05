@@ -2,21 +2,35 @@
   enyo.kind({
     name: "TSRR.UI.ModalReceiptsSplit",
     kind: "OB.UI.Modal",
-    topPosition: "125px",
+    header: "",
     published: {
-      receiptsList: null
+      receiptsInfo: null
     },
-    i18nHeader: "OBPOS_LblAssignReceipt",
     body: {
       kind: "TSRR.UI.ListReceiptsSplit",
       name: "listreceiptssplit"
     },
-    receiptsListChanged: function(oldValue) {
-      console.error('rec changed');
-      this.$.body.$.listreceiptssplit.setReceiptsList(this.parent.model.attributes.orderList);
+    receiptsInfoChanged: function(oldValue) {
+      var me;
+      me = this;
+      me.$.header.setContent(OB.I18N.getLabel("OBPOS_LblAssignReceipt"));
+      if (this.receiptsInfo) {
+        OB.Dal.find(OB.Model.Order, {
+          session: me.receiptsInfo.get('session')
+        }, (function(data) {
+          if (data && data.length > 0) {
+            return me.$.body.$.listreceiptssplit.setReceiptsList(data);
+          }
+        }), function(error) {
+          return console.log(error);
+        });
+      }
     },
     executeOnShow: function() {
-      return this.$.body.$.listreceiptssplit.setReceiptsList(this.parent.model.attributes.orderList);
+      this.setReceiptsInfo(this.args.receiptsInfo);
+    },
+    executeOnHide: function() {
+      this.receiptsInfo = null;
     }
   });
 
@@ -26,14 +40,13 @@
     published: {
       receiptsList: null
     },
-    events: {
-      onChangeCurrentOrder: ""
-    },
     components: [
       {
         classes: "span12",
         components: [
           {
+            style: "border-bottom: 1px solid #cccccc;"
+          }, {
             components: [
               {
                 name: "receiptslistitemprintersplit",
@@ -46,7 +59,8 @@
           }, {
             kind: "TSRR.UI.ListRecieptOkButton"
           }, {
-            kind: "TSRR.UI.ListRecieptCancelButton"
+            style: "color: black;background-color: #d5d5d5;",
+            kind: "OB.UI.ModalCancel_CancelButton"
           }
         ]
       }
@@ -58,34 +72,36 @@
 
   enyo.kind({
     name: "TSRR.UI.ListReceiptLineSplit",
-    kind: "OB.UI.SelectButton",
-    published: {
-      receiptsList: null
-    },
-    events: {
-      onHideThisPopup: ""
-    },
-    tap: function() {
-      this.inherited(arguments);
-      this.doHideThisPopup();
-    },
+    classes: "btnselect",
     components: [
       {
         name: "line",
         style: "line-height: 23px; width: 100%;",
         components: [
           {
-            kind: 'TSRR.UI.ListReceiptLine'
+            kind: 'TSRR.UI.ListReceiptLine',
+            name: 'bp',
+            allowHtml: true
           }, {
             style: "float: left; width: 25%",
             name: "orderNo"
+          }, {
+            style: "clear: both"
           }
         ]
       }
     ],
     create: function() {
+      var model, str, _i, _len, _ref;
+      str = "";
       this.inherited(arguments);
       this.$.orderNo.setContent(this.model.get("documentNo"));
+      _ref = this.model.collection.models;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        model = _ref[_i];
+        str += "<b>" + model.get("bp").get("_identifier") + " </b><br/>";
+      }
+      this.$.bp.setContent(str);
     }
   });
 

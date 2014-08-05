@@ -54,6 +54,7 @@ enyo.kind
     onShowPopup: ''
   published:
     orderList: null
+    order: null
   handlers:
     onChangeBusinessPartner: 'changeBusinessPartner'
     onSelectSection: 'selectSection'
@@ -84,6 +85,11 @@ enyo.kind
           style: 'color: white; text-align: left; padding: 20px;'
           disabled: yes
           content: 'Please choose a section'
+        ,
+          # hidden stuff
+          classes: 'row'
+          name: 'modalcustomer'
+          kind: 'OB.UI.ModalBusinessPartners'
         ]
       ]
     ,
@@ -100,19 +106,7 @@ enyo.kind
     # Tables
     classes: 'row'
     name: 'tables'
-    components: [
-    ]
-  ,
-    # hidden stuff
-    classes: 'row'
-    components: [
-      classes: 'span12'
-      name: 'modalcustomer'
-      kind: 'OB.UI.ModalBusinessPartners'
-    ,
-      name: 'modalReceipts'
-      kind: 'OB.UI.ModalReceipts'
-    ]
+    components: []
   ]
 
   initComponents: ->
@@ -156,7 +150,18 @@ enyo.kind
       TSRR.Tables.Config.currentOrderId = bi.get('salesOrder')
       OB.POS.navigate 'retail.pointofsale'
     else
-      me.doShowPopup popup: 'modalcustomer'
+#      me.doShowPopup popup: 'modalcustomer'
+      #debugger
+      me.doShowPopup
+        popup: "modalcustomer"
+        args:
+          order: TSRR.Tables.Config.MyOrderList.current
+          action: (dialog) ->
+            console.log 'inside modal customer'
+            return
+#          owner: inSender.owner
+#          order: TSRR.Tables.Config.MyOrderList.current
+
     return
 
   changeBusinessPartner: (inSender, inEvent) ->

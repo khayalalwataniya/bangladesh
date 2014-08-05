@@ -28,10 +28,15 @@
         i++;
       }
       customAttributes.unshift({
-        kind: "OB.UI.renderTextMultiLineProperty",
+        kind: "OB.UI.renderTextProperty",
         name: "receiptDescription",
         modelProperty: "description",
         i18nLabel: "TSRR_TransferReceiptDescriptionLabel"
+      }, {
+        kind: "OB.UI.renderTextProperty",
+        name: "receiptNumberOfGuests",
+        modelProperty: "numberOfGuests",
+        i18nLabel: "TSRR_LblGuestCount"
       }, {
         kind: "OB.UI.renderComboProperty",
         name: "restaurantTableBox",
@@ -44,10 +49,16 @@
           this.model = model;
         },
         applyChange: function(inSender, inEvent) {
-          var selected;
+          var bi, selected;
           selected = this.collection.at(this.$.renderCombo.getSelected());
           console.info('applying changes with');
           console.info(selected);
+          bi = TSRR.Tables.Config.currentTable.bookingInfoList.at(TSRR.Tables.Config.currentTable.bookingInfoList.length - 1);
+          bi.set('restaurantTable', selected);
+          bi.set('businessPartner', OB.POS.modelterminal.attributes.businessPartner);
+          bi.set('salesOrder', TSRR.Tables.Config.currentOrder);
+          bi.save();
+          OB.UTIL.showSuccess('[DONE] Booking Info with ID: "' + bi.id + '" has been updated succussfully');
           if (selected) {
             inSender.model.set(this.modelProperty, selected.get(this.retrievedPropertyForValue));
           }

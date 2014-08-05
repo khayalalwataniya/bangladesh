@@ -144,8 +144,8 @@
     },
     sendButton: function(inSender, inEvent) {
       var lines, sendToPrinter, templatereceipt;
+      this.hide();
       lines = this.args.keyboard.receipt.attributes.lines;
-      debugger;
       sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines);
       templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate);
       OB.POS.hwserver.print(templatereceipt, {
@@ -157,10 +157,10 @@
           cid: model.cid
         });
       });
-      OB.UTIL.showSuccess("Orders sent to printers successfully");
-      return this.hide();
+      return OB.UTIL.showSuccess("Orders sent to printers successfully");
     },
     cancelButton: function(keyboard, inEvent) {
+      this.hide();
       return this.doShowPopup({
         popup: "TSRR_UI_CancelOrderReasonPopup",
         args: {

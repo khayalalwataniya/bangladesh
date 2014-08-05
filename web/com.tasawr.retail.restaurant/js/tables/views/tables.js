@@ -62,7 +62,8 @@
       onShowPopup: ''
     },
     published: {
-      orderList: null
+      orderList: null,
+      order: null
     },
     handlers: {
       onChangeBusinessPartner: 'changeBusinessPartner',
@@ -100,6 +101,10 @@
                     style: 'color: white; text-align: left; padding: 20px;',
                     disabled: true,
                     content: 'Please choose a section'
+                  }, {
+                    classes: 'row',
+                    name: 'modalcustomer',
+                    kind: 'OB.UI.ModalBusinessPartners'
                   }
                 ]
               }
@@ -123,18 +128,6 @@
         classes: 'row',
         name: 'tables',
         components: []
-      }, {
-        classes: 'row',
-        components: [
-          {
-            classes: 'span12',
-            name: 'modalcustomer',
-            kind: 'OB.UI.ModalBusinessPartners'
-          }, {
-            name: 'modalReceipts',
-            kind: 'OB.UI.ModalReceipts'
-          }
-        ]
       }
     ],
     initComponents: function() {
@@ -190,7 +183,13 @@
         OB.POS.navigate('retail.pointofsale');
       } else {
         me.doShowPopup({
-          popup: 'modalcustomer'
+          popup: "modalcustomer",
+          args: {
+            order: TSRR.Tables.Config.MyOrderList.current,
+            action: function(dialog) {
+              console.log('inside modal customer');
+            }
+          }
         });
       }
     },

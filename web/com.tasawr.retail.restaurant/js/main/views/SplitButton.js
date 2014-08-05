@@ -175,7 +175,7 @@
             header: OB.I18N.getLabel("TSRR_RestaurantSearchDialogHeaderMessage", [OB.I18N.formatCurrency(amount)]),
             amount: amount,
             model: keyboard.receipt,
-            receipt: keyboard.receipt,
+            receiptsInfo: keyboard.receipt,
             action: function(dialog) {}
           }
         });
