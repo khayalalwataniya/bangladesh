@@ -243,7 +243,7 @@ enyo.kind
     lines = window.keyboard.receipt.attributes.lines
     sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines)
     templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelOrderTemplate)
-    debugger
+    
     OB.POS.hwserver.print templatereceipt,
       order: sendToPrinter
       message: @message
