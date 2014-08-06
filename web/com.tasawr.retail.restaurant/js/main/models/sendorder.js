@@ -148,8 +148,13 @@
       lines = this.args.keyboard.receipt.attributes.lines;
       sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines);
       templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate);
+      debugger;
       OB.POS.hwserver.print(templatereceipt, {
-        order: sendToPrinter
+        order: sendToPrinter,
+        receiptNo: this.args.keyboard.receipt.attributes.documentNo,
+        tableNo: this.args.keyboard.receipt.attributes.restaurantTable.name,
+        guestNo: this.args.keyboard.receipt.attributes.numberOfGuests,
+        user: this.args.keyboard.receipt.attributes.salesRepresentative$_identifier
       });
       _.each(lines.models, function(model) {
         return enyo.Signals.send("onTransmission", {
@@ -286,11 +291,14 @@
       lines = window.keyboard.receipt.attributes.lines;
       sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines);
       templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelOrderTemplate);
+      debugger;
       OB.POS.hwserver.print(templatereceipt, {
-        orderCancelModel: {
-          sendToPrinter: sendToPrinter,
-          message: this.message
-        }
+        order: sendToPrinter,
+        message: this.message,
+        receiptNo: this.parent.model.attributes.order.attributes.documentNo,
+        tableNo: this.parent.model.attributes.order.attributes.restaurantTable.name,
+        guestNo: this.parent.model.attributes.order.attributes.numberOfGuests,
+        user: this.parent.model.attributes.order.attributes.salesRepresentative$_identifier
       });
       _.each(lines.models, function(model) {
         return enyo.Signals.send("onTransmission", {

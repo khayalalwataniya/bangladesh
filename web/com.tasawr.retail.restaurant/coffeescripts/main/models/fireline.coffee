@@ -40,6 +40,10 @@ enyo.kind
         templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.FireTemplate)
         OB.POS.hwserver.print templatereceipt,
           order: fireModel
+          receiptNo: keyboard.receipt.attributes.documentNo
+          tableNo: keyboard.receipt.attributes.restaurantTable.name
+          guestNo: keyboard.receipt.attributes.numberOfGuests
+          user: keyboard.receipt.attributes.salesRepresentative$_identifier
         OB.UTIL.showSuccess "Line fired"
         enyo.Signals.send "onTransmission", {message: 'fired', cid: keyboard.line.cid}
 

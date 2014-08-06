@@ -45,7 +45,11 @@
           });
           templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelTemplate);
           OB.POS.hwserver.print(templatereceipt, {
-            order: cancelModel
+            order: cancelModel,
+            receiptNo: keyboard.receipt.attributes.documentNo,
+            tableNo: keyboard.receipt.attributes.restaurantTable.name,
+            guestNo: keyboard.receipt.attributes.numberOfGuests,
+            user: keyboard.receipt.attributes.salesRepresentative$_identifier
           });
           OB.UTIL.showSuccess("Line cancelled");
           return enyo.Signals.send("onTransmission", {

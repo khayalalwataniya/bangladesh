@@ -44,6 +44,7 @@ assignVar = (requests, lines) ->
       productsAndPrinters[i][1] = [tempPrinters]
       productsAndPrinters[i][2] = lines.models[i].attributes.qty
       productsAndPrinters[i][3] = lines.models[i].attributes.description
+
     i++
 
 productInfoGetter = (lines) ->
@@ -119,8 +120,13 @@ enyo.kind
     lines = @args.keyboard.receipt.attributes.lines
     sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines)
     templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate)
+    debugger
     OB.POS.hwserver.print templatereceipt,
       order: sendToPrinter
+      receiptNo: @args.keyboard.receipt.attributes.documentNo
+      tableNo: @args.keyboard.receipt.attributes.restaurantTable.name
+      guestNo: @args.keyboard.receipt.attributes.numberOfGuests
+      user: @args.keyboard.receipt.attributes.salesRepresentative$_identifier
 
     _.each lines.models, (model)->
       enyo.Signals.send "onTransmission", {message: 'sent', cid: model.cid}
@@ -232,13 +238,20 @@ enyo.kind
 
   okButtonPressed: (inSender, inEvent) ->
     @inherited arguments
+
     @message = inSender.getControls()[0].getControls()[0].getControls()[0].getValue()
     lines = window.keyboard.receipt.attributes.lines
     sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines)
     templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelOrderTemplate)
-    OB.POS.hwserver.print templatereceipt, orderCancelModel:
-      sendToPrinter: sendToPrinter
+    debugger
+    OB.POS.hwserver.print templatereceipt,
+      order: sendToPrinter
       message: @message
+      receiptNo: @parent.model.attributes.order.attributes.documentNo
+      tableNo: @parent.model.attributes.order.attributes.restaurantTable.name
+      guestNo: @parent.model.attributes.order.attributes.numberOfGuests
+      user: @parent.model.attributes.order.attributes.salesRepresentative$_identifier
+
 
     _.each lines.models, (model)->
       enyo.Signals.send "onTransmission", {message: 'cancelled', cid: model.cid}

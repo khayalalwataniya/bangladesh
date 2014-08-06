@@ -21,6 +21,7 @@ enyo.kind
   product: null
   stateless: true
   action: (keyboard, txt) ->
+
     kbd = undefined
     sendModel = undefined
     templatereceipt = undefined
@@ -40,12 +41,16 @@ enyo.kind
           printerProperty: data[0].printerProperty
           productQty: String(kbd.line.attributes.qty)
           description: keyboard.line.attributes.description
+
         )
         templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendTemplate)
         OB.POS.hwserver.print templatereceipt,
           order: sendModel
+          receiptNo: keyboard.receipt.attributes.documentNo
+          tableNo: keyboard.receipt.attributes.restaurantTable.name
+          guestNo: keyboard.receipt.attributes.numberOfGuests
+          user: keyboard.receipt.attributes.salesRepresentative$_identifier
         OB.UTIL.showSuccess "Line sent"
-        debugger
         enyo.Signals.send "onTransmission", {message: 'sent', cid: keyboard.line.cid}
 
       else

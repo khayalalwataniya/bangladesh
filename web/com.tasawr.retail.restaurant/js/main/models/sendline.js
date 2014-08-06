@@ -47,10 +47,13 @@
           });
           templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendTemplate);
           OB.POS.hwserver.print(templatereceipt, {
-            order: sendModel
+            order: sendModel,
+            receiptNo: keyboard.receipt.attributes.documentNo,
+            tableNo: keyboard.receipt.attributes.restaurantTable.name,
+            guestNo: keyboard.receipt.attributes.numberOfGuests,
+            user: keyboard.receipt.attributes.salesRepresentative$_identifier
           });
           OB.UTIL.showSuccess("Line sent");
-          debugger;
           return enyo.Signals.send("onTransmission", {
             message: 'sent',
             cid: keyboard.line.cid
