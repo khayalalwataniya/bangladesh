@@ -148,7 +148,6 @@
       lines = this.args.keyboard.receipt.attributes.lines;
       sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines);
       templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate);
-      debugger;
       OB.POS.hwserver.print(templatereceipt, {
         order: sendToPrinter,
         receiptNo: this.args.keyboard.receipt.attributes.documentNo,
@@ -291,7 +290,6 @@
       lines = window.keyboard.receipt.attributes.lines;
       sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines);
       templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelOrderTemplate);
-      debugger;
       OB.POS.hwserver.print(templatereceipt, {
         order: sendToPrinter,
         message: this.message,

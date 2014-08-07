@@ -120,7 +120,6 @@ enyo.kind
     lines = @args.keyboard.receipt.attributes.lines
     sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines)
     templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate)
-    debugger
     OB.POS.hwserver.print templatereceipt,
       order: sendToPrinter
       receiptNo: @args.keyboard.receipt.attributes.documentNo
