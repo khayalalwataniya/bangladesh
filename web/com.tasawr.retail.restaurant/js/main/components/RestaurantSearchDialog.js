@@ -1,7 +1,7 @@
 (function() {
   enyo.kind({
     name: "TSRR.Main.UI.LockButton",
-    stateless: true,
+    permission: 'OBPOS_order.changePrice',
     lockTableAjax: function(table) {
       var data;
       data = {
@@ -35,8 +35,7 @@
     lockTable: function(me, table) {
       var errorCallback, successCallbackTables;
       errorCallback = function(tx, error) {
-        OB.error(tx);
-        OB.error(error);
+        OB.UTIL.showError("OBDAL error: " + error);
       };
       successCallbackTables = function(tbl) {
         console.info('inside TSRR.Main.UI.UnLockButton successCallbackTables');
@@ -45,7 +44,6 @@
         tbl.set('locker', OB.POS.modelterminal.usermodel.get('id'));
         tbl.save();
         me.lockTableAjax(table);
-        tbl.trigger('sync');
       };
       OB.Dal.get(OB.Model.Table, table.id, successCallbackTables, errorCallback);
     },
@@ -62,7 +60,7 @@
 
   enyo.kind({
     name: "TSRR.Main.UI.UnLockButton",
-    stateless: true,
+    permission: 'OBPOS_order.changePrice',
     unlockTableAjax: function(table) {
       var data;
       data = {
@@ -96,8 +94,7 @@
     unlockTable: function(me, table) {
       var errorCallback, successCallbackUnlockTables;
       errorCallback = function(tx, error) {
-        OB.error(tx);
-        OB.error(error);
+        OB.UTIL.showError("OBDAL error: " + error);
       };
       successCallbackUnlockTables = function(tbl) {
         console.info('inside TSRR.Main.UI.UnLockButton successCallbackTables');
@@ -106,7 +103,6 @@
         tbl.set('locker', OB.POS.modelterminal.usermodel.get('id'));
         tbl.save();
         me.unlockTableAjax(table);
-        tbl.trigger('sync');
       };
       OB.Dal.get(OB.Model.Table, table.id, successCallbackUnlockTables, errorCallback);
     },
@@ -123,7 +119,7 @@
 
   enyo.kind({
     name: "TSRR.Main.UI.TransferButton",
-    stateless: true,
+    permission: 'OBPOS_order.changePrice',
     action: function(keyboard, txt) {
       keyboard.doShowPopup({
         popup: "receiptPropertiesDialog",
@@ -136,28 +132,28 @@
     }
   });
 
-  OB.OBPOSPointOfSale.UI.KeyboardOrder.prototype.addCommand("lockCommand", new TSRR.Main.UI.LockButton());
+  OB.OBPOSPointOfSale.UI.KeyboardOrder.prototype.addCommand("line:lockCommand", new TSRR.Main.UI.LockButton());
 
-  OB.OBPOSPointOfSale.UI.KeyboardOrder.prototype.addCommand("unlockCommand", new TSRR.Main.UI.UnLockButton());
+  OB.OBPOSPointOfSale.UI.KeyboardOrder.prototype.addCommand("line:unlockCommand", new TSRR.Main.UI.UnLockButton());
 
-  OB.OBPOSPointOfSale.UI.KeyboardOrder.prototype.addCommand("transferCommand", new TSRR.Main.UI.TransferButton());
+  OB.OBPOSPointOfSale.UI.KeyboardOrder.prototype.addCommand("line:transferCommand", new TSRR.Main.UI.TransferButton());
 
   OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push({
-    label: "Transfer Table",
-    classButtonActive: "btnactive-blue",
-    command: 'transferCommand'
+    i18nLabel: "TSRR_Lock_Table",
+    command: 'line:lockCommand',
+    classButtonActive: "btnactive-blue"
   });
 
   OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push({
-    label: "Lock Table",
-    classButtonActive: "btnactive-blue",
-    command: 'lockCommand'
+    i18nLabel: "TSRR_UnLock_Table",
+    command: 'line:unlockCommand',
+    classButtonActive: "btnactive-blue"
   });
 
   OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push({
-    label: "UnLock Table",
-    classButtonActive: "btnactive-blue",
-    command: 'unlockCommand'
+    i18nLabel: "TSRR_Transfer_Table",
+    command: 'line:transferCommand',
+    classButtonActive: "btnactive-blue"
   });
 
 }).call(this);

@@ -13,27 +13,36 @@
         stepCount: 0,
         span: 4,
         tap: function() {
-          return OB.POS.navigate("retail.pointofsale");
+          if (this.disabled) {
+            return true;
+          }
+          OB.POS.navigate("retail.restaurantmode");
         }
       }, {
         kind: "OB.UI.ToolbarButton",
-        name: "btnCancel",
+        name: "btnPos",
         disabled: false,
-        i18nLabel: "OBMOBC_LblCancel",
+        i18nLabel: "TSRR_Lbl_POS",
         stepCount: 0,
         span: 4,
         tap: function() {
-          return OB.POS.navigate("retail.pointofsale");
+          if (this.disabled) {
+            return true;
+          }
+          OB.POS.navigate("retail.pointofsale");
         }
       }, {
         kind: "OB.UI.ToolbarButton",
         name: "btnDone",
         disabled: false,
-        i18nLabel: "OBPOS_LblDone",
+        i18nLabel: "TSRR_Lbl_BackOffice",
         stepCount: 0,
         span: 4,
         tap: function() {
-          return OB.POS.navigate("/");
+          if (this.disabled) {
+            return true;
+          }
+          OB.POS.navigate("retail.pointofsale");
         }
       }
     ]
@@ -48,7 +57,7 @@
         name: "btnRestaurant",
         span: 12,
         disabled: true,
-        i18nLabel: "TSRR_LblRestaurants"
+        i18nLabel: "TSRR_LblRestaurants_Large"
       }
     ]
   });
@@ -101,10 +110,6 @@
                     style: 'color: white; text-align: left; padding: 20px;',
                     disabled: true,
                     content: 'Please choose a section'
-                  }, {
-                    classes: 'row',
-                    name: 'modalcustomer',
-                    kind: 'OB.UI.ModalBusinessPartners'
                   }
                 ]
               }
@@ -173,7 +178,7 @@
       });
     },
     selectTable: function(inSender, inEvent) {
-      var bi, me;
+      var bi, loadOrderStr, me;
       TSRR.Tables.Config.currentTable = inEvent.originator.model;
       me = this;
       me.currentTable = inEvent.originator.model;
@@ -182,15 +187,15 @@
         TSRR.Tables.Config.currentOrderId = bi.get('salesOrder');
         OB.POS.navigate('retail.pointofsale');
       } else {
-        me.doShowPopup({
-          popup: "modalcustomer",
-          args: {
-            order: TSRR.Tables.Config.MyOrderList.current,
-            action: function(dialog) {
-              console.log('inside modal customer');
-            }
-          }
-        });
+        this.currentBusinessPartner = OB.POS.modelterminal.attributes.businessPartner;
+        if (me.currentTable) {
+          me.currentTable.setBusinessPartnerAndCreateOrder(this.currentBusinessPartner);
+        }
+        loadOrderStr = 'new sales order created for table ' + me.currentTable.name;
+        if (loadOrderStr) {
+          OB.UTIL.showAlert.display(loadOrderStr, OB.I18N.getLabel("OBPOS_Info"));
+        }
+        OB.POS.navigate('retail.pointofsale');
       }
     },
     changeBusinessPartner: function(inSender, inEvent) {
