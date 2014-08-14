@@ -48,20 +48,52 @@
           <text>------------------------------------------</text>
       </line>
     <%
+
+      categoryId = "";
       var lines = order.get('lines'), line, promotions;
       for (var i = 0; i < lines.length; i++) {
         line = lines.at(i);
-    %>
+        temp = "";
+
+      if(categoryId == line.attributes.product.attributes.generic_product_id)
+      {
+          console.log('value already stored');
+      }
+      else
+      {
+          categoryId = line.attributes.product.attributes.generic_product_id;
+          console.log('storing value');
+      %><!-- ending one category -->
+
+      <line><text>---------------------------------</text></line>
       <line>
-        <text align ="left" length="21"><%= OB.UTIL.encodeXMLComponent(line.get('product').get('_identifier')) %></text>
-        <text align ="right" length="5"><%= line.printQty() %></text>
-        <text align ="right" length="8"><%= line.printPrice() %></text>
-    <%if(order.get('priceIncludesTax')){%>
-        <text align ="right" length="8"><%= line.printGross() %></text>
-    <%}else{%>
-        <text align ="right" length="8"><%= line.printNet() %></text>
-    <%}%>
+          <text align ="left" length="21"><%= OB.UTIL.encodeXMLComponent(line.get('product').get('_identifier')) %></text>
+          <text align ="right" length="5"><%= line.printQty() %></text>
+          <text align ="right" length="8"><%= line.printPrice() %></text>
+          <%if(order.get('priceIncludesTax')){%>
+          <text align ="right" length="8"><%= line.printGross() %></text>
+          <%}else{%>
+          <text align ="right" length="8"><%= line.printNet() %></text>
+          <%}%>
       </line>
+
+      <%
+
+      }
+
+
+
+    %>
+      <!--<line>-->
+        <!--<text align ="left" length="21"><%= OB.UTIL.encodeXMLComponent(line.get('product').get('_identifier')) %></text>-->
+        <!--<text align ="right" length="5"><%= line.printQty() %></text>-->
+        <!--<text align ="right" length="8"><%= line.printPrice() %></text>-->
+    <!--<%if(order.get('priceIncludesTax')){%>-->
+        <!--<text align ="right" length="8"><%= line.printGross() %></text>-->
+    <!--<%}else{%>-->
+        <!--<text align ="right" length="8"><%= line.printNet() %></text>-->
+    <!--<%}%>-->
+      <!--</line>-->
 
       <%
       description = line.get('description');
@@ -219,10 +251,6 @@
       <barcode type="CODE128" position="left"><%= OB.UTIL.encodeXMLComponent(order.get('documentNo')) %></barcode>
     </line>
 
-    <line>
-      <barcode type="CODE128" position="left"><%= OB.UTIL.encodeXMLComponent(order.get('documentNo')) %></barcode>
-    </line>
-
   </ticket>
 
   <display>
@@ -236,3 +264,24 @@
   </display>
 
 </output>
+
+
+
+
+        <!--OB.Dal.get(OB.Model.Product, line.attributes.product.attributes.generic_product_id,-->
+        <!--function(data)-->
+        <!--{-->
+        <!--if(temp == data.attributes._identifier){-->
+        <!--console.log('value already stored');-->
+
+        <!--}-->
+        <!--else{-->
+        <!--temp = data.attributes._identifier;-->
+        <!--console.log('storing value');-->
+        <!--}-->
+
+
+        <!--},-->
+        <!--function(){-->
+        <!--console.log("not ok");-->
+        <!--});-->
