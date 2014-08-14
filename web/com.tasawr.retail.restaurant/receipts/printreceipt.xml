@@ -15,10 +15,10 @@
     </line>
     <line></line>
     <line>
-      <text align="center" length="42"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('TSRR_tckheader_line1'))%></text>
+      <text align="center" length="42"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_tckheader_line1'))%></text>
     </line>
     <line>
-      <text align="center" length="42"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('TSRR_tckheader_line2'))%></text>
+      <text align="center" length="42"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_tckheader_line2'))%></text>
     </line>
     <line></line>
     <line>
@@ -44,50 +44,24 @@
       <text align ="right" length="8"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_LinePrice'))%></text>
       <text align ="right" length="8"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_LineTotal'))%></text>
     </line>
-      <line>
-          <text>------------------------------------------</text>
-      </line>
-    <%
+    <line>
+      <text>------------------------------------------</text>
+    </line>
+    <% 
       var lines = order.get('lines'), line, promotions;
       for (var i = 0; i < lines.length; i++) {
         line = lines.at(i);
     %>
       <line>
-        <text align ="left" length="21"><%= OB.UTIL.encodeXMLComponent(line.get('product').get('_identifier')) %></text>
+        <text align ="left" length="21"><%= line.get('product').get('_identifier') %></text>
         <text align ="right" length="5"><%= line.printQty() %></text>
         <text align ="right" length="8"><%= line.printPrice() %></text>
     <%if(order.get('priceIncludesTax')){%>
-        <text align ="right" length="8"><%= line.printGross() %></text>
+        <text align ="right" length="8"><%= line.printGross() %></text>  
     <%}else{%>
         <text align ="right" length="8"><%= line.printNet() %></text>
     <%}%>
       </line>
-
-      <%
-      description = line.get('description');
-      if(description){
-      %>
-      <line>
-          <text align="left" length="2">--</text>
-          <text align ="left" length="32"><%= OB.UTIL.encodeXMLComponent(description) %></text>
-      </line>
-      <%
-      }
-      %>
-
-
-      <%
-        characteristicDescription = line.get('product').get('characteristicDescription');
-        if(characteristicDescription){
-      %>
-      <line>
-          <text align="left" length="2">--</text>
-          <text align ="left" length="32"><%= OB.UTIL.encodeXMLComponent(characteristicDescription) %></text>
-      </line>
-      <%
-        }
-      %>
-
     <%
         promotions = line.get('promotions');
         if (promotions){
@@ -110,14 +84,14 @@
         <text align ="left" length="21"><%= OB.I18N.getLabel('OBPOS_LblTotalTax') %></text>
         <text align ="right" length="5"></text>
         <text align ="right" length="8"></text>
-        <text align ="right" length="8"><%= OB.I18N.formatCurrency(order.getGross()-order.getNet()) %></text>
+        <text align ="right" length="8"><%= OB.I18N.formatCurrency(order.getGross()-order.getNet()) %></text>  
       </line>
     <%}%>
     <line></line>
     <line size="1">
       <text align ="left" length="25"><%=OB.I18N.getLabel('OBPOS_ReceiptTotal') + ' ' + order.get('currency' + OB.Constants.FIELDSEPARATOR + OB.Constants.IDENTIFIER) %></text>
       <text align ="right" length="14"><%= order.printGross() %></text>
-    </line>
+    </line>   
       <%
         var payments = order.get('payments');
         for (var i = 0; i < payments.length; i++) {
@@ -144,27 +118,27 @@
           <text align="left" length="2"></text>
           <text align="left" length="20"><%= OB.I18N.getLabel('OBPOS_PaymentTran') %></text>
           <text align="left" length="20"><%= pinfo.TransactionID %></text>
-        </line>
+        </line>      
         <line>
           <text align="left" length="2"></text>
           <text align="left" length="20"><%= OB.I18N.getLabel('OBPOS_PaymentApproval') %></text>
           <text align="left" length="20"><%= pinfo.ApprovalNumber %></text>
-        </line>
+        </line>      
         <line>
           <text align="left" length="2"></text>
           <text align="left" length="20"><%= OB.I18N.getLabel('OBPOS_PaymentAct') %></text>
           <text align="left" length="20"><%= pinfo.CardNumberMasked %></text>
-        </line>
+        </line>      
         <line>
           <text align="left" length="2"></text>
           <text align="left" length="20"><%= OB.I18N.getLabel('OBPOS_PaymentLogo') %></text>
           <text align="left" length="20"><%= pinfo.CardLogo %></text>
-        </line>
-
+        </line>      
+            
       <%
           }
         }
-      %>
+      %>   
     <line>
       <text align="left" length="20"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_ticketChange')) %></text>
       <text align="right" length="20"><%= OB.I18N.formatCurrency(order.get('change'))%></text>
@@ -172,11 +146,7 @@
     <line></line>
     <line size="1">
       <% if (order.get('hasbeenpaid') === 'Y') { %>
-        <% if (order.get('paidOnCredit')){ %>
-          <text align="center" length="42"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_paidOnCredit')) %></text>
-        <% } else { %>
-          <text align="center" length="42"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_tckfooter_line1')) %></text>
-        <% } %>
+        <text align="center" length="42"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_tckfooter_line1')) %></text>
       <% } else { %>
         <text align="center" length="42"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_tckfooter_draft'))  %></text>
       <% } %>
@@ -213,10 +183,6 @@
     <line>
       <text align ="left" length="21"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_display_total'))%></text>
       <text align ="left" length="9"><%= OB.I18N.formatCurrency(totAmount) %></text>
-    </line>
-
-    <line>
-      <barcode type="CODE128" position="left"><%= OB.UTIL.encodeXMLComponent(order.get('documentNo')) %></barcode>
     </line>
 
     <line>

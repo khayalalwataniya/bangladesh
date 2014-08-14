@@ -148,6 +148,13 @@
       lines = this.args.keyboard.receipt.attributes.lines;
       sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines);
       templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate);
+      debugger;
+      if (this.args.keyboard.receipt.attributes.restaurantTable === "") {
+        this.args.keyboard.receipt.attributes.restaurantTable.name = "Unspecified";
+      }
+      if (this.args.keyboard.receipt.attributes.numberOfGuests === "") {
+        this.args.keyboard.receipt.attributes.numberOfGuests = "Unspecified";
+      }
       OB.POS.hwserver.print(templatereceipt, {
         order: sendToPrinter,
         receiptNo: this.args.keyboard.receipt.attributes.documentNo,
@@ -290,6 +297,12 @@
       lines = window.keyboard.receipt.attributes.lines;
       sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines);
       templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelOrderTemplate);
+      if (this.args.keyboard.receipt.attributes.restaurantTable === "") {
+        this.args.keyboard.receipt.attributes.restaurantTable.name = "Unspecified";
+      }
+      if (this.args.keyboard.receipt.attributes.numberOfGuests === "") {
+        this.args.keyboard.receipt.attributes.numberOfGuests = "Unspecified";
+      }
       OB.POS.hwserver.print(templatereceipt, {
         order: sendToPrinter,
         message: this.message,

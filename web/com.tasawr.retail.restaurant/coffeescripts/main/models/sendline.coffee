@@ -29,6 +29,8 @@ enyo.kind
     templatereceipt = undefined
     kbd = keyboard
     window.asdf = keyboard
+    if keyboard.receipt.attributes.numberOfGuests is undefined
+      keyboard.receipt.attributes.numberOfGuests = "Unspecified"
     new OB.DS.Request("com.tasawr.retail.restaurant.data.OrderLineService").exec
       product: keyboard.line.attributes.product.id
     , (data) ->

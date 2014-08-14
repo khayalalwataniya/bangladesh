@@ -120,6 +120,11 @@ enyo.kind
     lines = @args.keyboard.receipt.attributes.lines
     sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines)
     templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate)
+    debugger
+    if @args.keyboard.receipt.attributes.restaurantTable is undefined
+      @args.keyboard.receipt.attributes.restaurantTable.name = "Unspecified"
+    if @args.keyboard.receipt.attributes.numberOfGuests is undefined
+      @args.keyboard.receipt.attributes.numberOfGuests = "Unspecified"
     OB.POS.hwserver.print templatereceipt,
       order: sendToPrinter
       receiptNo: @args.keyboard.receipt.attributes.documentNo
@@ -242,7 +247,10 @@ enyo.kind
     lines = window.keyboard.receipt.attributes.lines
     sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines)
     templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelOrderTemplate)
-    
+    if @args.keyboard.receipt.attributes.restaurantTable == ""
+      @args.keyboard.receipt.attributes.restaurantTable.name = "Unspecified"
+    if @args.keyboard.receipt.attributes.numberOfGuests == ""
+      @args.keyboard.receipt.attributes.numberOfGuests = "Unspecified"
     OB.POS.hwserver.print templatereceipt,
       order: sendToPrinter
       message: @message
