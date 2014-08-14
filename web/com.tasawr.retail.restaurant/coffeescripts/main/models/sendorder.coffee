@@ -121,9 +121,9 @@ enyo.kind
     sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines)
     templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate)
     debugger
-    if @args.keyboard.receipt.attributes.restaurantTable == ""
+    if @args.keyboard.receipt.attributes.restaurantTable is undefined
       @args.keyboard.receipt.attributes.restaurantTable.name = "Unspecified"
-    if @args.keyboard.receipt.attributes.numberOfGuests == ""
+    if @args.keyboard.receipt.attributes.numberOfGuests is undefined
       @args.keyboard.receipt.attributes.numberOfGuests = "Unspecified"
     OB.POS.hwserver.print templatereceipt,
       order: sendToPrinter
