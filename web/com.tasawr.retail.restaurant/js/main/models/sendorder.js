@@ -1,105 +1,23 @@
 (function() {
   var allPrinters, allProducts, assignVar, printersAndProducts, productInfoGetter, productsAndPrinters, requests, uniquePrinterAndProductGenerator;
 
-  window.keyboard = '';
-
-  uniquePrinterAndProductGenerator = function(callback, lines) {
-    var description, i, j, prodQtyDesc, qty, tempProducts, uniquePrinters;
-    callback(lines);
-    qty = void 0;
-    description = void 0;
-    uniquePrinters = allPrinters.filter(function(elem, pos) {
-      return allPrinters.indexOf(elem) === pos;
-    });
-    window.arr = productsAndPrinters;
-    j = 0;
-    while (j < uniquePrinters.length) {
-      prodQtyDesc = new Array();
-      tempProducts = new Array();
-      i = 0;
-      while (i < productsAndPrinters.length) {
-        if (($.inArray(uniquePrinters[j], productsAndPrinters[i][1][0])) >= 0) {
-          prodQtyDesc.push(productsAndPrinters[i]);
-        }
-        i++;
-      }
-      printersAndProducts[j] = [];
-      printersAndProducts[j][0] = uniquePrinters[j];
-      printersAndProducts[j][1] = prodQtyDesc;
-      j++;
-    }
-    return printersAndProducts;
-  };
-
-  assignVar = function(requests, lines) {
-    var data, i, j, result, tempPrinters, _results;
-    tempPrinters = [];
-    i = 0;
-    _results = [];
-    while (i < requests.length) {
-      result = JSON.parse(requests[i].xhr.responseText);
-      data = result.response.data[0];
-      if (data) {
-        tempPrinters = data.printerProperty.split(" ");
-        j = 0;
-        while (j < tempPrinters.length) {
-          allPrinters.push(tempPrinters[j]);
-          j++;
-        }
-        productsAndPrinters[i] = [];
-        productsAndPrinters[i][0] = data.printCode;
-        productsAndPrinters[i][1] = [tempPrinters];
-        productsAndPrinters[i][2] = lines.models[i].attributes.qty;
-        productsAndPrinters[i][3] = lines.models[i].attributes.description;
-      }
-      _results.push(i++);
-    }
-    return _results;
-  };
-
-  productInfoGetter = function(lines) {
-    var ajaxRequest, i;
-    i = 0;
-    while (i < lines.length) {
-      ajaxRequest = new enyo.Ajax({
-        url: "../../org.openbravo.mobile.core.service.jsonrest/" + "com.tasawr.retail.restaurant.data.OrderLineService" + "/" + encodeURI(JSON.stringify({
-          product: lines.models[i].attributes.product.id
-        })),
-        cacheBust: false,
-        sync: true,
-        method: "GET",
-        handleAs: "json",
-        contentType: "application/json;charset=utf-8",
-        success: function(inSender, inResponse) {
-          return {
-            fail: function(inSender, inResponse) {
-              return console.log("failed");
-            }
-          };
-        }
-      });
-      ajaxRequest.go().response("success").error("fail");
-      requests.push(ajaxRequest);
-      i++;
-    }
-    $.when.apply(undefined, requests).then(assignVar(requests, lines));
-    return requests.length = 0;
-  };
-
-  printersAndProducts = [];
-
-  allPrinters = [];
-
-  allProducts = [];
-
-  productsAndPrinters = [];
-
-  requests = [];
-
   OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push({
     command: "orderPopup",
     label: "Orders",
-    classButtonActive: "btnactive-blue"
+    classButtonActive: "btnactive-blue",
+    stateless: true,
+    definition: {
+      stateless: true,
+      action: function(keyboard, txt) {
+        keyboard.doShowPopup({
+          popup: "TSRR_UI_SendCancelOrderPopup",
+          args: {
+            message: "",
+            keyboard: keyboard
+          }
+        });
+      }
+    }
   });
 
   enyo.kind({
@@ -148,11 +66,10 @@
       lines = this.args.keyboard.receipt.attributes.lines;
       sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines);
       templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate);
-      debugger;
-      if (this.args.keyboard.receipt.attributes.restaurantTable === "") {
+      if (this.args.keyboard.receipt.attributes.restaurantTable === void 0) {
         this.args.keyboard.receipt.attributes.restaurantTable.name = "Unspecified";
       }
-      if (this.args.keyboard.receipt.attributes.numberOfGuests === "") {
+      if (this.args.keyboard.receipt.attributes.numberOfGuests === void 0) {
         this.args.keyboard.receipt.attributes.numberOfGuests = "Unspecified";
       }
       OB.POS.hwserver.print(templatereceipt, {
@@ -193,7 +110,84 @@
     initComponents: function() {
       return this.inherited(arguments);
     }
-  });
+  }, uniquePrinterAndProductGenerator = function(callback, lines) {
+    var description, i, j, prodQtyDesc, qty, tempProducts, uniquePrinters;
+    callback(lines);
+    qty = void 0;
+    description = void 0;
+    uniquePrinters = allPrinters.filter(function(elem, pos) {
+      return allPrinters.indexOf(elem) === pos;
+    });
+    window.arr = productsAndPrinters;
+    j = 0;
+    while (j < uniquePrinters.length) {
+      prodQtyDesc = new Array();
+      tempProducts = new Array();
+      i = 0;
+      while (i < productsAndPrinters.length) {
+        if (($.inArray(uniquePrinters[j], productsAndPrinters[i][1][0])) >= 0) {
+          prodQtyDesc.push(productsAndPrinters[i]);
+        }
+        i++;
+      }
+      printersAndProducts[j] = [];
+      printersAndProducts[j][0] = uniquePrinters[j];
+      printersAndProducts[j][1] = prodQtyDesc;
+      j++;
+    }
+    return printersAndProducts;
+  }, assignVar = function(requests, lines) {
+    var data, i, j, result, tempPrinters, _results;
+    tempPrinters = [];
+    i = 0;
+    _results = [];
+    while (i < requests.length) {
+      result = JSON.parse(requests[i].xhr.responseText);
+      data = result.response.data[0];
+      if (data) {
+        tempPrinters = data.printerProperty.split(" ");
+        j = 0;
+        while (j < tempPrinters.length) {
+          allPrinters.push(tempPrinters[j]);
+          j++;
+        }
+        productsAndPrinters[i] = [];
+        productsAndPrinters[i][0] = data.printCode;
+        productsAndPrinters[i][1] = [tempPrinters];
+        productsAndPrinters[i][2] = lines.models[i].attributes.qty;
+        productsAndPrinters[i][3] = lines.models[i].attributes.description;
+      }
+      _results.push(i++);
+    }
+    return _results;
+  }, productInfoGetter = function(lines) {
+    var ajaxRequest, i;
+    i = 0;
+    while (i < lines.length) {
+      ajaxRequest = new enyo.Ajax({
+        url: "../../org.openbravo.mobile.core.service.jsonrest/" + "com.tasawr.retail.restaurant.data.OrderLineService" + "/" + encodeURI(JSON.stringify({
+          product: lines.models[i].attributes.product.id
+        })),
+        cacheBust: false,
+        sync: true,
+        method: "GET",
+        handleAs: "json",
+        contentType: "application/json;charset=utf-8",
+        success: function(inSender, inResponse) {
+          return {
+            fail: function(inSender, inResponse) {
+              return console.log("failed");
+            }
+          };
+        }
+      });
+      ajaxRequest.go().response("success").error("fail");
+      requests.push(ajaxRequest);
+      i++;
+    }
+    $.when.apply(undefined, requests).then(assignVar(requests, lines));
+    return requests.length = 0;
+  }, printersAndProducts = [], allPrinters = [], allProducts = [], productsAndPrinters = [], requests = []);
 
   enyo.kind({
     name: "TSRR.UI.DialogSendButton",
@@ -235,7 +229,6 @@
     name: "TSRR.UI.OrderButton",
     stateless: true,
     action: function(keyboard, txt) {
-      window.keyboard = keyboard;
       return keyboard.doShowPopup({
         popup: "TSRR_UI_SendCancelOrderPopup",
         args: {
@@ -245,8 +238,6 @@
       });
     }
   });
-
-  OB.OBPOSPointOfSale.UI.KeyboardOrder.prototype.addCommand("orderPopup", new TSRR.UI.OrderButton());
 
   OB.UI.WindowView.registerPopup("OB.OBPOSPointOfSale.UI.PointOfSale", {
     kind: "TSRR.UI.SendCancelOrderPopup",

@@ -156,3 +156,6 @@ button.empty:active {
 .inner-box-h {
   margin-left: 2px;
   margin-right: 2px; }
+
+.split-line-item {
+  font-size: 70%; }

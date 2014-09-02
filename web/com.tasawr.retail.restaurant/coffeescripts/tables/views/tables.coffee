@@ -21,7 +21,7 @@ enyo.kind
 		disabled: false
 		i18nLabel: "TSRR_Lbl_POS" #TODO
 		stepCount: 0
-		span: 4
+		span: 3
 		tap: ->
 			return true  if @disabled
 			OB.POS.navigate "retail.pointofsale"
@@ -29,14 +29,12 @@ enyo.kind
 	,
 		kind: "OB.UI.ToolbarButton"
 		name: "btnDone"
-		disabled: false
+		disabled: true
 		i18nLabel: "TSRR_Lbl_BackOffice" #TODO
 		stepCount: 0
-		span: 4
-		tap: ->
-			return true  if @disabled
-			OB.POS.navigate "retail.pointofsale"
-			return
+		span: 5
+		init: ->
+			@setContent OB.POS.modelterminal.attributes.businessPartner.attributes.name
 	]
 
 enyo.kind

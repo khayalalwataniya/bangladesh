@@ -24,7 +24,7 @@
         disabled: false,
         i18nLabel: "TSRR_Lbl_POS",
         stepCount: 0,
-        span: 4,
+        span: 3,
         tap: function() {
           if (this.disabled) {
             return true;
@@ -34,15 +34,12 @@
       }, {
         kind: "OB.UI.ToolbarButton",
         name: "btnDone",
-        disabled: false,
+        disabled: true,
         i18nLabel: "TSRR_Lbl_BackOffice",
         stepCount: 0,
-        span: 4,
-        tap: function() {
-          if (this.disabled) {
-            return true;
-          }
-          OB.POS.navigate("retail.pointofsale");
+        span: 5,
+        init: function() {
+          return this.setContent(OB.POS.modelterminal.attributes.businessPartner.attributes.name);
         }
       }
     ]

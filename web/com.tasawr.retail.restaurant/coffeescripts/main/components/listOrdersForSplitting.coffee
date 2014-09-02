@@ -141,11 +141,11 @@ enyo.kind
 	events:
 		onListRecieptOkButton: ""
 	tap: (inSender, inEvent) ->
-		console.error 'ok button pressed'
+		console.log 'ok button pressed'
 		splitReciepts = jQuery.extend({}, @parent.parent.getReceiptsList())
 		_.each splitReciepts.models, (order) ->
 			if order.get('checked')
-				console.error 'present'
+				console.log 'present'
 			else
 				splitReciepts.remove order
 		@parent.parent.parent.parent.hide()

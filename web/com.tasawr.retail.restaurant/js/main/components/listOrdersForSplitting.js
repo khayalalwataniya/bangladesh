@@ -141,11 +141,11 @@
     },
     tap: function(inSender, inEvent) {
       var splitReciepts;
-      console.error('ok button pressed');
+      console.log('ok button pressed');
       splitReciepts = jQuery.extend({}, this.parent.parent.getReceiptsList());
       _.each(splitReciepts.models, function(order) {
         if (order.get('checked')) {
-          return console.error('present');
+          return console.log('present');
         } else {
           return splitReciepts.remove(order);
         }

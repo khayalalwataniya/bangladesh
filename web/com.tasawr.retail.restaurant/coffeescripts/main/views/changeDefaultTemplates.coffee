@@ -35,7 +35,7 @@ OB.UI.ModalReceiptPropertiesImpl.extend initComponents: ->
     kind: "OB.UI.renderComboProperty"
     name: "restaurantTableBox"
     modelProperty: "restaurantTable"
-    #extraProperties: ["Table.id"]
+  #extraProperties: ["Table.id"]
     i18nLabel: "TSRR_TransferToTableLabel"
     collection: new OB.Collection.TableList()
     retrievedPropertyForValue: "id"
@@ -61,7 +61,15 @@ OB.UI.ModalReceiptPropertiesImpl.extend initComponents: ->
     fetchDataFunction: (args) ->
       me = this
       actualTable = undefined
-      OB.Dal.find OB.Model.Table, tsrrSection: JSON.parse(window.localStorage.getItem('currentSection')).id, ((data, args) ->
+
+      if window.localStorage.getItem('currentSection')
+        crieteria =
+          tsrrSection: JSON.parse(window.localStorage.getItem('currentSection')).id
+      else
+        crieteria =
+          tsrrSection: ""
+
+      OB.Dal.find OB.Model.Table, crieteria, ((data, args) ->
         if data.length > 0
           me.dataReadyFunction data, args
         else

@@ -67,12 +67,19 @@
           }
         },
         fetchDataFunction: function(args) {
-          var actualTable, me;
+          var actualTable, crieteria, me;
           me = this;
           actualTable = void 0;
-          OB.Dal.find(OB.Model.Table, {
-            tsrrSection: JSON.parse(window.localStorage.getItem('currentSection')).id
-          }, (function(data, args) {
+          if (window.localStorage.getItem('currentSection')) {
+            crieteria = {
+              tsrrSection: JSON.parse(window.localStorage.getItem('currentSection')).id
+            };
+          } else {
+            crieteria = {
+              tsrrSection: ""
+            };
+          }
+          OB.Dal.find(OB.Model.Table, crieteria, (function(data, args) {
             if (data.length > 0) {
               me.dataReadyFunction(data, args);
             } else {

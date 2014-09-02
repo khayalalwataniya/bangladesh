@@ -29,6 +29,9 @@
       kbd = void 0;
       templatereceipt = void 0;
       kbd = keyboard;
+      if (keyboard.receipt.attributes.numberOfGuests === void 0) {
+        keyboard.receipt.attributes.numberOfGuests = "Unspecified";
+      }
       return new OB.DS.Request("com.tasawr.retail.restaurant.data.OrderLineService").exec({
         product: keyboard.line.attributes.product.id
       }, function(data) {
