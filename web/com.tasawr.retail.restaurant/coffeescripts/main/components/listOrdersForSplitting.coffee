@@ -97,14 +97,17 @@ enyo.kind
 		]
 	]
 	create: ->
-		str = ""
 		@inherited arguments
-		@$.orderNo.setContent @model.get("documentNo")
-		for model in @model.collection.models
-			str += "<b>" + model.get("bp").get("_identifier") + " </b><br/>"
-		@$.bp.setContent str
-
+		console.log @model
 		return
+#		str = ""
+#		@inherited arguments
+#		@$.orderNo.setContent @model.get("documentNo")
+#		for model in @model.collection.models
+#			str += "<b>" + model.get("bp").get("_identifier") + " </b><br/>"
+#		@$.bp.setContent str
+#
+#		return
 
 
 OB.UI.WindowView.registerPopup "OB.OBPOSPointOfSale.UI.PointOfSale",

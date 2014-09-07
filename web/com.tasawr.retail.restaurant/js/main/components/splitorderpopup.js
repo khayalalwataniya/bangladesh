@@ -68,14 +68,11 @@
       return this.$.bodyContent.$.listOrderLines.ordersChanged();
     },
     applyChanges: function(inSender, inEvent) {
-      var me, ordersOnPopup;
       console.log('SplitOrderPopup ok button clicked');
-      me = this;
-      ordersOnPopup = me.model.attributes.orderList;
-      _.each(ordersOnPopup.models, function(order) {
-        order.calculateGross();
-        return order.save();
-      });
+      TSRR.Main.order2.calculateGross();
+      TSRR.Main.order2.save();
+      TSRR.Main.order1.calculateGross();
+      TSRR.Main.order1.save();
       this.hide();
       return OB.POS.navigate("retail.restaurantmode");
     }

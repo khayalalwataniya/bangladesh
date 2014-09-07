@@ -92,16 +92,8 @@
       }
     ],
     create: function() {
-      var model, str, _i, _len, _ref;
-      str = "";
       this.inherited(arguments);
-      this.$.orderNo.setContent(this.model.get("documentNo"));
-      _ref = this.model.collection.models;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        model = _ref[_i];
-        str += "<b>" + model.get("bp").get("_identifier") + " </b><br/>";
-      }
-      this.$.bp.setContent(str);
+      console.log(this.model);
     }
   });
 

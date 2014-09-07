@@ -1,3 +1,203 @@
+enyo.kind
+	name: "TSRR.UI.OrderLineView"
+	kind: "OB.UI.SelectButton"
+	classes: "split-line-item row-fluid"
+	published:
+		line: null
+	components: [
+		name: "product"
+		classes: "span10"
+	,
+		name: "price"
+		classes: "span2"
+	,
+		style: "clear: both;"
+	]
+
+	init: ->
+		@inherited arguments
+
+	initComponents: ->
+		@inherited arguments
+
+	create: ->
+		@inherited arguments
+		me = @
+		if me.model isnt null and me.model isnt undefined
+			me.setLine me.model
+			me.$.product.setContent me.model.attributes.product.attributes._identifier
+			me.$.price.setContent me.model.attributes.price
+
+	lineChanged: ->
+		console.log 'line has changed'
+
+	render: ->
+		console.log 'line rendered'
+
+	tap: (inSender, inEvent) ->
+		me = @
+		_.each @parent.parent.parent.parent.$.order1.$.lines.$, (elem) ->
+			elem.applyStyle('background-color', 'white')
+		_.each @parent.parent.parent.parent.$.order2.$.lines.$, (elem) ->
+			elem.applyStyle('background-color', 'white')
+		@applyStyle 'background-color', 'green'
+		@$.product.addClass 'selected-line'
+		me.parent.parent.parent.parent.setSelectedLine(me.model)
+
+
+enyo.kind
+	name: "TSRR.UI.OrderLinesView"
+	published:
+		orderLines: null
+	create: ->
+		@inherited arguments
+	orderLinesChanged: ->
+		console.log 'order line changed, creating Components'
+		me = @
+		line = me.createComponent(
+			kind: "TSRR.UI.OrderLineView"
+			model: me.orderLines
+		)
+
+enyo.kind
+	name: "TSRR.UI.SingleOrderView"
+	kind: "enyo.Scroller"
+	maxHeight: "1000px"
+	published:
+		singleOrder: null
+	style: "float: left; width: 35%; text-align: right;"
+	components: [
+		name: "lines"
+		kind: "TSRR.UI.OrderLinesView"
+	]
+
+	create: ->
+		@inherited arguments
+
+	singleOrderChanged: ->
+		console.log 'single order changed'
+
+		me = @
+		enyo.forEach me.singleOrder.attributes.lines.models, (lines) ->
+			me.$.lines.setOrderLines lines
+
+
+enyo.kind
+	name: "TSRR.UI.SplitOrderView"
+	classes: "row-fluid cleafix"
+	fromOrder: ""
+	toOrder: ""
+	components: [
+		kind: "TSRR.UI.SingleOrderView"
+		name: "order1"
+		classes: "span5 rmargin"
+	,
+		kind: "onyx.Button"
+		name: "Switch"
+		content: "Switch Order"
+		classes: "onyx-affirmative span2"
+		style: "margin-top: 100px;width: 115px;"
+		ontap: 'buttonTapped'
+	,
+		kind: "TSRR.UI.SingleOrderView"
+		name: "order2"
+		classes: "span5 lmargin"
+	]
+	published:
+		orders: null
+		selectedLine: null
+	handlers:
+		onSplitOrderOkButton: "splitOrderOkPressed"
+
+	buttonTapped: (inSender, inEvent) ->
+		me = @
+		line = me.getSelectedLine()
+		console.log 'button was tapped again'
+		addLineComponentToAnotherOrder(line, me)
+
+	splitOrderOkPressed: (inSender, inEvent) ->
+		me = @
+		console.log "CALLING SplitOrderOkPressed"
+		ordersOnPopup = inSender.parent.getOrders()
+		_.each ordersOnPopup.models, (order) ->
+			order.calculateGross()
+			order.save()
+		inSender.parent.hide()
+#		@parent.parent.parent.parent.hide()
+#		OB.POS.navigate "retail.pointofsale"
+	create: ->
+		@inherited arguments
+	ordersChanged: ->
+		@inherited arguments
+		console.log 'main order(containing two single orders) has been changed'
+		me = @
+		if me.orders.models.length is 1
+			newOrder = tsrrNewOrder()
+			@orders.add(newOrder)
+			me.$.order1.setSingleOrder me.orders.models[0]
+			me.$.order2.setSingleOrder newOrder
+			TSRR.Main.order2 = newOrder
+			TSRR.Main.order1 = me.orders.models[0]
+
+		else
+			i = 1
+			enyo.forEach me.orders.models, (model)->
+				if 1 == i
+					TSRR.Main.order1 = model
+					me.$.order1.setSingleOrder model
+				else
+					TSRR.Main.order2 = model
+					me.$.order2.setSingleOrder model
+				i++
+
+	selectedLineChange: ->
+		console.log 'selected line has been changed'
+
+
+addLineComponentToAnotherOrder = (line, orderComponents) ->
+	anotherOrderComponent = findAnotherOrderComponent(line, orderComponents)
+
+	containingOrderComponent = findLineContainingOrderComponent(line, orderComponents)
+
+	lineComponent = findLineComponent(line, containingOrderComponent)
+
+	anotherOrderComponent.singleOrder.attributes.lines.add lineComponent.model
+	containingOrderComponent.singleOrder.attributes.lines.remove lineComponent.model
+
+	anotherOrderComponent.$.lines.destroyComponents()
+
+	containingOrderComponent.$.lines.destroyComponents()
+
+	orderComponents.ordersChanged()
+
+	anotherOrderComponent.singleOrderChanged()
+	anotherOrderComponent.render()
+	containingOrderComponent.singleOrderChanged()
+	containingOrderComponent.render()
+
+
+#    attributes:
+#      style: "float: left; width: 10%; text-align: right;"
+#  ,
+#    name: "price"
+#    attributes:
+#      style: "float: left; width: 15%; text-align: right;"
+#  ,
+#    name: "gross"
+#    attributes:
+#      style: "float: left; width: 15%; text-align: right;"
+#  ,
+#    name: "businesspartner"
+#    attributes:
+#      style: "float: left; width: 15%; text-align: right;"
+#  ,
+
+
+#      me.$.quantity.setContent me.model.attributes.qty
+#      me.$.price.setContent me.model.attributes.price
+#      me.$.gross.setContent me.model.attributes.gross
+
+
 findLineContainingOrder = (line, bothOrders) ->
 	containingOrder = null
 
@@ -62,13 +262,20 @@ findLineComponent = (line, containingOrderComponent) ->
 #_.each(this.parent.$, function(x){console.log(x);});
 
 tsrrNewOrder = ->
-	TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder OB.POS.modelterminal.get("businessPartner")
+	if TSRR.Tables.Config.currentTable
+		TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder OB.POS.modelterminal.get("businessPartner")
+	else
+		OB.Dal.find OB.Model.Table,
+			locked: false
+		, ((collection) -> # inline callback
+				console.log 'there are ' + collection.length + ' table'
+				return  unless collection.length # no record found
+				TSRR.Tables.Config.currentTable = collection.models[0]
+				TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder OB.POS.modelterminal.get("businessPartner")
+			), (tx) ->
+				console.log tx
 	TSRR.Tables.Config.currentOrder
-#	orderList = new OB.Collection.OrderList()
-#	order = orderList.newOrder()
-#	order.set "bp", OB.POS.modelterminal.get("businessPartner")
-#	order.save()
-#	order
+#	order = new OB.Model.Order()
 #	order.set "client", OB.POS.modelterminal.get("terminal").client
 #	order.set "organization", OB.POS.modelterminal.get("terminal").organization
 #	order.set "createdBy", OB.POS.modelterminal.get("orgUserId")
@@ -102,211 +309,3 @@ tsrrNewOrder = ->
 #	order.set "print", true
 #	order.set "sendEmail", false
 #	order.set "openDrawer", false
-
-
-
-addLineComponentToAnotherOrder = (line, orderComponents) ->
-	anotherOrderComponent = findAnotherOrderComponent(line, orderComponents)
-
-	containingOrderComponent = findLineContainingOrderComponent(line, orderComponents)
-
-	lineComponent = findLineComponent(line, containingOrderComponent)
-
-	anotherOrderComponent.singleOrder.attributes.lines.add lineComponent.model
-	containingOrderComponent.singleOrder.attributes.lines.remove lineComponent.model
-
-	anotherOrderComponent.$.lines.destroyComponents()
-	containingOrderComponent.$.lines.destroyComponents()
-	#lineComponent.destroyComponents()
-
-	orderComponents.ordersChanged()
-
-	anotherOrderComponent.singleOrderChanged()
-	anotherOrderComponent.render()
-	containingOrderComponent.singleOrderChanged()
-	containingOrderComponent.render()
-
-enyo.kind
-	name: "TSRR.UI.OrderLineView"
-	kind: "OB.UI.SelectButton"
-	classes: "split-line-item row-fluid"
-	published:
-		line: null
-	components: [
-		classes: "span10"
-		name: "product"
-#		attributes:
-#			style: "float: left; width: 40%;"
-	,
-		name: "price"
-		classes: "span2"
-		#attributes:
-		#style: "float: right; width: 15%; text-align: right;"
-	,
-		style: "clear: both;"
-	]
-
-	init: ->
-		@inherited arguments
-
-	initComponents: ->
-		@inherited arguments
-
-	create: ->
-		@inherited arguments
-		me = @
-		if me.model
-			me.setLine me.model
-			me.$.product.setContent me.model.attributes.product.attributes._identifier
-			me.$.price.setContent me.model.attributes.price
-
-#	lineChanged: ->
-#		#OB.info 'line has changed'
-#
-#	render: ->
-#		#OB.info 'line rendered'
-#
-	tap: (inSender, inEvent) ->
-		me = @
-		_.each me.parent.parent.parent.parent.parent.$.order1.$.lines.$, (elem) ->
-			elem.applyStyle('background-color', 'white')
-		_.each me.parent.parent.parent.parent.parent.$.order2.$.lines.$, (elem) ->
-			elem.applyStyle('background-color', 'white')
-		@applyStyle 'background-color', 'green'
-		@$.product.addClass 'selected-line'
-		me.parent.parent.parent.parent.parent.setSelectedLine(me.model)
-
-
-enyo.kind
-	name: "TSRR.UI.OrderLinesView"
-	published:
-		orderLines: null
-
-	create: ->
-		@inherited arguments
-
-	orderLinesChanged: ->
-		#OB.info 'order line changed, creating Components'
-		me = @
-		line = me.createComponent(
-			kind: "TSRR.UI.OrderLineView"
-			model: me.orderLines
-		)
-
-enyo.kind
-	name: "TSRR.UI.SingleOrderView"
-	kind: "enyo.Scroller"
-	maxHeight: "1000px"
-	published:
-		singleOrder: null
-#style: "float: left; width: 35%; text-align: right;"
-	components: [
-		name: "lines"
-		kind: "TSRR.UI.OrderLinesView"
-	]
-
-	create: ->
-		@inherited arguments
-
-	singleOrderChanged: ->
-		#OB.info 'single order changed'
-		me = @
-		enyo.forEach me.singleOrder.attributes.lines.models, (lines) ->
-			me.$.lines.setOrderLines lines
-
-
-enyo.kind
-	name: "TSRR.UI.SplitOrderView"
-	classes: "row-fluid"
-	fromOrder: ""
-	toOrder: ""
-	components: [
-		kind: "TSRR.UI.SingleOrderView"
-		name: "order1"
-		classes: "span5"
-	,
-		kind: "onyx.Button"
-		name: "Switch"
-		content: "<>"
-		classes: "span2"
-		style: "margin-top: 60px;"
-		ontap: 'buttonTapped'
-	,
-		kind: "TSRR.UI.SingleOrderView"
-		name: "order2"
-		classes: "span5"
-	,
-		style: "clear: both;"
-	]
-	published:
-		orders: null
-		selectedLine: null
-	handlers:
-		onSplitOrderOkButton: "splitOrderOkPressed"
-
-	buttonTapped: (inSender, inEvent) ->
-		me = @
-		line = me.getSelectedLine()
-		OB.info 'button was tapped again'
-		addLineComponentToAnotherOrder(line, me)
-
-
-	splitOrderOkPressed: (inSender, inEvent) ->
-		me = @
-		OB.info "CALLING SplitOrderOkPressed"
-		ordersOnPopup = inSender.parent.getOrders()
-		_.each ordersOnPopup.models, (order) ->
-			order.calculateGross()
-			order.save()
-		inSender.parent.hide()
-#		@parent.parent.parent.parent.hide()
-#		OB.POS.navigate "retail.pointofsale"
-	create: ->
-		@inherited arguments
-	ordersChanged: ->
-		@inherited arguments
-		OB.info 'main order(containing two single orders) has been changed'
-		me = @
-		if me.orders.length is 1
-			newOrder = tsrrNewOrder()
-			me.orders.add(newOrder)
-			me.$.order1.setSingleOrder me.orders.models[0]
-			me.$.order2.setSingleOrder newOrder
-			TSRR.Main.order2 = newOrder
-			TSRR.Main.order1 = me.orders.models[0]
-
-		else
-			i = 1
-			enyo.forEach me.orders.models, (model)->
-				if 1 == i
-					TSRR.Main.order1 = model
-					me.$.order1.setSingleOrder model
-				else
-					TSRR.Main.order2 = model
-					me.$.order2.setSingleOrder model
-				i++
-
-	selectedLineChange: ->
-		OB.info 'selected line has been changed'
-
-
-#    attributes:
-#      style: "float: left; width: 10%; text-align: right;"
-#  ,
-#    name: "price"
-#    attributes:
-#      style: "float: left; width: 15%; text-align: right;"
-#  ,
-#    name: "gross"
-#    attributes:
-#      style: "float: left; width: 15%; text-align: right;"
-#  ,
-#    name: "businesspartner"
-#    attributes:
-#      style: "float: left; width: 15%; text-align: right;"
-#  ,
-
-
-#      me.$.quantity.setContent me.model.attributes.qty
-#      me.$.price.setContent me.model.attributes.price
-#      me.$.gross.setContent me.model.attributes.gross

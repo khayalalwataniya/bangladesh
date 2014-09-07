@@ -1,3 +1,5 @@
+#global Backbone, _
+
 enyo.kind
   name: "OB.UI.SalesOrder"
   kind: "OB.UI.SmallButton"

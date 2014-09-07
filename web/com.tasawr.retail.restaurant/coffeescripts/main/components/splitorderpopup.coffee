@@ -57,11 +57,15 @@ enyo.kind
 
 	applyChanges: (inSender, inEvent) ->
 		console.log 'SplitOrderPopup ok button clicked'
-		me = @
-		ordersOnPopup = me.model.attributes.orderList
-		_.each ordersOnPopup.models, (order) ->
-			order.calculateGross()
-			order.save()
+		TSRR.Main.order2.calculateGross()
+		TSRR.Main.order2.save()
+		TSRR.Main.order1.calculateGross()
+		TSRR.Main.order1.save()
+#		debugger
+#		ordersOnPopup = me.model.attributes.orderList
+#		_.each ordersOnPopup.models, (order) ->
+#			order.calculateGross()
+#			order.save()
 		@.hide()
 		OB.POS.navigate "retail.restaurantmode"
 
