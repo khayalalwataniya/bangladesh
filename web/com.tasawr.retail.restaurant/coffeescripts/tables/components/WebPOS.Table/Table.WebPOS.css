@@ -159,3 +159,6 @@ button.empty:active {
 
 .split-line-item {
   font-size: 70%; }
+.modal-dialog-body-buttons{
+  padding: 10px 0px;
+}

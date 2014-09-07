@@ -65,7 +65,6 @@ enyo.kind
 	maxHeight: "1000px"
 	published:
 		singleOrder: null
-	style: "float: left; width: 35%; text-align: right;"
 	components: [
 		name: "lines"
 		kind: "TSRR.UI.OrderLinesView"
@@ -90,18 +89,20 @@ enyo.kind
 	components: [
 		kind: "TSRR.UI.SingleOrderView"
 		name: "order1"
-		classes: "span5 rmargin"
+		classes: "span5"
 	,
 		kind: "onyx.Button"
 		name: "Switch"
 		content: "Switch Order"
-		classes: "onyx-affirmative span2"
-		style: "margin-top: 100px;width: 115px;"
+		classes: "span2"
+		style: "margin-top: 60px;"
 		ontap: 'buttonTapped'
 	,
 		kind: "TSRR.UI.SingleOrderView"
 		name: "order2"
-		classes: "span5 lmargin"
+		classes: "span5"
+	,
+		style: "clear: both;"
 	]
 	published:
 		orders: null

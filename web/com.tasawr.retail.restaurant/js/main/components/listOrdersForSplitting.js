@@ -92,8 +92,14 @@
       }
     ],
     create: function() {
+      var model, str, _i, _len, _ref;
+      str = "";
       this.inherited(arguments);
-      console.log(this.model);
+      _ref = this.model.collection.models;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        model = _ref[_i];
+        this.$.bp.setContent("<b>" + model.get('documentNo') + " - " + model.get("bp").get("_identifier") + " - " + this.model.get('lines').length + " line items" + " </b><br/>");
+      }
     }
   });
 

@@ -2,6 +2,7 @@
   enyo.kind({
     name: "TSRR.UI.SplitOrderOkButton",
     kind: "OB.UI.ModalDialogButton",
+    isDefaultAction: true,
     events: {
       onApplyChanges: ""
     },
@@ -35,7 +36,7 @@
     bodyContent: {
       kind: "Scroller",
       maxHeight: "225px",
-      style: "background-color: #ffffff;",
+      style: "background-color: #ffffff;border: 1px solid #ddd;",
       components: [
         {
           name: "listOrderLines",
@@ -48,7 +49,8 @@
       components: [
         {
           kind: "TSRR.UI.SplitOrderOkButton",
-          name: "okButton"
+          name: "okButton",
+          style: "color: black; background-color: green;"
         }, {
           kind: "OB.UI.CancelDialogButton"
         }
@@ -85,7 +87,6 @@
 
   enyo.kind({
     name: "OB.UI.RenderOrderLineEmpty",
-    style: "border-bottom: 1px solid #cccccc; padding: 20px; text-align: center; font-weight: bold; font-size: 30px; color: #cccccc",
     initComponents: function() {
       return this.inherited(arguments);
     }

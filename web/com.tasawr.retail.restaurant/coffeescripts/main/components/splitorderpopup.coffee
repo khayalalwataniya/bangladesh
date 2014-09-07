@@ -1,6 +1,7 @@
 enyo.kind
 	name: "TSRR.UI.SplitOrderOkButton"
 	kind: "OB.UI.ModalDialogButton"
+	isDefaultAction: true
 	events:
 		onApplyChanges: ""
 	tap: ->
@@ -28,7 +29,7 @@ enyo.kind
 	bodyContent:
 		kind: "Scroller"
 		maxHeight: "225px"
-		style: "background-color: #ffffff;"
+		style: "background-color: #ffffff;border: 1px solid #ddd;"
 		components: [
 			name: "listOrderLines"
 			kind: "TSRR.UI.SplitOrderView"
@@ -39,6 +40,7 @@ enyo.kind
 		components: [
 			kind: "TSRR.UI.SplitOrderOkButton"
 			name: "okButton"
+			style: "color: black; background-color: green;"
 		,
 			kind: "OB.UI.CancelDialogButton"
 		]
@@ -77,6 +79,6 @@ OB.UI.WindowView.registerPopup "OB.OBPOSPointOfSale.UI.PointOfSale",
 
 enyo.kind
 	name: "OB.UI.RenderOrderLineEmpty"
-	style: "border-bottom: 1px solid #cccccc; padding: 20px; text-align: center; font-weight: bold; font-size: 30px; color: #cccccc"
+#	style: "border-bottom: 1px solid #cccccc; padding: 20px; text-align: center; font-weight: bold; font-size: 30px; color: #cccccc"
 	initComponents: ->
 		@inherited arguments

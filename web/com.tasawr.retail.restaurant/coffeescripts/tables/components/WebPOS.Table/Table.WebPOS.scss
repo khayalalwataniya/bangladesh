@@ -58,7 +58,7 @@ button.webpos-table.active {
   border-radius: 10px;
 }
 
-button.webpos-table.locked .btn-icon.icon, button.webpos-table.locked .onyx-icon{
+button.webpos-table.locked .btn-icon.icon, button.webpos-table.locked .onyx-icon {
   opacity: 0.5;
 }
 
@@ -89,7 +89,7 @@ button.btnlink:disabled {
 }
 
 button.webpos-table.active .icon {
-  background-image:url("../../../../../../web/com.tasawr.retail.restaurant/images/group.png");
+  background-image: url("../../../../../../web/com.tasawr.retail.restaurant/images/group.png");
   height: 45px;
 }
 
@@ -106,9 +106,11 @@ button.webpos-table .text {
   margin: 0px auto;
   padding: 5px;
 }
-button.webpos-table .text.locker{
-//  margin-bottom: 5px;
+
+button.webpos-table .text.locker {
+  //  margin-bottom: 5px;
 }
+
 button.webpos-table .small-icon {
   background-position: right center;
   background-repeat: no-repeat;
@@ -124,11 +126,11 @@ button.empty .small-icon {
 }
 
 button.empty .icon {
-  background-image:url("../../../../../../web/com.tasawr.retail.restaurant/images/table.png");
+  background-image: url("../../../../../../web/com.tasawr.retail.restaurant/images/table.png");
 }
 
 button.locked .icon {
-  background-image:url("../../../../../../web/com.tasawr.retail.restaurant/images/table-b.png");
+  background-image: url("../../../../../../web/com.tasawr.retail.restaurant/images/table-b.png");
 }
 
 button.empty.btn-down,
@@ -160,7 +162,9 @@ button.empty:active {
   background-color: rgba(18, 134, 140, 0.95) !important;
 }
 
-.onyx-icon, .onyx-icon-toggle{margin: 0px 10px;}
+.onyx-icon, .onyx-icon-toggle {
+  margin: 0px 10px;
+}
 
 .outer-box {
   color: #333;
@@ -188,6 +192,11 @@ button.empty:active {
   margin-left: 2px;
   margin-right: 2px;
 }
-.split-line-item{
+
+.split-line-item {
   font-size: 70%;
+}
+
+.modal-dialog-body-buttons {
+  padding: 10px 0px !important;
 }
