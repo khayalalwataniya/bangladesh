@@ -97,10 +97,10 @@ enyo.kind
 		]
 	]
 	create: ->
-		str = ""
 		@inherited arguments
-		for model in @model.collection.models
-			@$.bp.setContent "<b>" + model.get('documentNo') + " - " + model.get("bp").get("_identifier") + " - " + @model.get('lines').length + " line items" + " </b><br/>"
+		@$.bp.setContent "<b>" + @model.get('documentNo') + " - " + @model.get("bp").get("_identifier") + " - " + @model.get('lines').length + " line items" + " </b><br/>"
+#		for model in @model.collection.models
+#			@$.bp.setContent "<b>" + @model.get('documentNo') + " - " + @model.get("bp").get("_identifier") + " - " + @model.get('lines').length + " line items" + " </b><br/>"
 
 		return
 
