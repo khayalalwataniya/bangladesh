@@ -101,8 +101,8 @@ enyo.kind
 
 
   tap: (inSender, inEvent) ->
-    console.info @model
-    console.info @attribs.attributeName
+    #console.info @model
+    #console.info @attribs.attributeName
     localStorage.setItem 'productAttribute_' + @attribs.attributeName, @model.trim() if @attribs.attributeName
     _.each @parent.children, (child) ->
       child.removeClass 'attribute'

@@ -21,9 +21,7 @@
           if (data && data.length > 0) {
             return me.$.body.$.listreceiptssplit.setReceiptsList(data);
           }
-        }), function(error) {
-          return console.log(error);
-        });
+        }), function(error) {});
       }
     },
     executeOnShow: function() {

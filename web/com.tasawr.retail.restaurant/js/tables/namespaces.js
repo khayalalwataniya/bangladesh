@@ -38,7 +38,6 @@
       var salesOrder;
       console.log("calling... OBRETUR_ReturnFromOrig hook");
       salesOrder = this.model.get('order');
-      console.log(salesOrder);
       OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
     });
     OB.MobileApp.model.hookManager.registerHook("OBPOS_PreAddProductToOrder", function(args, callbacks) {
@@ -81,11 +80,6 @@
         OB.Dal.remove(bi, success, error);
       }), error);
       OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
-    });
-    OB.MobileApp.model.hookManager.registerHook("OBPOS_PreSynchData", function() {
-      OB.info('calling... OBPOS_PreSynchData');
-      OB.info(arguments);
-      OB.MobileApp.model.hookManager.callbackExecutor;
     });
   }
 

@@ -27,7 +27,7 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
 					OB.UTIL.showSuccess '[DONE] table with name: "' + table.name + '" has been locked succussfully'
 				error: ->
 					OB.UTIL.showWarning 'could not post Table API'
-					console.log arguments
+					#console.log arguments
 			table
 			return
 
@@ -83,7 +83,7 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
 					OB.UTIL.showSuccess '[DONE] table with name: "' + table.name + '" has been unlocked succussfully'
 				error: ->
 					OB.UTIL.showWarning 'could not post Table API'
-					console.log arguments
+					#console.log arguments
 
 			table
 			return

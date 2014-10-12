@@ -1,8 +1,11 @@
 (function() {
   OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push({
     command: "send",
-    label: "Send",
-    classButtonActive: "btnactive-blue"
+    i18nLabel: "TSRR_BtnSendLineLabel",
+    classButtonActive: "btnactive-blue",
+    definition: {
+      stateless: true
+    }
   });
 
   enyo.kind({

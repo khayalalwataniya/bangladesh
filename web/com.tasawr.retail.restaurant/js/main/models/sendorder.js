@@ -3,9 +3,8 @@
 
   OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push({
     command: "orderPopup",
-    label: "Orders",
+    i18nLabel: "TSRR_BtnSendAllOrderLabel",
     classButtonActive: "btnactive-blue",
-    stateless: true,
     definition: {
       stateless: true,
       action: function(keyboard, txt) {
@@ -32,16 +31,7 @@
       onShowPopup: ""
     },
     bodyContent: {
-      kind: "Scroller",
-      maxHeight: "225px",
-      style: "background-color: #ffffff;",
-      thumb: true,
-      horizontal: "hidden",
-      components: [
-        {
-          name: "attributes"
-        }
-      ]
+      i18nContent: 'TSRR_SendCancelOrderPopupBodyMessage'
     },
     bodyButtons: {
       components: [
@@ -106,6 +96,9 @@
     applyChanges: function(inSender, inEvent) {
       this.waterfall("onApplyChange", {});
       return true;
+    },
+    init: function(model) {
+      return this.model = model;
     },
     initComponents: function() {
       return this.inherited(arguments);
@@ -253,7 +246,8 @@
       onCancelReasonCancelButton: "cancelButtonPressed"
     },
     published: {
-      message: ''
+      message: '',
+      keyboard: null
     },
     bodyContent: {
       components: [
@@ -265,8 +259,7 @@
           name: "cancelReasonText"
         }, {
           name: "result",
-          classes: "onyx-sample-result",
-          content: "No input entered yet."
+          classes: "onyx-result"
         }
       ]
     },
@@ -285,15 +278,9 @@
       var lines, sendToPrinter, templatereceipt;
       this.inherited(arguments);
       this.message = inSender.getControls()[0].getControls()[0].getControls()[0].getValue();
-      lines = window.keyboard.receipt.attributes.lines;
+      lines = TSRR.Tables.Config.currentOrder.get('lines');
       sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines);
       templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelOrderTemplate);
-      if (this.args.keyboard.receipt.attributes.restaurantTable === "") {
-        this.args.keyboard.receipt.attributes.restaurantTable.name = "Unspecified";
-      }
-      if (this.args.keyboard.receipt.attributes.numberOfGuests === "") {
-        this.args.keyboard.receipt.attributes.numberOfGuests = "Unspecified";
-      }
       OB.POS.hwserver.print(templatereceipt, {
         order: sendToPrinter,
         message: this.message,
@@ -317,9 +304,8 @@
       return this.hide();
     },
     init: function(model) {
-      window.model = model;
       this.inherited(arguments);
-      return console.log(model);
+      return window.model = model;
     }
   });
 
@@ -336,7 +322,7 @@
     },
     initComponents: function() {
       this.inherited(arguments);
-      return this.setContent("Ok");
+      return this.setContent(OB.I18N.getLabel("OBMOBC_LblOk"));
     }
   });
 
@@ -353,7 +339,7 @@
     },
     initComponents: function() {
       this.inherited(arguments);
-      return this.setContent("Cancel");
+      return this.setContent(OB.I18N.getLabel("OBMOBC_LblCancel"));
     }
   });
 

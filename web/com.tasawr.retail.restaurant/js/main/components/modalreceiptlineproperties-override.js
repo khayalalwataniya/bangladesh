@@ -5,6 +5,23 @@
     handlers: {
       onApplyChanges: "applyChanges"
     },
+    executeOnShow: function() {
+      this.autoDismiss = true;
+      if (this && this.args && this.args.autoDismiss === false) {
+        this.autoDismiss = false;
+      }
+    },
+    executeOnHide: function() {
+      var smthgPending;
+      if (this.args && this.args.requiredFiedls && this.args.requiredFieldNotPresentFunction) {
+        smthgPending = _.find(this.args.requiredFiedls, function(fieldName) {
+          return OB.UTIL.isNullOrUndefined(this.currentLine.get(fieldName));
+        }, this);
+        if (smthgPending) {
+          this.args.requiredFieldNotPresentFunction(this.currentLine, smthgPending);
+        }
+      }
+    },
     i18nHeader: "OBPOS_ReceiptLinePropertiesDialogTitle",
     bodyContent: {
       kind: "Scroller",
@@ -21,9 +38,11 @@
     bodyButtons: {
       components: [
         {
-          kind: "OB.UI.ReceiptPropertiesDialogApply"
+          kind: "OB.UI.ReceiptPropertiesDialogApply",
+          name: "receiptLinePropertiesApplyBtn"
         }, {
-          kind: "OB.UI.ReceiptPropertiesDialogCancel"
+          kind: "OB.UI.ReceiptPropertiesDialogCancel",
+          name: "receiptLinePropertiesCancelBtn"
         }
       ]
     },
@@ -33,31 +52,30 @@
         modelProperty: mProperty
       });
       if (component.showProperty) {
-        return component.showProperty(this.currentLine, function(value) {
-          return component.owner.owner.setShowing(value);
+        component.showProperty(this.currentLine, function(value) {
+          component.owner.owner.setShowing(value);
         });
       }
     },
     applyChanges: function(inSender, inEvent) {
-      var att, diff, result;
+      var att, diff, me, result;
+      me = this;
       diff = void 0;
       att = void 0;
       result = true;
-      diff = this.propertycomponents;
+      diff = me.propertycomponents;
       for (att in diff) {
-        if (diff[att].owner.owner.getShowing()) {
-          if (diff.hasOwnProperty(att)) {
-            result = result && diff[att].applyValue(this.currentLine);
-          }
+        if (diff.hasOwnProperty(att) ? diff[att].owner.owner.getShowing() : void 0) {
+          result = result && diff[att].applyValue(me.currentLine);
+        }
+        if (result) {
+          diff[att].applyChange(inSender, inEvent);
         }
       }
-      $("li.selected").first().children().last().children().filter(function(index) {
-        return index === 1;
-      }).append("<br><span style='font-size: 14px;'>" + $('#terminal_containerWindow_pointOfSale_receiptLinesPropertiesDialog_bodyContent_attributes_line_receiptLineDescription_newAttribute_receiptLineDescription').val() + "</span>");
       return result;
     },
     validationMessage: function(args) {
-      return this.owner.doShowPopup({
+      this.owner.doShowPopup({
         popup: "modalValidateAction",
         args: args
       });
@@ -67,7 +85,7 @@
       this.attributeContainer = this.$.bodyContent.$.attributes;
       this.setHeader(OB.I18N.getLabel(this.i18nHeader));
       this.propertycomponents = {};
-      return enyo.forEach(this.newAttributes, (function(natt) {
+      enyo.forEach(this.newAttributes, (function(natt) {
         var editline;
         editline = this.$.bodyContent.$.attributes.createComponent({
           kind: "OB.UI.PropertyEditLine",
@@ -75,27 +93,23 @@
           newAttribute: natt
         });
         this.propertycomponents[natt.modelProperty] = editline.propertycomponent;
-        return this.propertycomponents[natt.modelProperty].propertiesDialog = this;
+        this.propertycomponents[natt.modelProperty].propertiesDialog = this;
       }), this);
     },
     init: function(model) {
       this.model = model;
-      return this.model.get("order").get("lines").on("selected", (function(lineSelected) {
-        var att, diff, _results;
+      this.model.get("order").get("lines").on("selected", (function(lineSelected) {
+        var att, diff;
         diff = void 0;
         att = void 0;
         this.currentLine = lineSelected;
         if (lineSelected) {
           diff = this.propertycomponents;
-          _results = [];
           for (att in diff) {
             if (diff.hasOwnProperty(att)) {
-              _results.push(this.loadValue(att, diff[att]));
-            } else {
-              _results.push(void 0);
+              this.loadValue(att, diff[att]);
             }
           }
-          return _results;
         }
       }), this);
     }
@@ -125,7 +139,7 @@
     },
     executeOnShow: function() {
       this.$.header.setContent(this.args.header);
-      return this.$.bodyContent.$.message.setContent(this.args.message);
+      this.$.bodyContent.$.message.setContent(this.args.message);
     }
   });
 

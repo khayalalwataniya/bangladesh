@@ -90,9 +90,7 @@
       } else {
         return callback(null);
       }
-    }), function() {
-      return console.log(arguments);
-    });
+    }), function() {});
   };
 
   getBookingInfoByOrder = function(orderId, callback) {
@@ -106,9 +104,7 @@
       } else {
         return callback(null);
       }
-    }), function() {
-      return console.log(arguments);
-    });
+    }), function() {});
   };
 
   getPendingOrders = function(callback) {
@@ -123,9 +119,7 @@
       } else {
         return callback(null);
       }
-    }), function() {
-      return console.log(arguments);
-    });
+    }), function() {});
   };
 
   getOrderLineById = function(id, callback) {
@@ -140,9 +134,7 @@
       } else {
         return callback(null);
       }
-    }), function() {
-      return console.log(arguments);
-    });
+    }), function() {});
   };
 
   OB.UI.RestaurantUtils = {

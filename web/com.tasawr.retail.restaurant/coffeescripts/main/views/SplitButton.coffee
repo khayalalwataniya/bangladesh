@@ -94,6 +94,6 @@ OB.OBPOSPointOfSale.UI.ToolbarPayment::sideButtons.push
 
 
 splitOrder = (model) ->
-	console.log model
+	#console.log model
 
 OB.Model.modelLoaders.push splitOrder

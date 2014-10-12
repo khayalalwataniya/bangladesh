@@ -1,8 +1,7 @@
 OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
 	command: "orderPopup"
-	label: "Orders"
+	i18nLabel: "TSRR_BtnSendAllOrderLabel"
 	classButtonActive: "btnactive-blue"
-	stateless: true
 	definition:
 		stateless: true
 		action: (keyboard, txt) ->
@@ -26,14 +25,7 @@ enyo.kind
 		onShowPopup: ""
 
 	bodyContent:
-		kind: "Scroller"
-		maxHeight: "225px"
-		style: "background-color: #ffffff;"
-		thumb: true
-		horizontal: "hidden"
-		components: [
-			name: "attributes"
-		]
+		i18nContent: 'TSRR_SendCancelOrderPopupBodyMessage'
 
 	bodyButtons:
 		components: [
@@ -90,6 +82,9 @@ enyo.kind
 	applyChanges: (inSender, inEvent) ->
 		@waterfall "onApplyChange", {}
 		true
+
+	init: (model) ->
+		@model = model
 
 	initComponents: ->
 		@inherited arguments
@@ -230,14 +225,20 @@ enyo.kind
 		onCancelReasonOkButton: "okButtonPressed"
 		onCancelReasonCancelButton: "cancelButtonPressed"
 
-
 	published:
 		message: ''
+		keyboard: null
 
 	bodyContent:
 		components: [
-			{kind: "onyx.Input", placeholder: "Enter reason here", onchange: "okButtonPressed", classes: "modal-dialog-receipt-properties-text", name: "cancelReasonText"},
-			{name: "result", classes: "onyx-sample-result", content: "No input entered yet."}
+			kind: "onyx.Input",
+			placeholder: "Enter reason here",
+			onchange: "okButtonPressed",
+			classes: "modal-dialog-receipt-properties-text",
+			name: "cancelReasonText"
+		,
+			name: "result"
+			classes: "onyx-result"
 		]
 
 	bodyButtons:
@@ -251,15 +252,14 @@ enyo.kind
 
 	okButtonPressed: (inSender, inEvent) ->
 		@inherited arguments
-
 		@message = inSender.getControls()[0].getControls()[0].getControls()[0].getValue()
-		lines = window.keyboard.receipt.attributes.lines
+		lines = TSRR.Tables.Config.currentOrder.get('lines') #window.keyboard.receipt.attributes.lines
 		sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines)
 		templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelOrderTemplate)
-		if @args.keyboard.receipt.attributes.restaurantTable == ""
-			@args.keyboard.receipt.attributes.restaurantTable.name = "Unspecified"
-		if @args.keyboard.receipt.attributes.numberOfGuests == ""
-			@args.keyboard.receipt.attributes.numberOfGuests = "Unspecified"
+		#		if TSRR.Tables.Config.currentOrder.attributes.restaurantTable == ""
+		#			TSRR.Tables.Config.currentOrder.attributes.restaurantTable = TSRR.Tables.Config.currentTable
+		#		if @args.keyboard.receipt.attributes.numberOfGuests == ""
+		#			@args.keyboard.receipt.attributes.numberOfGuests = "Unspecified"
 		OB.POS.hwserver.print templatereceipt,
 			order: sendToPrinter
 			message: @message
@@ -284,9 +284,9 @@ enyo.kind
 #	executeOnHide: ->
 #	executeOnShow: ->
 	init: (model) ->
-		window.model = model
 		@inherited arguments
-		console.log model
+		window.model = model
+#console.log model
 
 enyo.kind
 	name: "TSRR.UI.CancelReasonOkButton"
@@ -301,7 +301,7 @@ enyo.kind
 
 	initComponents: ->
 		@inherited arguments
-		@setContent "Ok"
+		@setContent OB.I18N.getLabel("OBMOBC_LblOk")
 
 enyo.kind
 	name: "TSRR.UI.CancelReasonCancelButton"
@@ -314,10 +314,9 @@ enyo.kind
 	tap: (inSender, inEvent) ->
 		@doCancelReasonCancelButton()
 
-
 	initComponents: ->
 		@inherited arguments
-		@setContent "Cancel"
+		@setContent OB.I18N.getLabel("OBMOBC_LblCancel")
 
 
 OB.UI.WindowView.registerPopup "OB.OBPOSPointOfSale.UI.PointOfSale",

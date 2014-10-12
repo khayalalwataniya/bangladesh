@@ -30,8 +30,7 @@
             return OB.UTIL.showSuccess('[DONE] table with name: "' + table.name + '" has been locked succussfully');
           },
           error: function() {
-            OB.UTIL.showWarning('could not post Table API');
-            return console.log(arguments);
+            return OB.UTIL.showWarning('could not post Table API');
           }
         });
         table;
@@ -94,8 +93,7 @@
             return OB.UTIL.showSuccess('[DONE] table with name: "' + table.name + '" has been unlocked succussfully');
           },
           error: function() {
-            OB.UTIL.showWarning('could not post Table API');
-            return console.log(arguments);
+            return OB.UTIL.showWarning('could not post Table API');
           }
         });
         table;
