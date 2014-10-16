@@ -15,7 +15,7 @@ if OB.MobileApp.model.hookManager
   error = (tx, error) ->
     console.error tx
     return
-
+	  
   # delete related booking info once order has been paid
   OB.MobileApp.model.hookManager.registerHook "OBPRINT_PrePrint", (args, callbacks) ->
     console.log "calling... OBPRINT_PrePrint hook"
@@ -31,11 +31,12 @@ if OB.MobileApp.model.hookManager
     OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
     return
 
+
   # delete related booking info once order has been paid
   OB.MobileApp.model.hookManager.registerHook "OBRETUR_ReturnFromOrig", (args, callbacks) ->
     console.log "calling... OBRETUR_ReturnFromOrig hook"
     salesOrder = @.model.get 'order'
-    console.log salesOrder
+    #console.log salesOrder
     OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
     return
 
@@ -81,11 +82,6 @@ if OB.MobileApp.model.hookManager
     OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
     return
 
-  OB.MobileApp.model.hookManager.registerHook "OBPOS_PreSynchData", () ->
-    OB.info 'calling... OBPOS_PreSynchData'
-    OB.info arguments
-    OB.MobileApp.model.hookManager.callbackExecutor
-    return
 
 OB.OBPOSPointOfSale.Model.PointOfSale::loadUnpaidOrders = ->
   orderlist = @get("orderList")

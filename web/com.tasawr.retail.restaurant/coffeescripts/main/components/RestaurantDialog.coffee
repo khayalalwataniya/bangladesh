@@ -64,6 +64,7 @@ enyo.kind
 				kind: "OB.UI.CancelDialogButton"
 			}
 		]
+
 	initComponents: ->
 		@inherited arguments
 

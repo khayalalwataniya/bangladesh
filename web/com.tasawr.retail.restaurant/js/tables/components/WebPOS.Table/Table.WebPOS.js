@@ -107,8 +107,6 @@
       return this.$.Attribute.setContent(this.model);
     },
     tap: function(inSender, inEvent) {
-      console.info(this.model);
-      console.info(this.attribs.attributeName);
       if (this.attribs.attributeName) {
         localStorage.setItem('productAttribute_' + this.attribs.attributeName, this.model.trim());
       }

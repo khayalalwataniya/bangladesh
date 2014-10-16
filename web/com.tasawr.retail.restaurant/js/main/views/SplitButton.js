@@ -106,9 +106,7 @@
     }
   });
 
-  splitOrder = function(model) {
-    return console.log(model);
-  };
+  splitOrder = function(model) {};
 
   OB.Model.modelLoaders.push(splitOrder);
 

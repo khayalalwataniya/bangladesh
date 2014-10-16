@@ -63,7 +63,7 @@ enyo.kind
 		TSRR.Main.order2.save()
 		TSRR.Main.order1.calculateGross()
 		TSRR.Main.order1.save()
-#		debugger
+#
 #		ordersOnPopup = me.model.attributes.orderList
 #		_.each ordersOnPopup.models, (order) ->
 #			order.calculateGross()

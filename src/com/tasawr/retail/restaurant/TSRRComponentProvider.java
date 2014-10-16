@@ -41,10 +41,10 @@ public class TSRRComponentProvider extends BaseComponentProvider {
 
     grhelper.add("main/models/holdline.js");
     grhelper.add("main/models/fireline.js");
-    grhelper.add("main/models/sendline.js");
-    grhelper.add("main/models/cancelline.js");
-    grhelper.add("main/models/product-override.js");
     grhelper.add("main/models/sendorder.js");
+    grhelper.add("main/models/cancelline.js");
+    grhelper.add("main/models/sendline.js");
+    grhelper.add("main/models/product-override.js");
     grhelper.add("main/models/orderLineOverride.js");
     
     grhelper.add("main/models/Attribute.js");

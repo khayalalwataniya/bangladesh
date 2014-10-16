@@ -274,7 +274,7 @@ tsrrNewOrder = ->
 				TSRR.Tables.Config.currentTable = collection.models[0]
 				TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder OB.POS.modelterminal.get("businessPartner")
 			), (tx) ->
-				console.log tx
+				#console.log tx
 	TSRR.Tables.Config.currentOrder
 #	order = new OB.Model.Order()
 #	order.set "client", OB.POS.modelterminal.get("terminal").client

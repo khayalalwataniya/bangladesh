@@ -77,7 +77,7 @@ getCurrentOrder = (orderId, callback) ->
     else
       callback null
   ), ->
-    console.log arguments
+    #console.log arguments
 
 getBookingInfoByOrder = (orderId, callback) ->
   criteria =
@@ -88,7 +88,7 @@ getBookingInfoByOrder = (orderId, callback) ->
     else
       callback null
   ), ->
-    console.log arguments
+    #console.log arguments
 
 getPendingOrders = (callback) ->
   criteria =
@@ -101,7 +101,7 @@ getPendingOrders = (callback) ->
     else
       callback null
   ), ->
-    console.log arguments
+    #console.log arguments
 
 getOrderLineById = (id, callback) ->
   criteria =
@@ -114,7 +114,7 @@ getOrderLineById = (id, callback) ->
     else
       callback null
   ), ->
-    console.log arguments
+    #console.log arguments
 
 OB.UI.RestaurantUtils =
   getCurrentOrder: getCurrentOrder

@@ -274,9 +274,7 @@
         }
         TSRR.Tables.Config.currentTable = collection.models[0];
         return TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder(OB.POS.modelterminal.get("businessPartner"));
-      }), function(tx) {
-        return console.log(tx);
-      });
+      }), function(tx) {});
     }
     return TSRR.Tables.Config.currentOrder;
   };

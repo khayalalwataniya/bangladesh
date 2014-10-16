@@ -1,116 +1,132 @@
-#
-# ************************************************************************************
-# * Copyright (C) 2012 Openbravo S.L.U.
-# * Licensed under the Openbravo Commercial License version 1.0
-# * You may obtain a copy of the License at http://www.openbravo.com/legal/obcl.html
-# * or in the legal folder of this module distribution.
-# ************************************************************************************
-# 
-
-#global enyo, Backbone, $ 
+#global enyo, Backbone, _, $
 enyo.kind
-  name: "OB.UI.ModalReceiptLinesProperties"
-  kind: "OB.UI.ModalAction"
-  handlers:
-    onApplyChanges: "applyChanges"
+	name: "OB.UI.ModalReceiptLinesProperties"
+	kind: "OB.UI.ModalAction"
+	handlers:
+		onApplyChanges: "applyChanges"
 
-  i18nHeader: "OBPOS_ReceiptLinePropertiesDialogTitle"
-  bodyContent:
-    kind: "Scroller"
-    maxHeight: "225px"
-    style: "background-color: #ffffff;"
-    thumb: true
-    horizontal: "hidden"
-    components: [name: "attributes"]
+	executeOnShow: ->
+		@autoDismiss = true
+		@autoDismiss = false  if this and @args and @args.autoDismiss is false
+		return
 
-  bodyButtons:
-    components: [
-      kind: "OB.UI.ReceiptPropertiesDialogApply"
-    ,
-      kind: "OB.UI.ReceiptPropertiesDialogCancel"
-    ]
+	executeOnHide: ->
+		if @args and @args.requiredFiedls and @args.requiredFieldNotPresentFunction
+			smthgPending = _.find(@args.requiredFiedls, (fieldName) ->
+				OB.UTIL.isNullOrUndefined @currentLine.get(fieldName)
+			, this)
+			@args.requiredFieldNotPresentFunction @currentLine, smthgPending  if smthgPending
+		return
 
-  loadValue: (mProperty, component) ->
-    @waterfall "onLoadValue",
-      model: @currentLine
-      modelProperty: mProperty
+	i18nHeader: "OBPOS_ReceiptLinePropertiesDialogTitle"
+	bodyContent:
+		kind: "Scroller"
+		maxHeight: "225px"
+		style: "background-color: #ffffff;"
+		thumb: true
+		horizontal: "hidden"
+		components: [
+			name: "attributes"
+		]
 
+	bodyButtons:
+		components: [
+			{
+				kind: "OB.UI.ReceiptPropertiesDialogApply"
+				name: "receiptLinePropertiesApplyBtn"
+			}
+			{
+				kind: "OB.UI.ReceiptPropertiesDialogCancel"
+				name: "receiptLinePropertiesCancelBtn"
+			}
+		]
 
-    # Make it visible or not...
-    if component.showProperty
-      component.showProperty @currentLine, (value) ->
-        component.owner.owner.setShowing value
-
-
-# else make it visible...
-  applyChanges: (inSender, inEvent) ->
-    diff = undefined
-    att = undefined
-    result = true
-    diff = @propertycomponents
-    for att of diff
-      if diff[att].owner.owner.getShowing()
-        if diff.hasOwnProperty(att)
-          result = result and diff[att].applyValue(@currentLine)
-
-    $("li.selected").first().children().last().children().filter((index) ->
-      index is 1
-    ).append "<br><span style='font-size: 14px;'>" + $('#terminal_containerWindow_pointOfSale_receiptLinesPropertiesDialog_bodyContent_attributes_line_receiptLineDescription_newAttribute_receiptLineDescription').val() + "</span>"
-
-    result
-
-  validationMessage: (args) ->
-    @owner.doShowPopup
-      popup: "modalValidateAction"
-      args: args
+	loadValue: (mProperty, component) ->
+		@waterfall "onLoadValue",
+			model: @currentLine
+			modelProperty: mProperty
 
 
-  initComponents: ->
-    @inherited arguments
-    @attributeContainer = @$.bodyContent.$.attributes
-    @setHeader OB.I18N.getLabel(@i18nHeader)
-    @propertycomponents = {}
-    enyo.forEach @newAttributes, ((natt) ->
-      editline = @$.bodyContent.$.attributes.createComponent(
-        kind: "OB.UI.PropertyEditLine"
-        name: "line_" + natt.name
-        newAttribute: natt
-      )
-      @propertycomponents[natt.modelProperty] = editline.propertycomponent
-      @propertycomponents[natt.modelProperty].propertiesDialog = this
-    ), this
+		# Make it visible or not...
+		if component.showProperty
+			component.showProperty @currentLine, (value) ->
+				component.owner.owner.setShowing value
+				return
 
-  init: (model) ->
-    @model = model
-    @model.get("order").get("lines").on "selected", ((lineSelected) ->
-      diff = undefined
-      att = undefined
-      @currentLine = lineSelected
-      if lineSelected
-        diff = @propertycomponents
-        for att of diff
-          @loadValue att, diff[att]  if diff.hasOwnProperty(att)
-    ), this
+		return
+
+	# else make it visible...
+	applyChanges: (inSender, inEvent) ->
+		me = @
+		diff = undefined
+		att = undefined
+		result = true
+		diff = me.propertycomponents
+
+		for att of diff
+			result = result and diff[att].applyValue(me.currentLine)  if diff[att].owner.owner.getShowing() if diff.hasOwnProperty(att)
+			diff[att].applyChange(inSender, inEvent) if result
+
+		result
+
+	validationMessage: (args) ->
+		@owner.doShowPopup
+			popup: "modalValidateAction"
+			args: args
+
+		return
+
+	initComponents: ->
+		@inherited arguments
+		@attributeContainer = @$.bodyContent.$.attributes
+		@setHeader OB.I18N.getLabel(@i18nHeader)
+		@propertycomponents = {}
+		enyo.forEach @newAttributes, ((natt) ->
+			editline = @$.bodyContent.$.attributes.createComponent(
+				kind: "OB.UI.PropertyEditLine"
+				name: "line_" + natt.name
+				newAttribute: natt
+			)
+			@propertycomponents[natt.modelProperty] = editline.propertycomponent
+			@propertycomponents[natt.modelProperty].propertiesDialog = this
+			return
+		), this
+		return
+
+	init: (model) ->
+		@model = model
+		@model.get("order").get("lines").on "selected", ((lineSelected) ->
+			diff = undefined
+			att = undefined
+			@currentLine = lineSelected
+			if lineSelected
+				diff = @propertycomponents
+				for att of diff
+					@loadValue att, diff[att]  if diff.hasOwnProperty(att)
+			return
+		), this
+		return
 
 enyo.kind
-  name: "OB.UI.ModalReceiptLinesPropertiesImpl"
-  kind: "OB.UI.ModalReceiptLinesProperties"
-  newAttributes: [
-    kind: "OB.UI.renderTextProperty"
-    name: "receiptLineDescription"
-    modelProperty: "description"
-    i18nLabel: "OBPOS_LblDescription"
-  ]
+	name: "OB.UI.ModalReceiptLinesPropertiesImpl"
+	kind: "OB.UI.ModalReceiptLinesProperties"
+	newAttributes: [
+		kind: "OB.UI.renderTextProperty"
+		name: "receiptLineDescription"
+		modelProperty: "description"
+		i18nLabel: "OBPOS_LblDescription"
+	]
 
 enyo.kind
-  kind: "OB.UI.ModalInfo"
-  name: "OB.UI.ValidateAction"
-  header: ""
-  isDefaultAction: true
-  bodyContent:
-    name: "message"
-    content: ""
+	kind: "OB.UI.ModalInfo"
+	name: "OB.UI.ValidateAction"
+	header: ""
+	isDefaultAction: true
+	bodyContent:
+		name: "message"
+		content: ""
 
-  executeOnShow: ->
-    @$.header.setContent @args.header
-    @$.bodyContent.$.message.setContent @args.message
+	executeOnShow: ->
+		@$.header.setContent @args.header
+		@$.bodyContent.$.message.setContent @args.message
+		return

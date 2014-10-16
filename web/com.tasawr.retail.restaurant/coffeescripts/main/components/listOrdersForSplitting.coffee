@@ -17,7 +17,7 @@ enyo.kind
 				if data and data.length > 0
 					me.$.body.$.listreceiptssplit.setReceiptsList data
 			), (error) ->
-				console.log error
+				#console.log error
 		return
 
 	executeOnShow: ->
