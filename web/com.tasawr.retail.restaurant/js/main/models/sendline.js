@@ -1,5 +1,5 @@
 (function() {
-  var allPrinters, allProducts, assignVar, printersAndProducts, productInfoGetter, productsAndPrinters, requests, uniquePrinterAndProductGenerator;
+  var allPrinters, allProducts, assignVar, printersAndProducts, productInfoGetter, requests, uniquePrinterAndProductGenerator;
 
   OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push({
     command: 'send',
@@ -40,6 +40,8 @@
               newArray.models.splice(newArray.models.indexOf(line), 1);
             }
           }
+          debugger;
+          window.productsAndPrinters = [];
           sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, newArray);
           templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate);
           if (keyboard.receipt.attributes.restaurantTable === void 0) {
@@ -116,7 +118,6 @@
   uniquePrinterAndProductGenerator = function(callback, lines) {
     var description, i, j, prodQtyDesc, qty, tempProducts, uniquePrinters;
     callback(lines);
-    debugger;
     qty = void 0;
     description = void 0;
     uniquePrinters = allPrinters.filter(function(elem, pos) {
@@ -138,7 +139,6 @@
       printersAndProducts[j][1] = prodQtyDesc;
       j++;
     }
-    debugger;
     return printersAndProducts;
   };
 
@@ -146,7 +146,6 @@
     var data, i, j, result, tempPrinters, _results;
     tempPrinters = [];
     i = 0;
-    debugger;
     _results = [];
     while (i < requests.length) {
       result = JSON.parse(requests[i].xhr.responseText);
@@ -208,7 +207,7 @@
 
   allProducts = [];
 
-  productsAndPrinters = [];
+  window.productsAndPrinters = [];
 
   requests = [];
 

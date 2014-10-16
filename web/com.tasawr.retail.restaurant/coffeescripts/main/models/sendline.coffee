@@ -41,7 +41,8 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
             console.error 'present'
           else
             newArray.models.splice(newArray.models.indexOf(line), 1);
-
+        debugger
+        window.productsAndPrinters = []
         sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, newArray)
         templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate)
         if keyboard.receipt.attributes.restaurantTable is undefined
@@ -157,7 +158,7 @@ enyo.kind
 
 uniquePrinterAndProductGenerator = (callback, lines) ->
   callback lines
-  debugger
+
   qty = undefined
   description = undefined
   uniquePrinters = allPrinters.filter((elem, pos) ->
@@ -179,13 +180,13 @@ uniquePrinterAndProductGenerator = (callback, lines) ->
     printersAndProducts[j][0] = uniquePrinters[j]
     printersAndProducts[j][1] = prodQtyDesc
     j++
-  debugger
+
   printersAndProducts
 
 assignVar = (requests, lines) ->
   tempPrinters = []
   i = 0
-  debugger
+
   while i < requests.length
     result = JSON.parse(requests[i].xhr.responseText)
     data = result.response.data[0]
@@ -235,5 +236,5 @@ productInfoGetter = (lines) ->
 printersAndProducts = []
 allPrinters = []
 allProducts = []
-productsAndPrinters = []
+window.productsAndPrinters = []
 requests = []
