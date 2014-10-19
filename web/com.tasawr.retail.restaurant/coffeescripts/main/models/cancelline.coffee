@@ -33,7 +33,7 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
             console.error 'present'
           else
             newArray.models.splice(newArray.models.indexOf(line), 1);
-        debugger
+
         window.productsAndPrinters = []
         sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, newArray)
         templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelLinesTemplate)
