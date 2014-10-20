@@ -43,6 +43,7 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
           order: sendToPrinter
           receiptNo: keyboard.receipt.attributes.documentNo
           tableNo: keyboard.receipt.attributes.restaurantTable.name
+          sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
           guestNo: keyboard.receipt.attributes.numberOfGuests
           user: keyboard.receipt.attributes.salesRepresentative$_identifier
         _.each newArray.models, (model)->
@@ -70,6 +71,7 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
               order: fireModel
               receiptNo: keyboard.receipt.get('documentNo')
               tableNo: keyboard.receipt.get('restaurantTable').name
+              sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
               guestNo: keyboard.receipt.get('numberOfGuests')
               user: keyboard.receipt.get('salesRepresentative$_identifier')
             enyo.Signals.send "onTransmission", {message: 'fired', cid: keyboard.line.cid}

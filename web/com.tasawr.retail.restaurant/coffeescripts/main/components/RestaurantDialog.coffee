@@ -77,7 +77,7 @@ enyo.kind
 		new OB.DS.Process("com.tasawr.retail.restaurant.data.ProductAttributeSetService").exec
 			id: product.id
 		, (data) ->
-			console.error data
+			console.log data
 			me.loadAttributes data
 
 

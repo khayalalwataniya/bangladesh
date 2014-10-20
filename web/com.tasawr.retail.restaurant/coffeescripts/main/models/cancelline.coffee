@@ -43,6 +43,7 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
           order: sendToPrinter
           receiptNo: keyboard.receipt.attributes.documentNo
           tableNo: keyboard.receipt.attributes.restaurantTable.name
+          sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
           guestNo: keyboard.receipt.attributes.numberOfGuests
           user: keyboard.receipt.attributes.salesRepresentative$_identifier
         _.each newArray.models, (model)->
@@ -65,11 +66,14 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
               productQty: String(keyboard.line.get('qty'))
               description: keyboard.line.get('description')
 
-            templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.FireTemplate)
+
+            console.error JSON.parse(localStorage.getItem('currentSection')).name
+            templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelTemplate)
             OB.POS.hwserver.print templatereceipt,
               order: cancelModel
               receiptNo: keyboard.receipt.get('documentNo')
               tableNo: keyboard.receipt.get('restaurantTable').name
+              sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
               guestNo: keyboard.receipt.get('numberOfGuests')
               user: keyboard.receipt.get('salesRepresentative$_identifier')
             enyo.Signals.send "onTransmission", {message: 'cancelled', cid: keyboard.line.cid}

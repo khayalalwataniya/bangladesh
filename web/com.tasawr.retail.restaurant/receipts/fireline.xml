@@ -9,11 +9,17 @@
         <line></line>
         <line></line>
 
+        <line size="3">
+            <text align="center" length="22"><%= OB.UTIL.encodeXMLComponent(sectionNo) %></text>
+        </line>
         <line>
             <text align="center" length="42">Printer No: <%= OB.UTIL.encodeXMLComponent(printer) %></text>
         </line>
 
         <line></line>
+
+
+
         <line>
             <text align="left" length="22">Receipt: </text>
             <text><%= OB.UTIL.encodeXMLComponent(receiptNo) %></text>
