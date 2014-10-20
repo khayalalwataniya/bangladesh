@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <output>
     <%
-    var printers = order.printerProperty.split(' ');
+    var printers = order.get('printerProperty').split(' ');
     for (var i = 0; i < printers.length; i++){
     printer = printers[i];
     %>
@@ -30,17 +30,17 @@
             <text>Item</text>
         </line>
         <line><text>----------------------------------------</text></line>
-        <line><text>------------<%= OB.UTIL.encodeXMLComponent(order.message) %>--------------</text></line>
+        <line><text>------------<%= OB.UTIL.encodeXMLComponent(order.get('message')) %>--------------</text></line>
 
         <line>
-            <text align="left" length="5"><%= OB.UTIL.encodeXMLComponent(order.productQty) %>X</text>
-            <text><%= OB.UTIL.encodeXMLComponent(order.printCode) %></text>
+            <text align="left" length="5"><%= OB.UTIL.encodeXMLComponent(order.get('productQty')) %>X</text>
+            <text><%= OB.UTIL.encodeXMLComponent(order.get('printCode')) %></text>
         </line>
 
         <%
-        if(!(order.description == "")){
+        if(!(order.get('description') == "")){
         %>
-        <line><text>Description: </text><text><%= OB.UTIL.encodeXMLComponent(order.description) %></text></line>
+        <line><text>Description: </text><text><%= OB.UTIL.encodeXMLComponent(order.get('description')) %></text></line>
         <%
         }
         %>

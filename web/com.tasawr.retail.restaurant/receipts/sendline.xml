@@ -1,60 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <output>
-<%
-var printers = order.printerProperty.split(' ');
-for (var i = 0; i < printers.length; i++){
-  printer = printers[i];
-%>
-  <ticket printer = "<%= printer %>">
-      <line></line>
-      <line></line>
+    <%
+    var printers = order.get('printerProperty').split(' ');
+    for (var i = 0; i < printers.length; i++){
+    printer = printers[i];
+    %>
+    <ticket printer = "<%= printer %>">
+        <line></line>
+        <line></line>
 
-      <line>
-          <text align="center" length="42">Printer No: <%= OB.UTIL.encodeXMLComponent(printer) %></text>
-      </line>
+        <line>
+            <text align="center" length="42">Printer No: <%= OB.UTIL.encodeXMLComponent(printer) %></text>
+        </line>
 
-      <line></line>
-      <line>
-          <text align="left" length="22">Receipt: </text>
-          <text><%= OB.UTIL.encodeXMLComponent(receiptNo) %></text>
-      </line>
-      <line>
-          <text align="left" length="22"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_datetime')) %>:</text>
-          <text><%= OB.I18N.formatDate(new Date()) %></text>
-          <text> </text>
-          <text><%= OB.I18N.formatHour(new Date()) %></text>
-      </line>
-      <line></line>
+        <line></line>
+        <line>
+            <text align="left" length="22">Receipt: </text>
+            <text><%= OB.UTIL.encodeXMLComponent(receiptNo) %></text>
+        </line>
+        <line>
+            <text align="left" length="22"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_datetime')) %>:</text>
+            <text><%= OB.I18N.formatDate(new Date()) %></text>
+            <text> </text>
+            <text><%= OB.I18N.formatHour(new Date()) %></text>
+        </line>
+        <line></line>
 
-      <line>
-          <text>Item</text>
-      </line>
-      <line><text>----------------------------------------</text></line>
-      <line><text>------------<%= OB.UTIL.encodeXMLComponent(order.message) %>--------------</text></line>
+        <line>
+            <text>Item</text>
+        </line>
+        <line><text>----------------------------------------</text></line>
+        <line><text>------------<%= OB.UTIL.encodeXMLComponent(order.get('message')) %>--------------</text></line>
 
-      <line>
-          <text align="left" length="5"><%= OB.UTIL.encodeXMLComponent(order.productQty) %>X</text>
-          <text><%= OB.UTIL.encodeXMLComponent(order.printCode) %></text>
-      </line>
+        <line>
+            <text align="left" length="5"><%= OB.UTIL.encodeXMLComponent(order.get('productQty')) %>X</text>
+            <text><%= OB.UTIL.encodeXMLComponent(order.get('printCode')) %></text>
+        </line>
 
-      <%
-      if(!(order.description == "")){
-      %>
-      <line><text>Description: </text><text><%= OB.UTIL.encodeXMLComponent(order.description) %></text></line>
-      <%
-      }
-      %>
+        <%
+        if(!(order.get('description') == "")){
+        %>
+        <line><text>Description: </text><text><%= OB.UTIL.encodeXMLComponent(order.get('description')) %></text></line>
+        <%
+        }
+        %>
 
 
-      <line><text>----------------------------------------</text></line>
-      <line>  <text align="left" length="22">Guest No: <%= OB.UTIL.encodeXMLComponent(guestNo) %></text></line>
-      <line>  <text align="left" length="22">Table No: <%= OB.UTIL.encodeXMLComponent(tableNo) %></text></line>
-      <line>  <text align="left" length="22">User: <%= OB.UTIL.encodeXMLComponent(user) %></text></line>
+        <line><text>----------------------------------------</text></line>
+        <line>  <text align="left" length="22">Guest No: <%= OB.UTIL.encodeXMLComponent(guestNo) %></text></line>
+        <line>  <text align="left" length="22">Table No: <%= OB.UTIL.encodeXMLComponent(tableNo) %></text></line>
+        <line>  <text align="left" length="22">User: <%= OB.UTIL.encodeXMLComponent(user) %></text></line>
 
-  </ticket>
+    </ticket>
 
-  <%
-}
-  %>
+    <%
+    }
+    %>
 
 </output>
