@@ -2,18 +2,6 @@
 
 OB.OBPOSPointOfSale.Print.ReceiptTemplate = "../com.tasawr.retail.restaurant/receipts/printreceipt.xml"
 
-OB.OBPOSPointOfSale.Print.HoldTemplate = "../com.tasawr.retail.restaurant/receipts/holdline.xml"
-OB.OBPOSPointOfSale.Print.HoldLinesTemplate = "../com.tasawr.retail.restaurant/receipts/holdlines.xml"
-
-OB.OBPOSPointOfSale.Print.FireTemplate = "../com.tasawr.retail.restaurant/receipts/fireline.xml"
-OB.OBPOSPointOfSale.Print.FireLinesTemplate = "../com.tasawr.retail.restaurant/receipts/firelines.xml"
-
-OB.OBPOSPointOfSale.Print.SendTemplate = "../com.tasawr.retail.restaurant/receipts/sendline.xml"
-OB.OBPOSPointOfSale.Print.SendLinesTemplate = "../com.tasawr.retail.restaurant/receipts/sendlines.xml"
-
-OB.OBPOSPointOfSale.Print.CancelTemplate = "../com.tasawr.retail.restaurant/receipts/cancelline.xml"
-OB.OBPOSPointOfSale.Print.CancelLinesTemplate = "../com.tasawr.retail.restaurant/receipts/cancellines.xml"
-
 OB.OBPOSPointOfSale.Print.SendOrderTemplate = "../com.tasawr.retail.restaurant/receipts/sendorder.xml"
 OB.OBPOSPointOfSale.Print.CancelOrderTemplate = "../com.tasawr.retail.restaurant/receipts/cancelorder.xml"
 OB.OBPOSPointOfSale.Print.LineTemplate = "../com.tasawr.retail.restaurant/receipts/printline.xml"
