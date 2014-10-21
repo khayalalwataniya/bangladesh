@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <output>
-
     <%
-    for (var i = 0; i < order.length; i++){
-    printer = order[i][0];
+    var printers = order.get('printerProperty').split(' ');
+    for (var i = 0; i < printers.length; i++){
+    printer = printers[i];
     %>
     <ticket printer = "<%= printer %>">
         <line></line>
         <line></line>
 
+        <line size="2">
+            <text align="center" length="22"><%= OB.UTIL.encodeXMLComponent(sectionNo) %></text>
+        </line>
         <line>
             <text align="center" length="42">Printer No: <%= OB.UTIL.encodeXMLComponent(printer) %></text>
         </line>
-        <line>
-            <text align="center" length="42"><%= OB.UTIL.encodeXMLComponent(message) %></text>
-        </line>
 
         <line></line>
+
+
+
         <line>
             <text align="left" length="22">Receipt: </text>
             <text><%= OB.UTIL.encodeXMLComponent(receiptNo) %></text>
@@ -33,26 +36,18 @@
             <text>Item</text>
         </line>
         <line><text>----------------------------------------</text></line>
-        <%
-
-        for (var j = 0; j < order[i][1].length; j++) {
-
-        %>
+        <line><text>------------<%= OB.UTIL.encodeXMLComponent(order.get('message')) %>--------------</text></line>
 
         <line>
-            <text align="left" length="5"><%= OB.UTIL.encodeXMLComponent(order[i][1][j][2].toString()) %>X</text>
-            <text><%= OB.UTIL.encodeXMLComponent(order[i][1][j][0]) %></text>
+            <text align="left" length="5"><%= OB.UTIL.encodeXMLComponent(order.get('productQty')) %>X</text>
+            <text><%= OB.UTIL.encodeXMLComponent(order.get('printCode')) %></text>
         </line>
-        <%
-        if(!(order[i][1][j][3] == "")){
-        %>
-        <line><text>Description: </text><text><%= OB.UTIL.encodeXMLComponent(order[i][1][j][3]) %></text></line>
-        <%
-        }
-        %>
 
         <%
-
+        if(!(order.get('description') == "")){
+        %>
+        <line><text>Description: </text><text><%= OB.UTIL.encodeXMLComponent(order.get('description')) %></text></line>
+        <%
         }
         %>
 
@@ -67,4 +62,5 @@
     <%
     }
     %>
+
 </output>

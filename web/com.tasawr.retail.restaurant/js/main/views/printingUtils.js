@@ -1,5 +1,5 @@
 (function() {
-  var allPrinters, allProducts, assignVar, buildModel, getFilteredLines, prepareReceipt, printLineOrReceipt, printNonGenericLine, printersAndProducts, productInfoGetter, requests, uniquePrinterAndProductGenerator;
+  var allPrinters, allProducts, assignVar, buildModel, getFilteredLines, prepareReceipt, printGenericLine, printLineOrReceipt, printNonGenericLine, printersAndProducts, productInfoGetter, requests, uniquePrinterAndProductGenerator;
 
   printersAndProducts = [];
 
@@ -106,15 +106,30 @@
     }
   };
 
-  printLineOrReceipt = function(keyboard, templatereceipt, sendToPrinter) {
-    return OB.POS.hwserver.print(templatereceipt, {
+  printGenericLine = function(keyboard, gpi, message) {
+    var newArray, sendToPrinter, templatereceipt;
+    newArray = OB.UI.printingUtils.getFilteredLines(keyboard, gpi);
+    window.productsAndPrinters = [];
+    sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, newArray);
+    templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.GenericLineTemplate);
+    OB.POS.hwserver.print(templatereceipt, {
       order: sendToPrinter,
       receiptNo: keyboard.receipt.attributes.documentNo,
       tableNo: keyboard.receipt.attributes.restaurantTable.name,
       sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
       guestNo: keyboard.receipt.attributes.numberOfGuests,
+      message: message,
       user: keyboard.receipt.attributes.salesRepresentative$_identifier
     });
+    _.each(newArray.models, function(model) {
+      return enyo.Signals.send("onTransmission", {
+        message: 'sent',
+        cid: model.cid
+      });
+    });
+    OB.UTIL.showSuccess("Orders sent to printers successfully");
+    newArray = null;
+    return keyboard.receipt.trigger('scan');
   };
 
   buildModel = function(keyboard, data, message) {
@@ -152,7 +167,7 @@
       if (data[0]) {
         message = message;
         sendModel = OB.UI.printingUtils.buildModel(keyboard, data, message);
-        templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.GenericLineTemplate);
+        templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.NonGenericLineTemplate);
         OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendModel);
         enyo.Signals.send("onTransmission", {
           message: lineMessage,
@@ -165,15 +180,27 @@
     });
   };
 
+  printLineOrReceipt = function(keyboard, templatereceipt, sendToPrinter) {
+    return OB.POS.hwserver.print(templatereceipt, {
+      order: sendToPrinter,
+      receiptNo: keyboard.receipt.attributes.documentNo,
+      tableNo: keyboard.receipt.attributes.restaurantTable.name,
+      sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
+      guestNo: keyboard.receipt.attributes.numberOfGuests,
+      user: keyboard.receipt.attributes.salesRepresentative$_identifier
+    });
+  };
+
   OB.UI.printingUtils = {
     uniquePrinterAndProductGenerator: uniquePrinterAndProductGenerator,
     productInfoGetter: productInfoGetter,
     assignVar: assignVar,
     prepareReceipt: prepareReceipt,
-    printLineOrReceipt: printLineOrReceipt,
+    printGenericLine: printGenericLine,
     buildModel: buildModel,
     getFilteredLines: getFilteredLines,
-    printNonGenericLine: printNonGenericLine
+    printNonGenericLine: printNonGenericLine,
+    printLineOrReceipt: printLineOrReceipt
   };
 
 }).call(this);
