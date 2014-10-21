@@ -3,6 +3,8 @@
 
   TSRR.Main = TSRR.Main || {};
 
+  TSRR.Main.Extra = TSRR.Main.Extra || {};
+
   TSRR.Main.Model = TSRR.Main.Model || {};
 
   TSRR.Main.Collection = TSRR.Main.Collection || {};

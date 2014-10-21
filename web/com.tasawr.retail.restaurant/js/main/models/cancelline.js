@@ -1,72 +1,54 @@
 (function() {
   OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push({
-    command: "cancel",
-    label: "Cancel",
-    classButtonActive: "btnactive-blue"
-  });
-
-  enyo.kind({
-    name: "TSRR.Model.CancelModel",
-    order: null,
-    message: null,
-    printCode: null,
-    printerProperty: null,
-    productQty: null,
-    description: null
-  });
-
-  enyo.kind({
-    name: "TSRR.UI.CancelButton",
-    kbd: null,
-    cancelModel: null,
-    printCode: null,
-    printerProperty: null,
-    product: null,
+    i18nLabel: "TSRR_BtnCancelLineLabel",
+    command: 'line:cancelCommand',
+    classButtonActive: "btnactive-blue",
     stateless: true,
-    action: function(keyboard, txt) {
-      var cancelModel, kbd, templatereceipt;
-      cancelModel = void 0;
-      kbd = void 0;
-      templatereceipt = void 0;
-      cancelModel = void 0;
-      templatereceipt = void 0;
-      kbd = keyboard;
-      if (keyboard.receipt.attributes.numberOfGuests === void 0) {
-        keyboard.receipt.attributes.numberOfGuests = "Unspecified";
-      }
-      return new OB.DS.Request("com.tasawr.retail.restaurant.data.OrderLineService").exec({
-        product: keyboard.line.attributes.product.id
-      }, function(data) {
-        if (data[0]) {
-          cancelModel = new TSRR.Model.CancelModel({
-            order: keyboard.receipt,
-            message: "Cancel this item",
-            printCode: data[0].printCode,
-            printerProperty: data[0].printerProperty,
-            productQty: String(kbd.line.attributes.qty),
-            description: keyboard.line.attributes.description
+    definition: {
+      stateless: true,
+      action: function(keyboard, txt) {
+        var gpi, newArray, sendToPrinter, templatereceipt;
+        OB.UI.printingUtils.prepareReceipt(keyboard);
+        gpi = keyboard.line.attributes.product.attributes.generic_product_id;
+        if (gpi !== null) {
+          newArray = OB.UI.printingUtils.getFilteredLines(keyboard, gpi);
+          window.productsAndPrinters = [];
+          sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, newArray);
+          templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelLinesTemplate);
+          OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendToPrinter);
+          _.each(newArray.models, function(model) {
+            return enyo.Signals.send("onTransmission", {
+              message: 'cancelled',
+              cid: model.cid
+            });
           });
-          templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelTemplate);
-          OB.POS.hwserver.print(templatereceipt, {
-            order: cancelModel,
-            receiptNo: keyboard.receipt.attributes.documentNo,
-            tableNo: keyboard.receipt.attributes.restaurantTable.name,
-            guestNo: keyboard.receipt.attributes.numberOfGuests,
-            user: keyboard.receipt.attributes.salesRepresentative$_identifier
-          });
-          OB.UTIL.showSuccess("Line cancelled");
-          return enyo.Signals.send("onTransmission", {
-            message: 'cancelled',
-            cid: keyboard.line.cid
-          });
+          OB.UTIL.showSuccess("Orders sent to printers successfully");
+          newArray = null;
+          keyboard.receipt.trigger('scan');
+          return;
         } else {
-          OB.UTIL.showError("No printer is assigned to this product");
-          return console.log("no data found");
+          new OB.DS.Request("com.tasawr.retail.restaurant.data.OrderLineService").exec({
+            product: keyboard.line.get('product').id
+          }, function(data) {
+            var message, sendModel;
+            if (data[0]) {
+              message = "Cancel this item";
+              sendModel = OB.UI.printingUtils.buildModel(keyboard, data, message);
+              templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelTemplate);
+              OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendModel);
+              enyo.Signals.send("onTransmission", {
+                message: 'cancelled',
+                cid: keyboard.line.cid
+              });
+              return OB.UTIL.showSuccess("Line Cancelled");
+            } else {
+              return OB.UTIL.showError("No printer is assigned to this product");
+            }
+          });
         }
-      });
+        keyboard.receipt.trigger('scan');
+      }
     }
   });
-
-  OB.OBPOSPointOfSale.UI.KeyboardOrder.prototype.addCommand("cancel", new TSRR.UI.CancelButton());
 
 }).call(this);

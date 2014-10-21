@@ -79,7 +79,14 @@
           ]
         });
       }
-      this.$.sendstatus.setContent('Not sent');
+      if (this.model.cid !== null) {
+        if (window.localStorage.getItem(this.model.cid) === null) {
+          this.$.sendstatus.setContent('Not sent');
+          window.localStorage.setItem(this.model.cid, 'Not sent');
+        } else {
+          this.$.sendstatus.setContent(localStorage.getItem(this.model.cid));
+        }
+      }
       if (this.model.get("promotions")) {
         enyo.forEach(this.model.get("promotions"), (function(d) {
           if (d.hidden) {

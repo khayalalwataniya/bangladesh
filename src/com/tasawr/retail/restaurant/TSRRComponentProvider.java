@@ -47,6 +47,8 @@ public class TSRRComponentProvider extends BaseComponentProvider {
     grhelper.add("main/models/product-override.js");
     grhelper.add("main/models/orderLineOverride.js");
     
+    grhelper.add("main/models/genericModelForPrinter.js");
+
     grhelper.add("main/models/Attribute.js");
     grhelper.add("main/models/AttributeInstance.js");
     grhelper.add("main/models/AttributeSet.js");
@@ -66,8 +68,12 @@ public class TSRRComponentProvider extends BaseComponentProvider {
 
 
     grhelper.add("main/views/RestaurantUtils.js");
+    grhelper.add("main/views/printingUtils.js");
+
     grhelper.add("main/components/RestaurantDialog.js");
     grhelper.add("main/components/RestaurantSearchDialog.js");
+
+
 
     grhelper.add("tables/namespaces.js");
     grhelper.add("tables/models/sections.js");
@@ -83,6 +89,8 @@ public class TSRRComponentProvider extends BaseComponentProvider {
     grhelper.add("tables/components/sectionMenu.js");
     grhelper.add("tables/components/table.js");
     grhelper.add("tables/views/tables.js");
+
+    
 
     // grhelper.add(".js");
 

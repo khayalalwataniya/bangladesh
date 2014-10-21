@@ -1,13 +1,3 @@
-class FireModel extends Backbone.Model
-  order: null
-  message: null
-  printCode: null
-  printerProperty: null
-  productQty: null
-  description: null
-
-
-
 OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
   i18nLabel: "TSRR_BtnFireLineLabel"
   command: 'line:fireCommand'
@@ -16,36 +6,15 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
   definition:
     stateless: true
     action: (keyboard, txt) ->
-      if keyboard.receipt.get('numberOfGuests') is undefined
-        keyboard.receipt.set('numberOfGuests', "1")
-
+      OB.UI.printingUtils.prepareReceipt(keyboard)
       gpi = keyboard.line.attributes.product.attributes.generic_product_id
       if gpi isnt null
-        me = @
-        allLines = null
-        allLines = keyboard.receipt.get('lines')
-        newArray = jQuery.extend(true, {}, keyboard.receipt.get('lines'));
-        for line in allLines.models
-          if line.get('product').get('generic_product_id') is gpi
-            console.info 'present'
-          else
-            newArray.models.splice(newArray.models.indexOf(line), 1);
-
+        newArray = OB.UI.printingUtils.getFilteredLines(keyboard, gpi)
         window.productsAndPrinters = []
-
-        sendToPrinter = OB.UI.RestaurantUtils.uniquePrinterAndProductGenerator(OB.UI.RestaurantUtils.productInfoGetter, newArray)
+        sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, newArray)
         templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.FireLinesTemplate)
-        if keyboard.receipt.attributes.restaurantTable is undefined
-          keyboard.receipt.attributes.restaurantTable.name = "Unspecified"
-        if keyboard.receipt.attributes.numberOfGuests is undefined
-          keyboard.receipt.attributes.numberOfGuests = "Unspecified"
-        OB.POS.hwserver.print templatereceipt,
-          order: sendToPrinter
-          receiptNo: keyboard.receipt.attributes.documentNo
-          tableNo: keyboard.receipt.attributes.restaurantTable.name
-          sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
-          guestNo: keyboard.receipt.attributes.numberOfGuests
-          user: keyboard.receipt.attributes.salesRepresentative$_identifier
+        OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendToPrinter)
+
         _.each newArray.models, (model)->
           enyo.Signals.send "onTransmission", {message: 'fired', cid: model.cid}
 
@@ -58,24 +27,12 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
           product: keyboard.line.get('product').id
         , (data) ->
           if data[0]
-            fireModel = new FireModel
-              order: keyboard.receipt
-              message: "Fire this item"
-              printCode: data[0].printCode
-              printerProperty: data[0].printerProperty
-              productQty: String(keyboard.line.get('qty'))
-              description: keyboard.line.get('description')
-
+            message = "Fire this item"
+            sendModel = OB.UI.printingUtils.buildModel(keyboard, data, message)
             templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.FireTemplate)
-            OB.POS.hwserver.print templatereceipt,
-              order: fireModel
-              receiptNo: keyboard.receipt.get('documentNo')
-              tableNo: keyboard.receipt.get('restaurantTable').name
-              sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
-              guestNo: keyboard.receipt.get('numberOfGuests')
-              user: keyboard.receipt.get('salesRepresentative$_identifier')
+            OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendModel)
             enyo.Signals.send "onTransmission", {message: 'fired', cid: keyboard.line.cid}
-            OB.UTIL.showSuccess "Line fired"
+            OB.UTIL.showSuccess "Line Fired"
           else
             OB.UTIL.showError "No printer is assigned to this product"
 

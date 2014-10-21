@@ -80,7 +80,7 @@
       return new OB.DS.Process("com.tasawr.retail.restaurant.data.ProductAttributeSetService").exec({
         id: product.id
       }, function(data) {
-        console.error(data);
+        console.log(data);
         return me.loadAttributes(data);
       });
     },
