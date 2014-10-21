@@ -18,6 +18,9 @@ OB.OBPOSPointOfSale.Print.SendOrderTemplate = "../com.tasawr.retail.restaurant/r
 OB.OBPOSPointOfSale.Print.CancelOrderTemplate = "../com.tasawr.retail.restaurant/receipts/cancelorder.xml"
 OB.OBPOSPointOfSale.Print.LineTemplate = "../com.tasawr.retail.restaurant/receipts/printline.xml"
 
+OB.OBPOSPointOfSale.Print.GenericLineTemplate = "../com.tasawr.retail.restaurant/receipts/genericLine.xml"
+
+
 
 OB.UI.ModalReceiptPropertiesImpl.extend initComponents: ->
   i = undefined

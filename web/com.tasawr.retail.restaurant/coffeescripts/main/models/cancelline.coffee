@@ -23,18 +23,7 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
         keyboard.receipt.trigger('scan')
         return
       else
-        new OB.DS.Request("com.tasawr.retail.restaurant.data.OrderLineService").exec
-          product: keyboard.line.get('product').id
-        , (data) ->
-          if data[0]
-            message = "Cancel this item"
-            sendModel = OB.UI.printingUtils.buildModel(keyboard, data, message)
-            templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelTemplate)
-            OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendModel)
-            enyo.Signals.send "onTransmission", {message: 'cancelled', cid: keyboard.line.cid}
-            OB.UTIL.showSuccess "Line Cancelled"
-          else
-            OB.UTIL.showError "No printer is assigned to this product"
+        OB.UI.printingUtils.printNonGenericLine(keyboard, "Cancel This Item", "Line cancelled", "cancel")
 
       keyboard.receipt.trigger('scan')
       return

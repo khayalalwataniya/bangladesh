@@ -1,5 +1,5 @@
 (function() {
-  var allPrinters, allProducts, assignVar, buildModel, getFilteredLines, prepareReceipt, printLineOrReceipt, printersAndProducts, productInfoGetter, requests, uniquePrinterAndProductGenerator;
+  var allPrinters, allProducts, assignVar, buildModel, getFilteredLines, prepareReceipt, printLineOrReceipt, printNonGenericLine, printersAndProducts, productInfoGetter, requests, uniquePrinterAndProductGenerator;
 
   printersAndProducts = [];
 
@@ -99,10 +99,10 @@
 
   prepareReceipt = function(keyboard) {
     if (keyboard.receipt.attributes.restaurantTable === void 0) {
-      keyboard.receipt.attributes.restaurantTable.name = "321";
+      keyboard.receipt.attributes.restaurantTable.name = "Unspecified";
     }
     if (keyboard.receipt.attributes.numberOfGuests === void 0) {
-      return keyboard.receipt.attributes.numberOfGuests = "123";
+      return keyboard.receipt.attributes.numberOfGuests = "Unspecified";
     }
   };
 
@@ -144,6 +144,27 @@
     return newArray;
   };
 
+  printNonGenericLine = function(keyboard, message, successMessage, lineMessage) {
+    return new OB.DS.Request("com.tasawr.retail.restaurant.data.OrderLineService").exec({
+      product: keyboard.line.get('product').id
+    }, function(data) {
+      var sendModel, templatereceipt;
+      if (data[0]) {
+        message = message;
+        sendModel = OB.UI.printingUtils.buildModel(keyboard, data, message);
+        templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.GenericLineTemplate);
+        OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendModel);
+        enyo.Signals.send("onTransmission", {
+          message: lineMessage,
+          cid: keyboard.line.cid
+        });
+        return OB.UTIL.showSuccess(successMessage);
+      } else {
+        return OB.UTIL.showError("No printer is assigned to this product");
+      }
+    });
+  };
+
   OB.UI.printingUtils = {
     uniquePrinterAndProductGenerator: uniquePrinterAndProductGenerator,
     productInfoGetter: productInfoGetter,
@@ -151,7 +172,8 @@
     prepareReceipt: prepareReceipt,
     printLineOrReceipt: printLineOrReceipt,
     buildModel: buildModel,
-    getFilteredLines: getFilteredLines
+    getFilteredLines: getFilteredLines,
+    printNonGenericLine: printNonGenericLine
   };
 
 }).call(this);

@@ -84,9 +84,9 @@ productInfoGetter = (lines) ->
 prepareReceipt =  (keyboard) ->
 #  debugger
   if keyboard.receipt.attributes.restaurantTable is undefined
-    keyboard.receipt.attributes.restaurantTable.name = "321"
+    keyboard.receipt.attributes.restaurantTable.name = "Unspecified"
   if keyboard.receipt.attributes.numberOfGuests is undefined
-    keyboard.receipt.attributes.numberOfGuests = "123"
+    keyboard.receipt.attributes.numberOfGuests = "Unspecified"
 
 printLineOrReceipt = (keyboard, templatereceipt, sendToPrinter) ->
   OB.POS.hwserver.print templatereceipt,
@@ -120,6 +120,21 @@ getFilteredLines = (keyboard, gpi) ->
 
   newArray
 
+printNonGenericLine = (keyboard, message, successMessage, lineMessage) ->
+  new OB.DS.Request("com.tasawr.retail.restaurant.data.OrderLineService").exec
+    product: keyboard.line.get('product').id
+  , (data) ->
+    if data[0]
+      message = message
+      sendModel = OB.UI.printingUtils.buildModel(keyboard, data, message)
+      templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.GenericLineTemplate)
+      OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendModel)
+      enyo.Signals.send "onTransmission", {message: lineMessage, cid: keyboard.line.cid}
+      OB.UTIL.showSuccess successMessage
+    else
+      OB.UTIL.showError "No printer is assigned to this product"
+
+
 
 
 OB.UI.printingUtils =
@@ -130,3 +145,4 @@ OB.UI.printingUtils =
   printLineOrReceipt: printLineOrReceipt
   buildModel: buildModel
   getFilteredLines:getFilteredLines
+  printNonGenericLine:printNonGenericLine
