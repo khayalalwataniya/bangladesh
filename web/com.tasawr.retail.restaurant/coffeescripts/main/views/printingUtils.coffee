@@ -1,8 +1,8 @@
-printersAndProducts = []
-allPrinters = []
-allProducts = []
-window.productsAndPrinters = []
-requests = []
+TSRR.Main.TempVars.printersAndProducts = []
+TSRR.Main.TempVars.allPrinters = []
+TSRR.Main.TempVars.allProducts = []
+TSRR.Main.TempVars.productsAndPrinters = []
+TSRR.Main.TempVars.requests = []
 
 
 uniquePrinterAndProductGenerator = (callback, lines) ->
@@ -10,8 +10,8 @@ uniquePrinterAndProductGenerator = (callback, lines) ->
 
   qty = undefined
   description = undefined
-  uniquePrinters = allPrinters.filter((elem, pos) ->
-    allPrinters.indexOf(elem) is pos
+  uniquePrinters = TSRR.Main.TempVars.allPrinters.filter((elem, pos) ->
+    TSRR.Main.TempVars.allPrinters.indexOf(elem) is pos
   )
   j = 0
 
@@ -20,17 +20,17 @@ uniquePrinterAndProductGenerator = (callback, lines) ->
     tempProducts = new Array()
     i = 0
 
-    while i < productsAndPrinters.length
-      if ($.inArray(uniquePrinters[j], productsAndPrinters[i][1][0])) >= 0
-        prodQtyDesc.push productsAndPrinters[i]
+    while i < TSRR.Main.TempVars.productsAndPrinters.length
+      if ($.inArray(uniquePrinters[j], TSRR.Main.TempVars.productsAndPrinters[i][1][0])) >= 0
+        prodQtyDesc.push TSRR.Main.TempVars.productsAndPrinters[i]
 
       i++
-    printersAndProducts[j] = []
-    printersAndProducts[j][0] = uniquePrinters[j]
-    printersAndProducts[j][1] = prodQtyDesc
+    TSRR.Main.TempVars.printersAndProducts[j] = []
+    TSRR.Main.TempVars.printersAndProducts[j][0] = uniquePrinters[j]
+    TSRR.Main.TempVars.printersAndProducts[j][1] = prodQtyDesc
     j++
 
-  printersAndProducts
+  TSRR.Main.TempVars.printersAndProducts
 
 assignVar = (requests, lines) ->
   tempPrinters = []
@@ -44,13 +44,13 @@ assignVar = (requests, lines) ->
       j = 0
 
       while j < tempPrinters.length
-        allPrinters.push tempPrinters[j]
+        TSRR.Main.TempVars.allPrinters.push tempPrinters[j]
         j++
-      productsAndPrinters[i] = []
-      productsAndPrinters[i][0] = data.printCode
-      productsAndPrinters[i][1] = [tempPrinters]
-      productsAndPrinters[i][2] = lines.models[i].attributes.qty
-      productsAndPrinters[i][3] = lines.models[i].attributes.description
+      TSRR.Main.TempVars.productsAndPrinters[i] = []
+      TSRR.Main.TempVars.productsAndPrinters[i][0] = data.printCode
+      TSRR.Main.TempVars.productsAndPrinters[i][1] = [tempPrinters]
+      TSRR.Main.TempVars.productsAndPrinters[i][2] = lines.models[i].get('qty')
+      TSRR.Main.TempVars.productsAndPrinters[i][3] = lines.models[i].get('description')
 
     i++
 
@@ -63,7 +63,7 @@ productInfoGetter = (lines) ->
       break
     else
       ajaxRequest = new enyo.Ajax(
-        url: "../../org.openbravo.mobile.core.service.jsonrest/" + "com.tasawr.retail.restaurant.data.OrderLineService" + "/" + encodeURI(JSON.stringify(product: lines.models[i].attributes.product.id))
+        url: "../../org.openbravo.mobile.core.service.jsonrest/" + "com.tasawr.retail.restaurant.data.OrderLineService" + "/" + encodeURI(JSON.stringify(product: lines.models[i].get('product').id))
         cacheBust: false
         sync: true
         method: "GET"
@@ -74,42 +74,21 @@ productInfoGetter = (lines) ->
             console.log "failed"
       )
       ajaxRequest.go().response("success").error "fail"
-      requests.push ajaxRequest
+      TSRR.Main.TempVars.requests.push ajaxRequest
     i++
-  $.when.apply(`undefined`, requests).then assignVar(requests, lines)
-  requests.length = 0
+  $.when.apply(`undefined`, TSRR.Main.TempVars.requests).then assignVar(TSRR.Main.TempVars.requests, lines)
+  TSRR.Main.TempVars.requests.length = 0
 
 
 
 prepareReceipt =  (keyboard) ->
-#  debugger
-  if keyboard.receipt.attributes.restaurantTable is undefined
-    keyboard.receipt.attributes.restaurantTable.name = "Unspecified"
-  if keyboard.receipt.attributes.numberOfGuests is undefined
+
+  if keyboard.receipt.get('restaurantTable') is undefined
+    keyboard.receipt.get('restaurantTable').name = "Unspecified"
+  if keyboard.receipt.get('numberOfGuests') is undefined
     keyboard.receipt.attributes.numberOfGuests = "Unspecified"
 
-printGenericLine = (keyboard, gpi, message) ->
 
-  newArray = OB.UI.printingUtils.getFilteredLines(keyboard, gpi)
-  window.productsAndPrinters = []
-  sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, newArray)
-  templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.GenericLineTemplate)
-
-  OB.POS.hwserver.print templatereceipt,
-    order: sendToPrinter
-    receiptNo: keyboard.receipt.attributes.documentNo
-    tableNo: keyboard.receipt.attributes.restaurantTable.name
-    sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
-    guestNo: keyboard.receipt.attributes.numberOfGuests
-    message: message
-    user: keyboard.receipt.attributes.salesRepresentative$_identifier
-
-  _.each newArray.models, (model)->
-    enyo.Signals.send "onTransmission", {message: 'sent', cid: model.cid}
-
-  OB.UTIL.showSuccess "Orders sent to printers successfully"
-  newArray = null
-  keyboard.receipt.trigger('scan')
 
 
 buildModel = (keyboard, data, message) ->
@@ -134,12 +113,12 @@ getFilteredLines = (keyboard, gpi) ->
 
   newArray
 
-printNonGenericLine = (keyboard, message, successMessage, lineMessage) ->
+printNonGenericLine = (keyboard, messageParam, successMessage, lineMessage) ->
   new OB.DS.Request("com.tasawr.retail.restaurant.data.OrderLineService").exec
     product: keyboard.line.get('product').id
   , (data) ->
     if data[0]
-      message = message
+      message = messageParam
       sendModel = OB.UI.printingUtils.buildModel(keyboard, data, message)
       templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.NonGenericLineTemplate)
       OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendModel)
@@ -149,14 +128,39 @@ printNonGenericLine = (keyboard, message, successMessage, lineMessage) ->
       OB.UTIL.showError "No printer is assigned to this product"
 
 
+printGenericLine = (keyboard, gpi, message, statusMessage) ->
+
+  newArray = OB.UI.printingUtils.getFilteredLines(keyboard, gpi)
+  TSRR.Main.TempVars.productsAndPrinters = []
+  sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, newArray)
+  templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.GenericLineTemplate)
+
+  OB.POS.hwserver.print templatereceipt,
+    order: sendToPrinter
+    receiptNo: keyboard.receipt.get('documentNo')
+    tableNo: keyboard.receipt.get('restaurantTable').name
+    sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
+    guestNo: keyboard.receipt.get('numberOfGuests')
+    message: message
+    user: keyboard.receipt.get('salesRepresentative$_identifier')
+
+  _.each newArray.models, (model)->
+    enyo.Signals.send "onTransmission", {message: statusMessage, cid: model.cid}
+
+  OB.UTIL.showSuccess "Orders sent to printers successfully"
+  newArray = null
+  keyboard.receipt.trigger('scan')
+
+
+
 printLineOrReceipt = (keyboard, templatereceipt, sendToPrinter) ->
   OB.POS.hwserver.print templatereceipt,
     order: sendToPrinter
-    receiptNo: keyboard.receipt.attributes.documentNo
-    tableNo: keyboard.receipt.attributes.restaurantTable.name
+    receiptNo: keyboard.receipt.get('documentNo')
+    tableNo: keyboard.receipt.get('restaurantTable').name
     sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
-    guestNo: keyboard.receipt.attributes.numberOfGuests
-    user: keyboard.receipt.attributes.salesRepresentative$_identifier
+    guestNo: keyboard.receipt.get('numberOfGuests')
+    user: keyboard.receipt.get('salesRepresentative$_identifier')
 
 
 

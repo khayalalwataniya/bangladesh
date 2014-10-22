@@ -38,9 +38,9 @@
         <line><text>----------------------------------------</text></line>
         <line><text>------------<%= OB.UTIL.encodeXMLComponent(order.get('message')) %>--------------</text></line>
 
-        <line>
-            <text align="left" length="5"><%= OB.UTIL.encodeXMLComponent(order.get('productQty')) %>X</text>
-            <text><%= OB.UTIL.encodeXMLComponent(order.get('printCode')) %></text>
+        <line size="2">
+            <text align="left" length="5" bold="true"><%= OB.UTIL.encodeXMLComponent(order.get('productQty')) %>X</text>
+            <text bold="true"><%= OB.UTIL.encodeXMLComponent(order.get('printCode')) %></text>
         </line>
 
         <%

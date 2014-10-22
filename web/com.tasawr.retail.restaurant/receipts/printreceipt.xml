@@ -99,6 +99,7 @@
             <text align="left" length="32"><%= p.name %></text>
             <text align="right" length="8"><%= OB.I18N.formatCurrency(-p.amt) %></text>
           </line>
+
           <%
             }
           });

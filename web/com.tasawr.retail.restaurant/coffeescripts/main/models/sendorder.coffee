@@ -44,20 +44,13 @@ enyo.kind
 
   sendButton: (inSender, inEvent) ->
     @hide()
+
+    OB.UI.printingUtils.prepareReceipt(@args.keyboard)
     lines = @args.keyboard.receipt.attributes.lines
-    sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines)
+    sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, lines)
     templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate)
-    if @args.keyboard.receipt.attributes.restaurantTable is undefined
-      @args.keyboard.receipt.attributes.restaurantTable.name = "Unspecified"
-    if @args.keyboard.receipt.attributes.numberOfGuests is undefined
-      @args.keyboard.receipt.attributes.numberOfGuests = "Unspecified"
-    OB.POS.hwserver.print templatereceipt,
-      order: sendToPrinter
-      receiptNo: @args.keyboard.receipt.attributes.documentNo
-      tableNo: @args.keyboard.receipt.attributes.restaurantTable.name
-      sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
-      guestNo: @args.keyboard.receipt.attributes.numberOfGuests
-      user: @args.keyboard.receipt.attributes.salesRepresentative$_identifier
+    OB.UI.printingUtils.printLineOrReceipt(@args.keyboard, templatereceipt, sendToPrinter)
+
 
     _.each lines.models, (model)->
       enyo.Signals.send "onTransmission", {message: 'sent', cid: model.cid}
@@ -89,81 +82,6 @@ enyo.kind
 
   initComponents: ->
     @inherited arguments
-
-  uniquePrinterAndProductGenerator = (callback, lines) ->
-    callback lines
-    qty = undefined
-    description = undefined
-    uniquePrinters = allPrinters.filter((elem, pos) ->
-      allPrinters.indexOf(elem) is pos
-    )
-    window.arr = productsAndPrinters
-    j = 0
-
-    while j < uniquePrinters.length
-      prodQtyDesc = new Array()
-      tempProducts = new Array()
-      i = 0
-
-      while i < productsAndPrinters.length
-        if ($.inArray(uniquePrinters[j], productsAndPrinters[i][1][0])) >= 0
-          prodQtyDesc.push productsAndPrinters[i]
-
-        i++
-      printersAndProducts[j] = []
-      printersAndProducts[j][0] = uniquePrinters[j]
-      printersAndProducts[j][1] = prodQtyDesc
-      j++
-    printersAndProducts
-
-  assignVar = (requests, lines) ->
-    tempPrinters = []
-    i = 0
-
-    while i < requests.length
-      result = JSON.parse(requests[i].xhr.responseText)
-      data = result.response.data[0]
-      if data
-        tempPrinters = data.printerProperty.split(" ")
-        j = 0
-
-        while j < tempPrinters.length
-          allPrinters.push tempPrinters[j]
-          j++
-        productsAndPrinters[i] = []
-        productsAndPrinters[i][0] = data.printCode
-        productsAndPrinters[i][1] = [tempPrinters]
-        productsAndPrinters[i][2] = lines.models[i].attributes.qty
-        productsAndPrinters[i][3] = lines.models[i].attributes.description
-
-      i++
-
-  productInfoGetter = (lines) ->
-    i = 0
-
-    while i < lines.length
-      ajaxRequest = new enyo.Ajax(
-        url: "../../org.openbravo.mobile.core.service.jsonrest/" + "com.tasawr.retail.restaurant.data.OrderLineService" + "/" + encodeURI(JSON.stringify(product: lines.models[i].attributes.product.id))
-        cacheBust: false
-        sync: true
-        method: "GET"
-        handleAs: "json"
-        contentType: "application/json;charset=utf-8"
-        success: (inSender, inResponse) ->
-          fail: (inSender, inResponse) ->
-            console.log "failed"
-      )
-      ajaxRequest.go().response("success").error "fail"
-      requests.push ajaxRequest
-      i++
-    $.when.apply(`undefined`, requests).then assignVar(requests, lines)
-    requests.length = 0
-
-  printersAndProducts = []
-  allPrinters = []
-  allProducts = []
-  productsAndPrinters = []
-  requests = []
 
 
 enyo.kind
@@ -209,9 +127,6 @@ enyo.kind
         keyboard: keyboard
 
 
-#OB.OBPOSPointOfSale.UI.KeyboardOrder::addCommand "orderPopup", new TSRR.UI.OrderButton()
-
-
 OB.UI.WindowView.registerPopup "OB.OBPOSPointOfSale.UI.PointOfSale",
   kind: "TSRR.UI.SendCancelOrderPopup"
   name: "TSRR_UI_SendCancelOrderPopup"
@@ -254,21 +169,18 @@ enyo.kind
   okButtonPressed: (inSender, inEvent) ->
     @inherited arguments
     @message = inSender.getControls()[0].getControls()[0].getControls()[0].getValue()
-    lines = TSRR.Tables.Config.currentOrder.get('lines') #window.keyboard.receipt.attributes.lines
-    sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines)
+    lines = TSRR.Tables.Config.currentOrder.get('lines')
+    sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, lines)
     templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelOrderTemplate)
-    #		if TSRR.Tables.Config.currentOrder.attributes.restaurantTable == ""
-    #			TSRR.Tables.Config.currentOrder.attributes.restaurantTable = TSRR.Tables.Config.currentTable
-    #		if @args.keyboard.receipt.attributes.numberOfGuests == ""
-    #			@args.keyboard.receipt.attributes.numberOfGuests = "Unspecified"
+
     OB.POS.hwserver.print templatereceipt,
       order: sendToPrinter
       message: @message
-      receiptNo: @parent.model.attributes.order.attributes.documentNo
-      tableNo: @parent.model.attributes.order.attributes.restaurantTable.name
+      receiptNo: @parent.model.get('order').get('documentNo')
+      tableNo: @parent.model.get('order').get('restaurantTable').name
       sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
-      guestNo: @parent.model.attributes.order.attributes.numberOfGuests
-      user: @parent.model.attributes.order.attributes.salesRepresentative$_identifier
+      guestNo: @parent.model.get('order').get('numberOfGuests')
+      user: @parent.model.get('order').get('salesRepresentative$_identifier')
 
 
     _.each lines.models, (model)->
@@ -283,12 +195,10 @@ enyo.kind
     @parent.$.TSRR_UI_SendCancelOrderPopup.hide()
     @hide()
 
-#	executeOnHide: ->
-#	executeOnShow: ->
   init: (model) ->
     @inherited arguments
     window.model = model
-#console.log model
+
 
 enyo.kind
   name: "TSRR.UI.CancelReasonOkButton"

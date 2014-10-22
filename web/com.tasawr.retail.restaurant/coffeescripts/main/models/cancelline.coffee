@@ -9,7 +9,7 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
       OB.UI.printingUtils.prepareReceipt(keyboard)
       gpi = keyboard.line.attributes.product.attributes.generic_product_id
       if gpi isnt null
-        OB.UI.printingUtils.printGenericLine(keyboard, gpi,  "Cancel these lines")
+        OB.UI.printingUtils.printGenericLine(keyboard, gpi,  "Cancel these lines", "cancelled")
         return
       else
         OB.UI.printingUtils.printNonGenericLine(keyboard, "Cancel This Item", "Line cancelled", "cancelled")

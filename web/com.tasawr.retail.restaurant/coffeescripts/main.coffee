@@ -9,7 +9,7 @@ window.TSRR = window.TSRR or {}
 
 TSRR.Main = TSRR.Main or {}
 #
-TSRR.Main.Extra = TSRR.Main.Extra or {}
+TSRR.Main.TempVars = TSRR.Main.TempVars or {}
 #
 TSRR.Main.Model = TSRR.Main.Model or {}
 TSRR.Main.Collection = TSRR.Main.Collection or {}

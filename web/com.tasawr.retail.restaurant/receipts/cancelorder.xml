@@ -46,9 +46,9 @@
 
         %>
 
-        <line>
-            <text align="left" length="5"><%= OB.UTIL.encodeXMLComponent(order[i][1][j][2].toString()) %>X</text>
-            <text><%= OB.UTIL.encodeXMLComponent(order[i][1][j][0]) %></text>
+        <line size="2">
+            <text align="left" length="5" size="2"><%= OB.UTIL.encodeXMLComponent(order[i][1][j][2].toString()) %>X</text>
+            <text size="2"><%= OB.UTIL.encodeXMLComponent(order[i][1][j][0]) %></text>
         </line>
         <%
         if(!(order[i][1][j][3] == "")){
