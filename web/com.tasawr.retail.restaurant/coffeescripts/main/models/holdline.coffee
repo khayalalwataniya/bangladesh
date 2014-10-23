@@ -15,3 +15,5 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
         OB.UI.printingUtils.printNonGenericLine(keyboard, "Hold This Item", "Line held", "held")
       keyboard.receipt.trigger('scan')
       return
+
+

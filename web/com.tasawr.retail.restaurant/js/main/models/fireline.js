@@ -11,7 +11,7 @@
         OB.UI.printingUtils.prepareReceipt(keyboard);
         gpi = keyboard.line.attributes.product.attributes.generic_product_id;
         if (gpi !== null) {
-          OB.UI.printingUtils.printGenericLine(keyboard, gpi, "Fire these lines");
+          OB.UI.printingUtils.printGenericLine(keyboard, gpi, "Fire these lines", "fired");
           return;
         } else {
           OB.UI.printingUtils.printNonGenericLine(keyboard, "Fire This Item", "Line fired", "fired");

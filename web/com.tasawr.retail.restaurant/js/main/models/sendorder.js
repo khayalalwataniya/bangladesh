@@ -1,6 +1,4 @@
 (function() {
-  var allPrinters, allProducts, assignVar, printersAndProducts, productInfoGetter, productsAndPrinters, requests, uniquePrinterAndProductGenerator;
-
   OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push({
     command: "orderPopup",
     i18nLabel: "TSRR_BtnSendAllOrderLabel",
@@ -53,23 +51,11 @@
     sendButton: function(inSender, inEvent) {
       var lines, sendToPrinter, templatereceipt;
       this.hide();
+      OB.UI.printingUtils.prepareReceipt(this.args.keyboard);
       lines = this.args.keyboard.receipt.attributes.lines;
-      sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines);
+      sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, lines);
       templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate);
-      if (this.args.keyboard.receipt.attributes.restaurantTable === void 0) {
-        this.args.keyboard.receipt.attributes.restaurantTable.name = "Unspecified";
-      }
-      if (this.args.keyboard.receipt.attributes.numberOfGuests === void 0) {
-        this.args.keyboard.receipt.attributes.numberOfGuests = "Unspecified";
-      }
-      OB.POS.hwserver.print(templatereceipt, {
-        order: sendToPrinter,
-        receiptNo: this.args.keyboard.receipt.attributes.documentNo,
-        tableNo: this.args.keyboard.receipt.attributes.restaurantTable.name,
-        sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
-        guestNo: this.args.keyboard.receipt.attributes.numberOfGuests,
-        user: this.args.keyboard.receipt.attributes.salesRepresentative$_identifier
-      });
+      OB.UI.printingUtils.printLineOrReceipt(this.args.keyboard, templatereceipt, sendToPrinter);
       _.each(lines.models, function(model) {
         return enyo.Signals.send("onTransmission", {
           message: 'sent',
@@ -104,84 +90,7 @@
     initComponents: function() {
       return this.inherited(arguments);
     }
-  }, uniquePrinterAndProductGenerator = function(callback, lines) {
-    var description, i, j, prodQtyDesc, qty, tempProducts, uniquePrinters;
-    callback(lines);
-    qty = void 0;
-    description = void 0;
-    uniquePrinters = allPrinters.filter(function(elem, pos) {
-      return allPrinters.indexOf(elem) === pos;
-    });
-    window.arr = productsAndPrinters;
-    j = 0;
-    while (j < uniquePrinters.length) {
-      prodQtyDesc = new Array();
-      tempProducts = new Array();
-      i = 0;
-      while (i < productsAndPrinters.length) {
-        if (($.inArray(uniquePrinters[j], productsAndPrinters[i][1][0])) >= 0) {
-          prodQtyDesc.push(productsAndPrinters[i]);
-        }
-        i++;
-      }
-      printersAndProducts[j] = [];
-      printersAndProducts[j][0] = uniquePrinters[j];
-      printersAndProducts[j][1] = prodQtyDesc;
-      j++;
-    }
-    return printersAndProducts;
-  }, assignVar = function(requests, lines) {
-    var data, i, j, result, tempPrinters, _results;
-    tempPrinters = [];
-    i = 0;
-    _results = [];
-    while (i < requests.length) {
-      result = JSON.parse(requests[i].xhr.responseText);
-      data = result.response.data[0];
-      if (data) {
-        tempPrinters = data.printerProperty.split(" ");
-        j = 0;
-        while (j < tempPrinters.length) {
-          allPrinters.push(tempPrinters[j]);
-          j++;
-        }
-        productsAndPrinters[i] = [];
-        productsAndPrinters[i][0] = data.printCode;
-        productsAndPrinters[i][1] = [tempPrinters];
-        productsAndPrinters[i][2] = lines.models[i].attributes.qty;
-        productsAndPrinters[i][3] = lines.models[i].attributes.description;
-      }
-      _results.push(i++);
-    }
-    return _results;
-  }, productInfoGetter = function(lines) {
-    var ajaxRequest, i;
-    i = 0;
-    while (i < lines.length) {
-      ajaxRequest = new enyo.Ajax({
-        url: "../../org.openbravo.mobile.core.service.jsonrest/" + "com.tasawr.retail.restaurant.data.OrderLineService" + "/" + encodeURI(JSON.stringify({
-          product: lines.models[i].attributes.product.id
-        })),
-        cacheBust: false,
-        sync: true,
-        method: "GET",
-        handleAs: "json",
-        contentType: "application/json;charset=utf-8",
-        success: function(inSender, inResponse) {
-          return {
-            fail: function(inSender, inResponse) {
-              return console.log("failed");
-            }
-          };
-        }
-      });
-      ajaxRequest.go().response("success").error("fail");
-      requests.push(ajaxRequest);
-      i++;
-    }
-    $.when.apply(undefined, requests).then(assignVar(requests, lines));
-    return requests.length = 0;
-  }, printersAndProducts = [], allPrinters = [], allProducts = [], productsAndPrinters = [], requests = []);
+  });
 
   enyo.kind({
     name: "TSRR.UI.DialogSendButton",
@@ -280,16 +189,16 @@
       this.inherited(arguments);
       this.message = inSender.getControls()[0].getControls()[0].getControls()[0].getValue();
       lines = TSRR.Tables.Config.currentOrder.get('lines');
-      sendToPrinter = uniquePrinterAndProductGenerator(productInfoGetter, lines);
+      sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, lines);
       templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelOrderTemplate);
       OB.POS.hwserver.print(templatereceipt, {
         order: sendToPrinter,
         message: this.message,
-        receiptNo: this.parent.model.attributes.order.attributes.documentNo,
-        tableNo: this.parent.model.attributes.order.attributes.restaurantTable.name,
+        receiptNo: this.parent.model.get('order').get('documentNo'),
+        tableNo: this.parent.model.get('order').get('restaurantTable').name,
         sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
-        guestNo: this.parent.model.attributes.order.attributes.numberOfGuests,
-        user: this.parent.model.attributes.order.attributes.salesRepresentative$_identifier
+        guestNo: this.parent.model.get('order').get('numberOfGuests'),
+        user: this.parent.model.get('order').get('salesRepresentative$_identifier')
       });
       _.each(lines.models, function(model) {
         return enyo.Signals.send("onTransmission", {

@@ -18,6 +18,28 @@
     error = function(tx, error) {
       console.error(tx);
     };
+    OB.MobileApp.model.hookManager.registerHook("OBPOS_TerminalLoadedFromBackend", function(args, callbacks) {
+      var userId;
+      console.log("calling... OBPOS_AddProductToOrder hook");
+      userId = OB.POS.modelterminal.usermodel.id;
+      $.ajax("../../org.openbravo.service.json.jsonrest/ADUserRoles?_where=userContact='" + userId + "'", {
+        data: JSON.stringify(""),
+        type: "GET",
+        processData: false,
+        contentType: "application/json",
+        success: function(resp) {
+          return _.each(resp.response.data, function(model) {
+            if (model.role$_identifier === "CSAdmin") {
+              return TSRR.Main.TempVars.admin = true;
+            }
+          });
+        },
+        error: function() {
+          return console.error('error while completing request');
+        }
+      });
+      OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
+    });
     OB.MobileApp.model.hookManager.registerHook("OBPRINT_PrePrint", function(args, callbacks) {
       var salesOrder;
       console.log("calling... OBPRINT_PrePrint hook");

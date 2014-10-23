@@ -3,7 +3,7 @@
 
   TSRR.Main = TSRR.Main || {};
 
-  TSRR.Main.Extra = TSRR.Main.Extra || {};
+  TSRR.Main.TempVars = TSRR.Main.TempVars || {};
 
   TSRR.Main.Model = TSRR.Main.Model || {};
 

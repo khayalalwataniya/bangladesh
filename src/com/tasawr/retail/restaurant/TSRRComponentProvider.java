@@ -35,7 +35,10 @@ public class TSRRComponentProvider extends BaseComponentProvider {
 
     final GlobalResourcesHelper grhelper = new GlobalResourcesHelper();
 
+
     grhelper.add("main.js");
+    grhelper.add("tables/namespaces.js");
+    
     grhelper.add("main/views/SplitButton.js");
     grhelper.add("main/views/changeDefaultTemplates.js");
 

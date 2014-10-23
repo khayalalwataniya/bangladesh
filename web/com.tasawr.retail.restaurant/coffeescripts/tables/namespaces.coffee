@@ -15,7 +15,26 @@ if OB.MobileApp.model.hookManager
   error = (tx, error) ->
     console.error tx
     return
-	  
+
+
+  OB.MobileApp.model.hookManager.registerHook "OBPOS_TerminalLoadedFromBackend", (args, callbacks) ->
+    console.log "calling... OBPOS_AddProductToOrder hook"
+
+    userId = OB.POS.modelterminal.usermodel.id
+    $.ajax "../../org.openbravo.service.json.jsonrest/ADUserRoles?_where=userContact='"+userId+"'",
+      data: JSON.stringify("")
+      type: "GET"
+      processData: false
+      contentType: "application/json"
+      success: (resp) ->
+        _.each resp.response.data, (model) ->
+          if model.role$_identifier is "CSAdmin"
+            TSRR.Main.TempVars.admin = true
+      error: ->
+        console.error 'error while completing request'
+    OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
+    return
+
   # delete related booking info once order has been paid
   OB.MobileApp.model.hookManager.registerHook "OBPRINT_PrePrint", (args, callbacks) ->
     console.log "calling... OBPRINT_PrePrint hook"
@@ -118,3 +137,7 @@ OB.OBPOSPointOfSale.Model.PointOfSale::loadUnpaidOrders = ->
     return
 
   return
+
+
+
+
