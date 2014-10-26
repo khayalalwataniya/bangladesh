@@ -83,12 +83,12 @@ productInfoGetter = (lines) ->
 
 prepareReceipt =  (keyboard) ->
 
-  if keyboard.receipt.attributes.resaurantTable.attributes.name is null or undefined
-    keyboard.receipt.attributes.resaurantTable.attributes.name = "Unspecified"
+  if keyboard.receipt.get('resaurantTable') is null or undefined
+    keyboard.receipt.attributes.restaurantTable.attributes.name = "Unspecified"
   if keyboard.receipt.attributes.numberOfGuests is null or undefined
       keyboard.receipt.attributes.numberOfGuests = "Unspecified"
   if keyboard.receipt.attributes.description is null or undefined
-    console.error 'asdf'
+    console.error 'receipt description not found'
 
 
 
