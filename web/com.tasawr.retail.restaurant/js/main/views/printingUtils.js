@@ -98,11 +98,14 @@
   };
 
   prepareReceipt = function(keyboard) {
-    if (keyboard.receipt.get('restaurantTable') === void 0) {
-      keyboard.receipt.get('restaurantTable').name = "Unspecified";
+    if (keyboard.receipt.attributes.resaurantTable.attributes.name === null || void 0) {
+      keyboard.receipt.attributes.resaurantTable.attributes.name = "Unspecified";
     }
-    if (keyboard.receipt.get('numberOfGuests') === void 0) {
-      return keyboard.receipt.attributes.numberOfGuests = "Unspecified";
+    if (keyboard.receipt.attributes.numberOfGuests === null || void 0) {
+      keyboard.receipt.attributes.numberOfGuests = "Unspecified";
+    }
+    if (keyboard.receipt.attributes.description === null || void 0) {
+      return console.error('asdf');
     }
   };
 

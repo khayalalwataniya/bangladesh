@@ -2,6 +2,7 @@
 <output>
 
     <%
+    debugger;
     for (var i = 0; i < order.length; i++){
     printer = order[i][0];
     %>

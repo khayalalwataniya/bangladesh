@@ -51,6 +51,7 @@
     sendButton: function(inSender, inEvent) {
       var lines, sendToPrinter, templatereceipt;
       this.hide();
+      debugger;
       OB.UI.printingUtils.prepareReceipt(this.args.keyboard);
       lines = this.args.keyboard.receipt.attributes.lines;
       sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, lines);

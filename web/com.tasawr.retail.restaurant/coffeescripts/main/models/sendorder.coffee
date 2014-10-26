@@ -45,6 +45,7 @@ enyo.kind
   sendButton: (inSender, inEvent) ->
     @hide()
 
+    debugger
     OB.UI.printingUtils.prepareReceipt(@args.keyboard)
     lines = @args.keyboard.receipt.attributes.lines
     sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, lines)
