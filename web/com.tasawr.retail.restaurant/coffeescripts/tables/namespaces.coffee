@@ -16,6 +16,21 @@ if OB.MobileApp.model.hookManager
     console.error tx
     return
 
+#  OB.MobileApp.model.hookManager.registerHook "OBPOS_OrderDetailContentHook", (args, callbacks) ->
+
+#    sectionName = JSON.parse(localStorage.getItem('currentSection')).name
+#    if TSRR.Tables.Config.currentOrder
+#      tableName = TSRR.Tables.Config.currentOrder.get('restaurantTable').name
+#      debugger
+#      if (args.content.indexOf(tableName) == -1)
+#        args.content = args.content + ' - ' + tableName
+#
+#    if (args.content.indexOf(sectionName) == -1)
+#      args.content = args.content + ' - ' + sectionName
+#
+#    OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
+#    return
+
 
   OB.MobileApp.model.hookManager.registerHook "OBPOS_TerminalLoadedFromBackend", (args, callbacks) ->
     console.log "calling... OBPOS_AddProductToOrder hook"
@@ -122,12 +137,14 @@ OB.OBPOSPointOfSale.Model.PointOfSale::loadUnpaidOrders = ->
       orderlist.reset ordersNotPaid.models
       if TSRR.Tables.Config.currentOrderId
         currentOrder = ordersNotPaid.get TSRR.Tables.Config.currentOrderId
+
       else
         currentOrder = ordersNotPaid.models[0]
-      orderlist.load currentOrder
-      TSRR.Tables.Config.currentOrder = currentOrder if currentOrder
-      loadOrderStr = OB.I18N.getLabel("OBPOS_Order") + currentOrder.get("documentNo") + OB.I18N.getLabel("OBPOS_Loaded") if currentOrder
-      OB.UTIL.showAlert.display loadOrderStr, OB.I18N.getLabel("OBPOS_Info") if loadOrderStr
+        orderlist.load currentOrder
+        TSRR.Tables.Config.currentOrder = currentOrder if currentOrder
+        enyo.Signals.send "onCurrentTableSet", "sms"
+        loadOrderStr = OB.I18N.getLabel("OBPOS_Order") + currentOrder.get("documentNo") + OB.I18N.getLabel("OBPOS_Loaded") if currentOrder
+        OB.UTIL.showAlert.display loadOrderStr, OB.I18N.getLabel("OBPOS_Info") if loadOrderStr
     return
   ), -> #OB.Dal.find error
     # If there is an error fetching the pending orders,

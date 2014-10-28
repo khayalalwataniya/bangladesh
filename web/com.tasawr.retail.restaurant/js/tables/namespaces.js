@@ -125,16 +125,17 @@
           currentOrder = ordersNotPaid.get(TSRR.Tables.Config.currentOrderId);
         } else {
           currentOrder = ordersNotPaid.models[0];
-        }
-        orderlist.load(currentOrder);
-        if (currentOrder) {
-          TSRR.Tables.Config.currentOrder = currentOrder;
-        }
-        if (currentOrder) {
-          loadOrderStr = OB.I18N.getLabel("OBPOS_Order") + currentOrder.get("documentNo") + OB.I18N.getLabel("OBPOS_Loaded");
-        }
-        if (loadOrderStr) {
-          OB.UTIL.showAlert.display(loadOrderStr, OB.I18N.getLabel("OBPOS_Info"));
+          orderlist.load(currentOrder);
+          if (currentOrder) {
+            TSRR.Tables.Config.currentOrder = currentOrder;
+          }
+          enyo.Signals.send("onCurrentTableSet", "sms");
+          if (currentOrder) {
+            loadOrderStr = OB.I18N.getLabel("OBPOS_Order") + currentOrder.get("documentNo") + OB.I18N.getLabel("OBPOS_Loaded");
+          }
+          if (loadOrderStr) {
+            OB.UTIL.showAlert.display(loadOrderStr, OB.I18N.getLabel("OBPOS_Info"));
+          }
         }
       }
     }), function() {
