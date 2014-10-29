@@ -41,6 +41,7 @@ public class TSRRComponentProvider extends BaseComponentProvider {
     
     grhelper.add("main/views/SplitButton.js");
     grhelper.add("main/views/changeDefaultTemplates.js");
+    grhelper.add("main/models/permissionChecker.js");
 
     grhelper.add("main/models/holdline.js");
     grhelper.add("main/models/fireline.js");
@@ -52,6 +53,7 @@ public class TSRRComponentProvider extends BaseComponentProvider {
     
     grhelper.add("main/models/genericModelForPrinter.js");
 
+    grhelper.add("main/models/hooks.js");
     grhelper.add("main/models/Attribute.js");
     grhelper.add("main/models/AttributeInstance.js");
     grhelper.add("main/models/AttributeSet.js");
@@ -59,6 +61,8 @@ public class TSRRComponentProvider extends BaseComponentProvider {
     grhelper.add("main/models/AttributeUse.js");
     grhelper.add("main/models/AttributeValue.js");
 
+
+    grhelper.add("main/components/order-header-override.js");
     grhelper.add("main/components/payment-override.js");
     grhelper.add("main/components/scan-override.js");
     grhelper.add("main/components/renderorderline-override.js");
@@ -85,6 +89,8 @@ public class TSRRComponentProvider extends BaseComponentProvider {
     grhelper.add("tables/models/tablesWindow.js");
     grhelper.add("tables/models/tablesWindow.js");
     grhelper.add("tables/models/changedbookinginfo.js");
+
+    
           
     grhelper.add("tables/data/databookinginfosave.js");      
     
@@ -93,7 +99,9 @@ public class TSRRComponentProvider extends BaseComponentProvider {
     grhelper.add("tables/components/table.js");
     grhelper.add("tables/views/tables.js");
 
-    
+
+    //stylesheets
+    grhelper.add("tsrr.css");
 
     // grhelper.add(".js");
 
@@ -102,12 +110,24 @@ public class TSRRComponentProvider extends BaseComponentProvider {
 
   private class GlobalResourcesHelper {
     private final List<ComponentResource> globalResources = new ArrayList<ComponentResource>();
+    
     private final String prefix = "web/" + MODULE_JAVA_PACKAGE + "/js/";
+    private final String cssPrefix = "web/" + MODULE_JAVA_PACKAGE + "/css/";
+
 
     public void add(String file) {
       globalResources.add(createComponentResource(ComponentResourceType.Static, prefix + file,
           POSUtils.APP_NAME));
+
+      globalResources.add(createComponentResource(ComponentResourceType.Stylesheet, cssPrefix + file,
+           POSUtils.APP_NAME));
+
+      System.out.println(cssPrefix + file);
+
     }
+
+
+
 
     public List<ComponentResource> getGlobalResources() {
       return globalResources;
