@@ -1,13 +1,37 @@
 (function() {
   OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push({
-    command: "orderPopup",
+    command: "sendOrder",
     i18nLabel: "TSRR_BtnSendAllOrderLabel",
     classButtonActive: "btnactive-blue",
     definition: {
       stateless: true,
       action: function(keyboard, txt) {
+        var lines, sendToPrinter, templatereceipt;
+        OB.UI.printingUtils.prepareReceipt(keyboard);
+        lines = keyboard.receipt.attributes.lines;
+        sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, lines);
+        templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate);
+        OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendToPrinter);
+        _.each(lines.models, function(model) {
+          return enyo.Signals.send("onTransmission", {
+            message: 'sent',
+            cid: model.cid
+          });
+        });
+        OB.UTIL.showSuccess("Orders sent to printers successfully");
+      }
+    }
+  });
+
+  OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push({
+    command: "cancelOrderReasonPopup",
+    i18nLabel: "TSRR_BtnCancelOrderLabel",
+    classButtonActive: "btnactive-blue",
+    definition: {
+      stateless: true,
+      action: function(keyboard, txt) {
         keyboard.doShowPopup({
-          popup: "TSRR_UI_SendCancelOrderPopup",
+          popup: "TSRR_UI_CancelOrderReasonPopup",
           args: {
             message: "",
             keyboard: keyboard
@@ -15,136 +39,6 @@
         });
       }
     }
-  });
-
-  enyo.kind({
-    name: "TSRR.UI.SendCancelOrderPopup",
-    kind: "OB.UI.ModalAction",
-    i18nHeader: "TSRR_SendCancelOrderPopupHeaderMessage",
-    handlers: {
-      onSendButton: "sendButton",
-      onCancelButton: "cancelButton"
-    },
-    events: {
-      onShowPopup: ""
-    },
-    bodyContent: {
-      i18nContent: 'TSRR_SendCancelOrderPopupBodyMessage'
-    },
-    bodyButtons: {
-      components: [
-        {
-          kind: "TSRR.UI.DialogSendButton",
-          name: "sendButton"
-        }, {
-          kind: "TSRR.UI.DialogCancelButton",
-          name: "cancelButton"
-        }
-      ]
-    },
-    loadValue: function(mProperty) {
-      return this.waterfall("onLoadValue", {
-        model: this.model,
-        modelProperty: mProperty
-      });
-    },
-    sendButton: function(inSender, inEvent) {
-      var lines, sendToPrinter, templatereceipt;
-      this.hide();
-      OB.UI.printingUtils.prepareReceipt(this.args.keyboard);
-      lines = this.args.keyboard.receipt.attributes.lines;
-      sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, lines);
-      templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate);
-      OB.UI.printingUtils.printLineOrReceipt(this.args.keyboard, templatereceipt, sendToPrinter);
-      _.each(lines.models, function(model) {
-        return enyo.Signals.send("onTransmission", {
-          message: 'sent',
-          cid: model.cid
-        });
-      });
-      return OB.UTIL.showSuccess("Orders sent to printers successfully");
-    },
-    cancelButton: function(keyboard, inEvent) {
-      this.hide();
-      return this.doShowPopup({
-        popup: "TSRR_UI_CancelOrderReasonPopup",
-        args: {
-          message: "",
-          keyboard: keyboard
-        }
-      });
-    },
-    executeOnHide: function() {
-      return console.log('executeOnHide');
-    },
-    executeOnShow: function() {
-      return console.log('executeOnShow');
-    },
-    applyChanges: function(inSender, inEvent) {
-      this.waterfall("onApplyChange", {});
-      return true;
-    },
-    init: function(model) {
-      return this.model = model;
-    },
-    initComponents: function() {
-      return this.inherited(arguments);
-    }
-  });
-
-  enyo.kind({
-    name: "TSRR.UI.DialogSendButton",
-    kind: "OB.UI.ModalDialogButton",
-    style: "color: black; background-color: white;",
-    isDefaultAction: true,
-    events: {
-      onHideThisPopup: "",
-      onSendButton: ""
-    },
-    tap: function(inSender, inEvent) {
-      return this.doSendButton();
-    },
-    initComponents: function() {
-      this.inherited(arguments);
-      return this.setContent("Send");
-    }
-  });
-
-  enyo.kind({
-    name: "TSRR.UI.DialogCancelButton",
-    kind: "OB.UI.ModalDialogButton",
-    style: "color: black; background-color: white;",
-    isDefaultAction: true,
-    events: {
-      onHideThisPopup: "",
-      onCancelButton: ""
-    },
-    tap: function() {
-      return this.doCancelButton();
-    },
-    initComponents: function() {
-      this.inherited(arguments);
-      return this.setContent("Cancel");
-    }
-  });
-
-  enyo.kind({
-    name: "TSRR.UI.OrderButton",
-    stateless: true,
-    action: function(keyboard, txt) {
-      return keyboard.doShowPopup({
-        popup: "TSRR_UI_SendCancelOrderPopup",
-        args: {
-          message: "",
-          keyboard: keyboard
-        }
-      });
-    }
-  });
-
-  OB.UI.WindowView.registerPopup("OB.OBPOSPointOfSale.UI.PointOfSale", {
-    kind: "TSRR.UI.SendCancelOrderPopup",
-    name: "TSRR_UI_SendCancelOrderPopup"
   });
 
   enyo.kind({
@@ -206,17 +100,14 @@
           cid: model.cid
         });
       });
+      this.hide();
       OB.UTIL.showSuccess("Order cancelled");
-      this.parent.$.TSRR_UI_SendCancelOrderPopup.hide();
-      return this.hide();
     },
     cancelButtonPressed: function(inSender, inEvent) {
-      this.parent.$.TSRR_UI_SendCancelOrderPopup.hide();
-      return this.hide();
+      this.hide();
     },
     init: function(model) {
-      this.inherited(arguments);
-      return window.model = model;
+      return this.inherited(arguments);
     }
   });
 

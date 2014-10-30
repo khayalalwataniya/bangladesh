@@ -56,9 +56,15 @@ enyo.kind
 
   renderData: ->
     me = @
+
+#    debugger
     sectionTable = me.content
 
-    sectionName = JSON.parse(localStorage.getItem('currentSection')).name
+    try
+      sectionName = JSON.parse(localStorage.getItem('currentSection')).name
+    catch  e
+      console.error e
+
     if (me.content.indexOf(sectionName) == -1)
       sectionTable = sectionName + ' - '
 
@@ -68,6 +74,7 @@ enyo.kind
         sectionTable = sectionTable + tableName
 
     me.setContent sectionTable
+
     return
 
 

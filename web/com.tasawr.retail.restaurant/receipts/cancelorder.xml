@@ -17,7 +17,7 @@
             <text align="center" length="42">Printer No: <%= OB.UTIL.encodeXMLComponent(printer) %></text>
         </line>
         <line>
-            <text align="center" length="42">Cancel Order</text>
+            <text align="center" length="42">Void</text>
         </line>
 
         <line></line>

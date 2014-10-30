@@ -52,10 +52,15 @@
       style: "margin-left: 10px; font-weight: bold; color: #6CB33F;"
     },
     renderData: function() {
-      var me, sectionName, sectionTable, tableName;
+      var e, me, sectionName, sectionTable, tableName;
       me = this;
       sectionTable = me.content;
-      sectionName = JSON.parse(localStorage.getItem('currentSection')).name;
+      try {
+        sectionName = JSON.parse(localStorage.getItem('currentSection')).name;
+      } catch (_error) {
+        e = _error;
+        console.error(e);
+      }
       if (me.content.indexOf(sectionName) === -1) {
         sectionTable = sectionName + ' - ';
       }
