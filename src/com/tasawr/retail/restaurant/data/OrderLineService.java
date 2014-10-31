@@ -14,7 +14,7 @@ public class OrderLineService extends ProcessHQLQuery {
   @Override
   protected List<String> getQuery(JSONObject jsonsent) throws JSONException {
     log.info("inside OrderLineService data service\n");
-    return Arrays.asList(new String[] { "from TSRR_Printprodcode where product.id=:product" });
+    return Arrays.asList(new String[] { "from TSRR_Printprodcode where product.id=:product and pOSTerminal.id=:terminal" });
   }
   
 }

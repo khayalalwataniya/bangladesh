@@ -73,10 +73,18 @@
       } else {
         ajaxRequest = new enyo.Ajax({
           url: "../../org.openbravo.mobile.core.service.jsonrest/" + "com.tasawr.retail.restaurant.data.OrderLineService" + "/" + encodeURI(JSON.stringify({
-            product: lines.models[i].get('product').id
+            product: lines.models[i].get('product').id,
+            terminal: OB.POS.modelterminal.get('terminal').id
           })),
           cacheBust: false,
           sync: true,
+          beforeSend: function(xhr) {
+            return xhr.setRequestHeader({
+              headers: {
+                Authorization: "Basic " + atob(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password)
+              }
+            });
+          },
           method: "GET",
           handleAs: "json",
           contentType: "application/json;charset=utf-8",
@@ -138,7 +146,8 @@
 
   printNonGenericLine = function(keyboard, messageParam, successMessage, lineMessage) {
     return new OB.DS.Request("com.tasawr.retail.restaurant.data.OrderLineService").exec({
-      product: keyboard.line.get('product').id
+      product: keyboard.line.get('product').id,
+      terminal: OB.POS.modelterminal.get('terminal').id
     }, function(data) {
       var message, sendModel, templatereceipt;
       if (data[0]) {

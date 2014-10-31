@@ -25,6 +25,13 @@
           type: "PUT",
           processData: false,
           contentType: "application/json",
+          beforeSend: function(xhr) {
+            return xhr.setRequestHeader({
+              headers: {
+                Authorization: "Basic " + atob(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password)
+              }
+            });
+          },
           success: function(resp) {
             console.info('DONE');
             return OB.UTIL.showSuccess('[DONE] table with name: "' + table.name + '" has been locked succussfully');

@@ -63,9 +63,11 @@ productInfoGetter = (lines) ->
       break
     else
       ajaxRequest = new enyo.Ajax(
-        url: "../../org.openbravo.mobile.core.service.jsonrest/" + "com.tasawr.retail.restaurant.data.OrderLineService" + "/" + encodeURI(JSON.stringify(product: lines.models[i].get('product').id))
+        url: "../../org.openbravo.mobile.core.service.jsonrest/" + "com.tasawr.retail.restaurant.data.OrderLineService" + "/" + encodeURI(JSON.stringify({product: lines.models[i].get('product').id, terminal:OB.POS.modelterminal.get('terminal').id}))
         cacheBust: false
         sync: true
+        beforeSend: (xhr)->
+          xhr.setRequestHeader {headers: Authorization: "Basic " + atob(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password)}
         method: "GET"
         handleAs: "json"
         contentType: "application/json;charset=utf-8"
@@ -116,8 +118,10 @@ getFilteredLines = (keyboard, gpi) ->
   newArray
 
 printNonGenericLine = (keyboard, messageParam, successMessage, lineMessage) ->
+
   new OB.DS.Request("com.tasawr.retail.restaurant.data.OrderLineService").exec
     product: keyboard.line.get('product').id
+    terminal: OB.POS.modelterminal.get('terminal').id
   , (data) ->
     if data[0]
       message = messageParam
@@ -176,3 +180,7 @@ OB.UI.printingUtils =
   getFilteredLines:getFilteredLines
   printNonGenericLine:printNonGenericLine
   printLineOrReceipt:printLineOrReceipt
+
+
+#333F06B4FB6341D3A9F103B968CA0F21
+#OB.POS.modelterminal.get('terminal')
