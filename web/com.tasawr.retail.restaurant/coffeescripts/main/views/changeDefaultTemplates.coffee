@@ -1,7 +1,7 @@
 #global enyo, Backbone, _
 
 OB.OBPOSPointOfSale.Print.ReceiptTemplate = "../com.tasawr.retail.restaurant/receipts/printreceipt.xml"
-
+#OB.OBPOSPointOfSale.Print.ReceiptTemplate = "../org.openbravo.retail.posterminal/res/printreceipt.xml"
 OB.OBPOSPointOfSale.Print.SendOrderTemplate = "../com.tasawr.retail.restaurant/receipts/sendorder.xml"
 OB.OBPOSPointOfSale.Print.CancelOrderTemplate = "../com.tasawr.retail.restaurant/receipts/cancelorder.xml"
 OB.OBPOSPointOfSale.Print.LineTemplate = "../com.tasawr.retail.restaurant/receipts/printline.xml"

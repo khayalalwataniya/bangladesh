@@ -70,9 +70,8 @@ enyo.kind
     ]
 
   okButtonPressed: (inSender, inEvent) ->
-    @inherited arguments
     @message = inSender.getControls()[0].getControls()[0].getControls()[0].getValue()
-    lines = TSRR.Tables.Config.currentOrder.get('lines')
+    lines = OB.POS.modelterminal.orderList.modelorder.get('lines')
     sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, lines)
     templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelOrderTemplate)
 
@@ -80,7 +79,7 @@ enyo.kind
       order: sendToPrinter
       message: @message
       receiptNo: @parent.model.get('order').get('documentNo')
-      tableNo: @parent.model.get('order').get('restaurantTable').name
+      tableNo: TSRR.Tables.Config.currentTable.get('name')
       sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
       guestNo: @parent.model.get('order').get('numberOfGuests')
       user: @parent.model.get('order').get('salesRepresentative$_identifier')

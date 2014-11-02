@@ -23,6 +23,9 @@
       type: "DELETE",
       processData: false,
       contentType: "application/json",
+      beforeSend: function(xhr) {
+        return xhr.setRequestHeader("Authorization", "Basic " + btoa(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password));
+      },
       success: function(resp) {
         OB.info(resp);
         return callback(resp);
@@ -38,6 +41,9 @@
       method: method,
       handleAs: "json",
       contentType: "application/json;charset=utf-8",
+      beforeSend: function(xhr) {
+        return xhr.setRequestHeader("Authorization", "Basic " + btoa(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password));
+      },
       data: dataparams,
       success: function(inSender, inResponse) {
         var response, status;

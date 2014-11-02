@@ -53,7 +53,7 @@ public class TSRRComponentProvider extends BaseComponentProvider {
     
     grhelper.add("main/models/genericModelForPrinter.js");
 
-    grhelper.add("main/models/hooks.js");
+    
     grhelper.add("main/models/Attribute.js");
     grhelper.add("main/models/AttributeInstance.js");
     grhelper.add("main/models/AttributeSet.js");
@@ -83,6 +83,7 @@ public class TSRRComponentProvider extends BaseComponentProvider {
 
 
     grhelper.add("tables/namespaces.js");
+    grhelper.add("main/models/hooks.js");
     grhelper.add("tables/models/sections.js");
     grhelper.add("tables/models/tables.js");
     grhelper.add("tables/models/bookingInfos.js");

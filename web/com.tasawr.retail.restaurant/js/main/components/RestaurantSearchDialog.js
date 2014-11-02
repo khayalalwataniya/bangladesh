@@ -26,11 +26,7 @@
           processData: false,
           contentType: "application/json",
           beforeSend: function(xhr) {
-            return xhr.setRequestHeader({
-              headers: {
-                Authorization: "Basic " + atob(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password)
-              }
-            });
+            return xhr.setRequestHeader("Authorization", "Basic " + btoa(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password));
           },
           success: function(resp) {
             console.info('DONE');
@@ -95,6 +91,9 @@
           type: "PUT",
           processData: false,
           contentType: "application/json",
+          beforeSend: function(xhr) {
+            return xhr.setRequestHeader("Authorization", "Basic " + btoa(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password));
+          },
           success: function(resp) {
             console.info('DONE');
             return OB.UTIL.showSuccess('[DONE] table with name: "' + table.name + '" has been unlocked succussfully');

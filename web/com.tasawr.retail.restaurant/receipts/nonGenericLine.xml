@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <output>
     <%
+
     var printers = order.get('printerProperty').split(' ');
     for (var i = 0; i < printers.length; i++){
     printer = printers[i];

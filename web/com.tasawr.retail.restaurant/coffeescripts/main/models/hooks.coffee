@@ -7,32 +7,37 @@ if OB.MobileApp.model.hookManager
     return
 
 
-  OB.MobileApp.model.hookManager.registerHook "OBPOS_TerminalLoadedFromBackend", (args, callbacks) ->
-    console.log "calling... OBPOS_AddProductToOrder hook"
-
-    userId = OB.POS.modelterminal.usermodel.id
-    $.ajax "../../org.openbravo.service.json.jsonrest/ADUserRoles?_where=userContact='"+userId+"'",
-      data: JSON.stringify("")
-      type: "GET"
-      processData: false
-      contentType: "application/json"
-      success: (resp) ->
-        _.each resp.response.data, (model) ->
-          if model.role$_identifier is "CSAdmin"
-            TSRR.Main.TempVars.admin = true
-      error: ->
-        console.error 'error while completing request'
-    OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
-    return
+#  OB.MobileApp.model.hookManager.registerHook "OBPOS_TerminalLoadedFromBackend", (args, callbacks) ->
+#    console.log "calling... OBPOS_AddProductToOrder hook"
+#
+#    userId = OB.POS.modelterminal.usermodel.id
+#    $.ajax "../../org.openbravo.service.json.jsonrest/ADUserRoles?_where=userContact='"+userId+"'",
+#      data: JSON.stringify("")
+#      type: "GET"
+#      processData: false
+#      contentType: "application/json"
+#      beforeSend: (xhr)->
+#        xhr.setRequestHeader "Authorization", "Basic " + btoa(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password)
+#      success: (resp) ->
+#        _.each resp.response.data, (model) ->
+#          if model.role$_identifier is "CSAdmin"
+#            TSRR.Main.TempVars.admin = true
+#      error: ->
+#        console.error 'error while completing request'
+#    OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
+#    return
 
   # delete related booking info once order has been paid
   OB.MobileApp.model.hookManager.registerHook "OBPRINT_PrePrint", (args, callbacks) ->
     console.log "calling... OBPRINT_PrePrint hook"
-    salesOrder = @.model.get 'order'
+#    salesOrder = @.model.get 'order'
+#    debugger
+    salesOrder = TSRR.Tables.Config.MyOrderList.modelorder.id
     OB.Dal.find OB.Model.BookingInfo,
       salesOrder: salesOrder.id
     , ((collection) -> # inline callback
         return  unless collection.length # no record found
+        debugger
         bi = collection.models[0]
         OB.Dal.remove bi, success, error
         return

@@ -67,13 +67,14 @@ productInfoGetter = (lines) ->
         cacheBust: false
         sync: true
         beforeSend: (xhr)->
-          xhr.setRequestHeader {headers: Authorization: "Basic " + atob(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password)}
+          xhr.setRequestHeader "Authorization", "Basic " + btoa(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password)
         method: "GET"
         handleAs: "json"
         contentType: "application/json;charset=utf-8"
         success: (inSender, inResponse) ->
-          fail: (inSender, inResponse) ->
-            console.log "failed"
+
+        fail: (inSender, inResponse) ->
+          console.log "failed"
       )
       ajaxRequest.go().response("success").error "fail"
       TSRR.Main.TempVars.requests.push ajaxRequest
@@ -85,11 +86,9 @@ productInfoGetter = (lines) ->
 
 prepareReceipt =  (keyboard) ->
 
-  if keyboard.receipt.get('resaurantTable') is null or undefined
-    keyboard.receipt.attributes.restaurantTable.attributes.name = "Unspecified"
-  if keyboard.receipt.attributes.numberOfGuests is null or undefined
+  if typeof(keyboard.receipt.attributes.numberOfGuests) is "undefined"
       keyboard.receipt.attributes.numberOfGuests = "Unspecified"
-  if keyboard.receipt.attributes.description is null or undefined
+  if typeof(keyboard.receipt.attributes.description) is "undefined"
     console.error 'receipt description not found'
 
 
@@ -118,7 +117,6 @@ getFilteredLines = (keyboard, gpi) ->
   newArray
 
 printNonGenericLine = (keyboard, messageParam, successMessage, lineMessage) ->
-
   new OB.DS.Request("com.tasawr.retail.restaurant.data.OrderLineService").exec
     product: keyboard.line.get('product').id
     terminal: OB.POS.modelterminal.get('terminal').id
@@ -135,7 +133,6 @@ printNonGenericLine = (keyboard, messageParam, successMessage, lineMessage) ->
 
 
 printGenericLine = (keyboard, gpi, message, statusMessage) ->
-
   newArray = OB.UI.printingUtils.getFilteredLines(keyboard, gpi)
   TSRR.Main.TempVars.productsAndPrinters = []
   sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, newArray)
@@ -144,7 +141,7 @@ printGenericLine = (keyboard, gpi, message, statusMessage) ->
   OB.POS.hwserver.print templatereceipt,
     order: sendToPrinter
     receiptNo: keyboard.receipt.get('documentNo')
-    tableNo: keyboard.receipt.get('restaurantTable').name
+    tableNo: TSRR.Tables.Config.currentTable.get('name')
     sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
     guestNo: keyboard.receipt.get('numberOfGuests')
     message: message
@@ -163,7 +160,7 @@ printLineOrReceipt = (keyboard, templatereceipt, sendToPrinter) ->
   OB.POS.hwserver.print templatereceipt,
     order: sendToPrinter
     receiptNo: keyboard.receipt.get('documentNo')
-    tableNo: keyboard.receipt.get('restaurantTable').name
+    tableNo: TSRR.Tables.Config.currentTable.get('name')
     sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
     guestNo: keyboard.receipt.get('numberOfGuests')
     user: keyboard.receipt.get('salesRepresentative$_identifier')
@@ -180,7 +177,3 @@ OB.UI.printingUtils =
   getFilteredLines:getFilteredLines
   printNonGenericLine:printNonGenericLine
   printLineOrReceipt:printLineOrReceipt
-
-
-#333F06B4FB6341D3A9F103B968CA0F21
-#OB.POS.modelterminal.get('terminal')

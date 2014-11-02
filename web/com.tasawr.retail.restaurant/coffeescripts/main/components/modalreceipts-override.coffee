@@ -264,8 +264,6 @@ findLineComponent = (line, containingOrderComponent) ->
 
 tsrrNewOrder = ->
   if TSRR.Tables.Config.currentTable
-    enyo.Signals.send "onCurrentTableSet", "sms"
-    console.info 'table loaded'
     TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder OB.POS.modelterminal.get("businessPartner")
   else
     OB.Dal.find OB.Model.Table,
@@ -274,8 +272,6 @@ tsrrNewOrder = ->
         console.log 'there are ' + collection.length + ' table'
         return  unless collection.length # no record found
         TSRR.Tables.Config.currentTable = collection.models[0]
-
-        console.error 'table loaded'
         TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder OB.POS.modelterminal.get("businessPartner")
       ), (tx) ->
       #console.log tx

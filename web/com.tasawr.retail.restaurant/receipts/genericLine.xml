@@ -4,11 +4,16 @@
     <%
 
     for (var i = 0; i < order.length; i++){
+
     printer = order[i][0];
     %>
     <ticket printer = "<%= printer %>">
         <line></line>
         <line></line>
+
+        <line size="3">
+            <text align="center" length="22"><%= OB.UTIL.encodeXMLComponent(sectionNo) %></text>
+        </line>
 
         <line>
             <text align="center" length="42">Printer No: <%= OB.UTIL.encodeXMLComponent(printer) %></text>
