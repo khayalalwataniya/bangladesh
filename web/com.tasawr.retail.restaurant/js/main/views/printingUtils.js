@@ -78,15 +78,18 @@
           })),
           cacheBust: false,
           sync: true,
+          method: "GET",
           beforeSend: function(xhr) {
             return xhr.setRequestHeader("Authorization", "Basic " + btoa(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password));
           },
-          method: "GET",
           handleAs: "json",
           contentType: "application/json;charset=utf-8",
-          success: function(inSender, inResponse) {},
-          fail: function(inSender, inResponse) {
-            return console.log("failed");
+          success: function(inSender, inResponse) {
+            return {
+              fail: function(inSender, inResponse) {
+                return console.log("failed");
+              }
+            };
           }
         });
         ajaxRequest.go().response("success").error("fail");
@@ -99,10 +102,13 @@
   };
 
   prepareReceipt = function(keyboard) {
-    if (typeof keyboard.receipt.attributes.numberOfGuests === "undefined") {
+    if (keyboard.receipt.attributes.resaurantTable.attributes.name === null || void 0) {
+      keyboard.receipt.attributes.resaurantTable.attributes.name = "Unspecified";
+    }
+    if (keyboard.receipt.attributes.numberOfGuests === null || void 0) {
       keyboard.receipt.attributes.numberOfGuests = "Unspecified";
     }
-    if (typeof keyboard.receipt.attributes.description === "undefined") {
+    if (keyboard.receipt.attributes.description === null || void 0) {
       return console.error('receipt description not found');
     }
   };
@@ -165,7 +171,7 @@
     OB.POS.hwserver.print(templatereceipt, {
       order: sendToPrinter,
       receiptNo: keyboard.receipt.get('documentNo'),
-      tableNo: TSRR.Tables.Config.currentTable.get('name'),
+      tableNo: keyboard.receipt.get('restaurantTable').name,
       sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
       guestNo: keyboard.receipt.get('numberOfGuests'),
       message: message,
@@ -186,7 +192,7 @@
     return OB.POS.hwserver.print(templatereceipt, {
       order: sendToPrinter,
       receiptNo: keyboard.receipt.get('documentNo'),
-      tableNo: TSRR.Tables.Config.currentTable.get('name'),
+      tableNo: keyboard.receipt.get('restaurantTable').name,
       sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
       guestNo: keyboard.receipt.get('numberOfGuests'),
       user: keyboard.receipt.get('salesRepresentative$_identifier')

@@ -21,8 +21,6 @@ deleteBookingById = (bid, callback) ->
     type: "DELETE"
     processData: false
     contentType: "application/json"
-    beforeSend: (xhr)->
-      xhr.setRequestHeader "Authorization", "Basic " + btoa(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password)
     success: (resp) ->
       OB.info resp
       callback resp
@@ -37,8 +35,6 @@ service = (source, method, dataparams, callback, callbackError) ->
     method: method
     handleAs: "json"
     contentType: "application/json;charset=utf-8"
-    beforeSend: (xhr)->
-      xhr.setRequestHeader "Authorization", "Basic " + btoa(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password)
     data: dataparams
     success: (inSender, inResponse) ->
       response = inResponse.response

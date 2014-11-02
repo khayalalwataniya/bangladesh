@@ -2,7 +2,6 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
   i18nLabel: "TSRR_BtnHoldLineLabel"
   command: 'line:holdCommand'
   classButtonActive: "btnactive-blue"
-  permission: 'OBPOS_receipt.return'
   stateless: true
   definition:
     stateless: true

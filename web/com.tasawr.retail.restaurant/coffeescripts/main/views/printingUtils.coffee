@@ -66,15 +66,14 @@ productInfoGetter = (lines) ->
         url: "../../org.openbravo.mobile.core.service.jsonrest/" + "com.tasawr.retail.restaurant.data.OrderLineService" + "/" + encodeURI(JSON.stringify({product: lines.models[i].get('product').id, terminal:OB.POS.modelterminal.get('terminal').id}))
         cacheBust: false
         sync: true
+        method: "GET"
         beforeSend: (xhr)->
           xhr.setRequestHeader "Authorization", "Basic " + btoa(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password)
-        method: "GET"
         handleAs: "json"
         contentType: "application/json;charset=utf-8"
         success: (inSender, inResponse) ->
-
-        fail: (inSender, inResponse) ->
-          console.log "failed"
+          fail: (inSender, inResponse) ->
+            console.log "failed"
       )
       ajaxRequest.go().response("success").error "fail"
       TSRR.Main.TempVars.requests.push ajaxRequest
@@ -86,9 +85,9 @@ productInfoGetter = (lines) ->
 
 prepareReceipt =  (keyboard) ->
 
-  if typeof(keyboard.receipt.attributes.numberOfGuests) is "undefined"
+  if keyboard.receipt.attributes.numberOfGuests is null or undefined
       keyboard.receipt.attributes.numberOfGuests = "Unspecified"
-  if typeof(keyboard.receipt.attributes.description) is "undefined"
+  if keyboard.receipt.attributes.description is null or undefined
     console.error 'receipt description not found'
 
 
@@ -133,6 +132,7 @@ printNonGenericLine = (keyboard, messageParam, successMessage, lineMessage) ->
 
 
 printGenericLine = (keyboard, gpi, message, statusMessage) ->
+
   newArray = OB.UI.printingUtils.getFilteredLines(keyboard, gpi)
   TSRR.Main.TempVars.productsAndPrinters = []
   sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, newArray)
@@ -141,7 +141,7 @@ printGenericLine = (keyboard, gpi, message, statusMessage) ->
   OB.POS.hwserver.print templatereceipt,
     order: sendToPrinter
     receiptNo: keyboard.receipt.get('documentNo')
-    tableNo: TSRR.Tables.Config.currentTable.get('name')
+    tableNo: tableNo: TSRR.Tables.Config.currentTable.get('name')
     sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
     guestNo: keyboard.receipt.get('numberOfGuests')
     message: message
@@ -160,7 +160,7 @@ printLineOrReceipt = (keyboard, templatereceipt, sendToPrinter) ->
   OB.POS.hwserver.print templatereceipt,
     order: sendToPrinter
     receiptNo: keyboard.receipt.get('documentNo')
-    tableNo: TSRR.Tables.Config.currentTable.get('name')
+    tableNo: tableNo: TSRR.Tables.Config.currentTable.get('name')
     sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
     guestNo: keyboard.receipt.get('numberOfGuests')
     user: keyboard.receipt.get('salesRepresentative$_identifier')
