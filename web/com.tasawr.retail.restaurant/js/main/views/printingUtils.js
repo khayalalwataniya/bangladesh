@@ -102,13 +102,10 @@
   };
 
   prepareReceipt = function(keyboard) {
-    if (keyboard.receipt.attributes.resaurantTable.attributes.name === null || void 0) {
-      keyboard.receipt.attributes.resaurantTable.attributes.name = "Unspecified";
-    }
-    if (keyboard.receipt.attributes.numberOfGuests === null || void 0) {
+    if (typeof keyboard.receipt.attributes.numberOfGuests === "undefined") {
       keyboard.receipt.attributes.numberOfGuests = "Unspecified";
     }
-    if (keyboard.receipt.attributes.description === null || void 0) {
+    if (typeof keyboard.receipt.attributes.description === "undefined") {
       return console.error('receipt description not found');
     }
   };
@@ -145,10 +142,9 @@
       product: keyboard.line.get('product').id,
       terminal: OB.POS.modelterminal.get('terminal').id
     }, function(data) {
-      var message, sendModel, templatereceipt;
+      var sendModel, templatereceipt;
       if (data[0]) {
-        message = messageParam;
-        sendModel = OB.UI.printingUtils.buildModel(keyboard, data, message);
+        sendModel = OB.UI.printingUtils.buildModel(keyboard, data, messageParam);
         templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.NonGenericLineTemplate);
         OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendModel);
         enyo.Signals.send("onTransmission", {
@@ -171,7 +167,7 @@
     OB.POS.hwserver.print(templatereceipt, {
       order: sendToPrinter,
       receiptNo: keyboard.receipt.get('documentNo'),
-      tableNo: keyboard.receipt.get('restaurantTable').name,
+      tableNo: JSON.parse(localStorage.getItem('currentTable')).name,
       sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
       guestNo: keyboard.receipt.get('numberOfGuests'),
       message: message,
@@ -192,7 +188,7 @@
     return OB.POS.hwserver.print(templatereceipt, {
       order: sendToPrinter,
       receiptNo: keyboard.receipt.get('documentNo'),
-      tableNo: keyboard.receipt.get('restaurantTable').name,
+      tableNo: JSON.parse(localStorage.getItem('currentTable')).name,
       sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
       guestNo: keyboard.receipt.get('numberOfGuests'),
       user: keyboard.receipt.get('salesRepresentative$_identifier')

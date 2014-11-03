@@ -85,9 +85,9 @@ productInfoGetter = (lines) ->
 
 prepareReceipt =  (keyboard) ->
 
-  if keyboard.receipt.attributes.numberOfGuests is null or undefined
-      keyboard.receipt.attributes.numberOfGuests = "Unspecified"
-  if keyboard.receipt.attributes.description is null or undefined
+  if typeof(keyboard.receipt.attributes.numberOfGuests) is "undefined"
+    keyboard.receipt.attributes.numberOfGuests = "Unspecified"
+  if typeof(keyboard.receipt.attributes.description) is "undefined"
     console.error 'receipt description not found'
 
 
@@ -121,8 +121,7 @@ printNonGenericLine = (keyboard, messageParam, successMessage, lineMessage) ->
     terminal: OB.POS.modelterminal.get('terminal').id
   , (data) ->
     if data[0]
-      message = messageParam
-      sendModel = OB.UI.printingUtils.buildModel(keyboard, data, message)
+      sendModel = OB.UI.printingUtils.buildModel(keyboard, data, messageParam)
       templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.NonGenericLineTemplate)
       OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendModel)
       enyo.Signals.send "onTransmission", {message: lineMessage, cid: keyboard.line.cid}
@@ -141,7 +140,7 @@ printGenericLine = (keyboard, gpi, message, statusMessage) ->
   OB.POS.hwserver.print templatereceipt,
     order: sendToPrinter
     receiptNo: keyboard.receipt.get('documentNo')
-    tableNo: tableNo: TSRR.Tables.Config.currentTable.get('name')
+    tableNo: JSON.parse(localStorage.getItem('currentTable')).name
     sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
     guestNo: keyboard.receipt.get('numberOfGuests')
     message: message
@@ -160,7 +159,7 @@ printLineOrReceipt = (keyboard, templatereceipt, sendToPrinter) ->
   OB.POS.hwserver.print templatereceipt,
     order: sendToPrinter
     receiptNo: keyboard.receipt.get('documentNo')
-    tableNo: tableNo: TSRR.Tables.Config.currentTable.get('name')
+    tableNo: JSON.parse(localStorage.getItem('currentTable')).name
     sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
     guestNo: keyboard.receipt.get('numberOfGuests')
     user: keyboard.receipt.get('salesRepresentative$_identifier')

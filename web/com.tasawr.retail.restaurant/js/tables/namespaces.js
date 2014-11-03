@@ -19,11 +19,9 @@
       console.error(tx);
     };
     OB.MobileApp.model.hookManager.registerHook("OBPRINT_PrePrint", function(args, callbacks) {
-      var salesOrder;
       console.log("calling... OBPRINT_PrePrint hook");
-      salesOrder = this.model.get('order');
       OB.Dal.find(OB.Model.BookingInfo, {
-        salesOrder: salesOrder.id
+        salesOrder: TSRR.Tables.Config.currentOrderId
       }, (function(collection) {
         var bi;
         if (!collection.length) {
@@ -38,6 +36,7 @@
       var salesOrder;
       console.log("calling... OBRETUR_ReturnFromOrig hook");
       salesOrder = this.model.get('order');
+      console.log(salesOrder);
       OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
     });
     OB.MobileApp.model.hookManager.registerHook("OBPOS_PreAddProductToOrder", function(args, callbacks) {
@@ -58,7 +57,7 @@
           bi.set('businessPartner', OB.POS.modelterminal.attributes.businessPartner);
           bi.set('salesOrder', me.order);
           bi.set('orderidlocal', me.order.get('id'));
-          bi.set('restaurantTable', TSRR.Tables.Config.currentTable);
+          bi.set('restaurantTable', JSON.parse(localStorage.getItem('currentTable')).name);
           bi.set('ebid', me.order.get('id'));
           bi.save();
         }
@@ -80,6 +79,11 @@
         OB.Dal.remove(bi, success, error);
       }), error);
       OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
+    });
+    OB.MobileApp.model.hookManager.registerHook("OBPOS_PreSynchData", function() {
+      OB.info('calling... OBPOS_PreSynchData');
+      OB.info(arguments);
+      OB.MobileApp.model.hookManager.callbackExecutor;
     });
   }
 

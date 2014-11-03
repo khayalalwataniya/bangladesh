@@ -49,7 +49,7 @@ OB.UI.ModalReceiptPropertiesImpl.extend initComponents: ->
       selected = @collection.at(@$.renderCombo.getSelected())
       console.info 'applying changes with'
       console.info selected
-      bi = TSRR.Tables.Config.currentTable.bookingInfoList.at(TSRR.Tables.Config.currentTable.bookingInfoList.length - 1)
+      bi = TSRR.Tables.Config.currentBookingInfo
       bi.set 'restaurantTable', selected
       bi.set 'businessPartner', OB.POS.modelterminal.attributes.businessPartner
       bi.set 'salesOrder', TSRR.Tables.Config.currentOrder

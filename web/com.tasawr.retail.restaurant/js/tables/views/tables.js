@@ -177,6 +177,7 @@
     selectTable: function(inSender, inEvent) {
       var bi, loadOrderStr, me;
       TSRR.Tables.Config.currentTable = inEvent.originator.model;
+      window.localStorage.setItem('currentTable', JSON.stringify(inEvent.originator.model));
       me = this;
       me.currentTable = inEvent.originator.model;
       if (me.currentTable.bookingInfoList && me.currentTable.bookingInfoList.length > 0) {

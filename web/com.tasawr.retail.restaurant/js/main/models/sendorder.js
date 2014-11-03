@@ -80,6 +80,7 @@
     },
     okButtonPressed: function(inSender, inEvent) {
       var lines, sendToPrinter, templatereceipt;
+      this.inherited(arguments);
       this.message = inSender.getControls()[0].getControls()[0].getControls()[0].getValue();
       lines = OB.POS.modelterminal.orderList.modelorder.get('lines');
       sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, lines);
@@ -88,9 +89,9 @@
         order: sendToPrinter,
         message: this.message,
         receiptNo: this.parent.model.get('order').get('documentNo'),
-        tableNo: TSRR.Tables.Config.currentTable.get('name'),
+        tableNo: JSON.parse(localStorage.getItem('currentTable')).name,
         sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
-        guestNo: this.parent.model.get('order').get('numberOfGuests'),
+        guestNo: TSRR.Tables.Config.MyOrderList.modelorder.get('numberOfGuests') || "0",
         user: this.parent.model.get('order').get('salesRepresentative$_identifier')
       });
       _.each(lines.models, function(model) {

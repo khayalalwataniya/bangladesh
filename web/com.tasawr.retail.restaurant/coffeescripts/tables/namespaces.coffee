@@ -16,31 +16,13 @@ if OB.MobileApp.model.hookManager
     console.error tx
     return
 
-
-#  OB.MobileApp.model.hookManager.registerHook "OBPOS_TerminalLoadedFromBackend", (args, callbacks) ->
-#    console.log "calling... OBPOS_AddProductToOrder hook"
-#
-#    userId = OB.POS.modelterminal.usermodel.id
-#    $.ajax "../../org.openbravo.service.json.jsonrest/ADUserRoles?_where=userContact='"+userId+"'",
-#      data: JSON.stringify("")
-#      type: "GET"
-#      processData: false
-#      contentType: "application/json"
-#      success: (resp) ->
-#        _.each resp.response.data, (model) ->
-#          if model.role$_identifier is "CSAdmin"
-#            TSRR.Main.TempVars.admin = true
-#      error: ->
-#        console.error 'error while completing request'
-#    OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
-#    return
-
   # delete related booking info once order has been paid
   OB.MobileApp.model.hookManager.registerHook "OBPRINT_PrePrint", (args, callbacks) ->
     console.log "calling... OBPRINT_PrePrint hook"
-    salesOrder = TSRR.Tables.Config.MyOrderList.modelorder.id
+#    debugger
+#    salesOrder = @.model.get 'order'
     OB.Dal.find OB.Model.BookingInfo,
-      salesOrder: salesOrder.id
+      salesOrder: TSRR.Tables.Config.currentOrderId
     , ((collection) -> # inline callback
         return  unless collection.length # no record found
         bi = collection.models[0]
@@ -50,12 +32,11 @@ if OB.MobileApp.model.hookManager
     OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
     return
 
-
   # delete related booking info once order has been paid
   OB.MobileApp.model.hookManager.registerHook "OBRETUR_ReturnFromOrig", (args, callbacks) ->
     console.log "calling... OBRETUR_ReturnFromOrig hook"
     salesOrder = @.model.get 'order'
-    #console.log salesOrder
+    console.log salesOrder
     OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
     return
 
@@ -76,7 +57,7 @@ if OB.MobileApp.model.hookManager
           bi.set 'businessPartner', OB.POS.modelterminal.attributes.businessPartner
           bi.set 'salesOrder', me.order
           bi.set 'orderidlocal', me.order.get('id')
-          bi.set 'restaurantTable', TSRR.Tables.Config.currentTable
+          bi.set 'restaurantTable', JSON.parse(localStorage.getItem('currentTable')).name
           bi.set 'ebid', me.order.get('id')
           bi.save()
         return
@@ -101,6 +82,11 @@ if OB.MobileApp.model.hookManager
     OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
     return
 
+  OB.MobileApp.model.hookManager.registerHook "OBPOS_PreSynchData", () ->
+    OB.info 'calling... OBPOS_PreSynchData'
+    OB.info arguments
+    OB.MobileApp.model.hookManager.callbackExecutor
+    return
 
 OB.OBPOSPointOfSale.Model.PointOfSale::loadUnpaidOrders = ->
   orderlist = @get("orderList")
@@ -137,7 +123,3 @@ OB.OBPOSPointOfSale.Model.PointOfSale::loadUnpaidOrders = ->
     return
 
   return
-
-
-
-

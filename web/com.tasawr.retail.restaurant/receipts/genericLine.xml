@@ -10,6 +10,10 @@
         <line></line>
         <line></line>
 
+
+        <line size="2">
+            <text align="center" length="22"><%= OB.UTIL.encodeXMLComponent(sectionNo) %></text>
+        </line>
         <line>
             <text align="center" length="42">Printer No: <%= OB.UTIL.encodeXMLComponent(printer) %></text>
         </line>

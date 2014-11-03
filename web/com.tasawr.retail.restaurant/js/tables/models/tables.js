@@ -205,7 +205,7 @@
       bi.save();
       TSRR.Tables.Config.currentOrderId = salesOrder.get('id');
       TSRR.Tables.Config.currentOrder = salesOrder;
-      TSRR.Tables.Config.currentTable = me;
+      TSRR.Tables.Config.currentTable = JSON.parse(localStorage.getItem('currentTable'));
       TSRR.Tables.Config.currentBookingInfo = bi;
       return salesOrder;
     };
