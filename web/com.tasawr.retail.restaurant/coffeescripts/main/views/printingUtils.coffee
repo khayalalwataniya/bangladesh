@@ -29,7 +29,7 @@ uniquePrinterAndProductGenerator = (callback, lines) ->
     TSRR.Main.TempVars.printersAndProducts[j][0] = uniquePrinters[j]
     TSRR.Main.TempVars.printersAndProducts[j][1] = prodQtyDesc
     j++
-
+  TSRR.Main.TempVars.productsAndPrinters = []
   TSRR.Main.TempVars.printersAndProducts
 
 assignVar = (requests, lines) ->
@@ -105,8 +105,9 @@ buildModel = (keyboard, data, message) ->
 
 
 getFilteredLines = (keyboard, gpi) ->
-  allLines = keyboard.receipt.get('lines')
-  newArray = jQuery.extend(true, {}, keyboard.receipt.get('lines'));
+  allLines = TSRR.Tables.Config.currentOrder.get('lines')
+
+  newArray = jQuery.extend(true, {}, TSRR.Tables.Config.currentOrder.get('lines'));
   for line in allLines.models
     if line.get('product').get('generic_product_id') is gpi
       console.info 'present'

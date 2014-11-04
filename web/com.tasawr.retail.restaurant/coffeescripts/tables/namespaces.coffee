@@ -44,6 +44,7 @@ if OB.MobileApp.model.hookManager
     console.log "calling... OBPOS_PreAddProductToOrder hook"
     me = @
     me.order = args.receipt
+    TSRR.Tables.Config.currentOrder = args.receipt
     bi = undefined
     OB.Dal.find OB.Model.BookingInfo,
       salesOrder: me.order.get('id')

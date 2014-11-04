@@ -35,6 +35,7 @@
       TSRR.Main.TempVars.printersAndProducts[j][1] = prodQtyDesc;
       j++;
     }
+    TSRR.Main.TempVars.productsAndPrinters = [];
     return TSRR.Main.TempVars.printersAndProducts;
   };
 
@@ -123,8 +124,8 @@
 
   getFilteredLines = function(keyboard, gpi) {
     var allLines, line, newArray, _i, _len, _ref;
-    allLines = keyboard.receipt.get('lines');
-    newArray = jQuery.extend(true, {}, keyboard.receipt.get('lines'));
+    allLines = TSRR.Tables.Config.currentOrder.get('lines');
+    newArray = jQuery.extend(true, {}, TSRR.Tables.Config.currentOrder.get('lines'));
     _ref = allLines.models;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       line = _ref[_i];

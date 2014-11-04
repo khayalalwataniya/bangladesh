@@ -44,6 +44,7 @@
       console.log("calling... OBPOS_PreAddProductToOrder hook");
       me = this;
       me.order = args.receipt;
+      TSRR.Tables.Config.currentOrder = args.receipt;
       bi = void 0;
       OB.Dal.find(OB.Model.BookingInfo, {
         salesOrder: me.order.get('id')
