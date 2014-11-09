@@ -82,16 +82,16 @@
       var lines, sendToPrinter, templatereceipt;
       this.inherited(arguments);
       this.message = inSender.getControls()[0].getControls()[0].getControls()[0].getValue();
-      lines = TSRR.Tables.Config.currentOrder.get('lines');
+      lines = OB.POS.modelterminal.orderList.modelorder.get('lines');
       sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, lines);
       templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelOrderTemplate);
       OB.POS.hwserver.print(templatereceipt, {
         order: sendToPrinter,
         message: this.message,
         receiptNo: this.parent.model.get('order').get('documentNo'),
-        tableNo: this.parent.model.get('order').get('restaurantTable').name,
+        tableNo: JSON.parse(localStorage.getItem('currentTable')).name,
         sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
-        guestNo: this.parent.model.get('order').get('numberOfGuests'),
+        guestNo: TSRR.Tables.Config.MyOrderList.modelorder.get('numberOfGuests') || "0",
         user: this.parent.model.get('order').get('salesRepresentative$_identifier')
       });
       _.each(lines.models, function(model) {

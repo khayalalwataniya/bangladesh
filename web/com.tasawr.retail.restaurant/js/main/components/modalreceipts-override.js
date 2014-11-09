@@ -263,8 +263,6 @@
 
   tsrrNewOrder = function() {
     if (TSRR.Tables.Config.currentTable) {
-      enyo.Signals.send("onCurrentTableSet", "sms");
-      console.info('table loaded');
       TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder(OB.POS.modelterminal.get("businessPartner"));
     } else {
       OB.Dal.find(OB.Model.Table, {
@@ -275,7 +273,6 @@
           return;
         }
         TSRR.Tables.Config.currentTable = collection.models[0];
-        console.error('table loaded');
         return TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder(OB.POS.modelterminal.get("businessPartner"));
       }), function(tx) {});
     }

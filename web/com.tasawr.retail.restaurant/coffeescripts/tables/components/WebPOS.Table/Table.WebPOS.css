@@ -162,3 +162,8 @@ button.empty:active {
 .modal-dialog-body-buttons{
   padding: 10px 0px;
 }
+
+.ob-body-standard {
+  background: darkgray url("../../../../../../web/com.tasawr.retail.restaurant/images/linen_bg_tile.jpg") top left;
+}
+

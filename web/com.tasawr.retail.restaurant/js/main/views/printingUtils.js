@@ -35,6 +35,7 @@
       TSRR.Main.TempVars.printersAndProducts[j][1] = prodQtyDesc;
       j++;
     }
+    TSRR.Main.TempVars.productsAndPrinters = [];
     return TSRR.Main.TempVars.printersAndProducts;
   };
 
@@ -78,14 +79,10 @@
           })),
           cacheBust: false,
           sync: true,
-          beforeSend: function(xhr) {
-            return xhr.setRequestHeader({
-              headers: {
-                Authorization: "Basic " + atob(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password)
-              }
-            });
-          },
           method: "GET",
+          beforeSend: function(xhr) {
+            return xhr.setRequestHeader("Authorization", "Basic " + btoa(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password));
+          },
           handleAs: "json",
           contentType: "application/json;charset=utf-8",
           success: function(inSender, inResponse) {
@@ -106,13 +103,10 @@
   };
 
   prepareReceipt = function(keyboard) {
-    if (keyboard.receipt.get('resaurantTable') === null || void 0) {
-      keyboard.receipt.attributes.restaurantTable.attributes.name = "Unspecified";
-    }
-    if (keyboard.receipt.attributes.numberOfGuests === null || void 0) {
+    if (typeof keyboard.receipt.attributes.numberOfGuests === "undefined") {
       keyboard.receipt.attributes.numberOfGuests = "Unspecified";
     }
-    if (keyboard.receipt.attributes.description === null || void 0) {
+    if (typeof keyboard.receipt.attributes.description === "undefined") {
       return console.error('receipt description not found');
     }
   };
@@ -130,8 +124,8 @@
 
   getFilteredLines = function(keyboard, gpi) {
     var allLines, line, newArray, _i, _len, _ref;
-    allLines = keyboard.receipt.get('lines');
-    newArray = jQuery.extend(true, {}, keyboard.receipt.get('lines'));
+    allLines = TSRR.Tables.Config.currentOrder.get('lines');
+    newArray = jQuery.extend(true, {}, TSRR.Tables.Config.currentOrder.get('lines'));
     _ref = allLines.models;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       line = _ref[_i];
@@ -149,10 +143,9 @@
       product: keyboard.line.get('product').id,
       terminal: OB.POS.modelterminal.get('terminal').id
     }, function(data) {
-      var message, sendModel, templatereceipt;
+      var sendModel, templatereceipt;
       if (data[0]) {
-        message = messageParam;
-        sendModel = OB.UI.printingUtils.buildModel(keyboard, data, message);
+        sendModel = OB.UI.printingUtils.buildModel(keyboard, data, messageParam);
         templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.NonGenericLineTemplate);
         OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendModel);
         enyo.Signals.send("onTransmission", {
@@ -175,7 +168,7 @@
     OB.POS.hwserver.print(templatereceipt, {
       order: sendToPrinter,
       receiptNo: keyboard.receipt.get('documentNo'),
-      tableNo: keyboard.receipt.get('restaurantTable').name,
+      tableNo: JSON.parse(localStorage.getItem('currentTable')).name,
       sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
       guestNo: keyboard.receipt.get('numberOfGuests'),
       message: message,
@@ -196,7 +189,7 @@
     return OB.POS.hwserver.print(templatereceipt, {
       order: sendToPrinter,
       receiptNo: keyboard.receipt.get('documentNo'),
-      tableNo: keyboard.receipt.get('restaurantTable').name,
+      tableNo: JSON.parse(localStorage.getItem('currentTable')).name,
       sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
       guestNo: keyboard.receipt.get('numberOfGuests'),
       user: keyboard.receipt.get('salesRepresentative$_identifier')

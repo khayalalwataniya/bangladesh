@@ -1,180 +1,180 @@
 enyo.kind
-  name: "TSRR.UI.OrderLineView"
-  kind: "OB.UI.SelectButton"
-  classes: "split-line-item row-fluid"
-  published:
-    line: null
-  components: [
-    name: "product"
-    classes: "span10"
-  ,
-    name: "price"
-    classes: "span2"
-  ,
-    style: "clear: both;"
-  ]
+	name: "TSRR.UI.OrderLineView"
+	kind: "OB.UI.SelectButton"
+	classes: "split-line-item row-fluid"
+	published:
+		line: null
+	components: [
+		name: "product"
+		classes: "span10"
+	,
+		name: "price"
+		classes: "span2"
+	,
+		style: "clear: both;"
+	]
 
-  init: ->
-    @inherited arguments
+	init: ->
+		@inherited arguments
 
-  initComponents: ->
-    @inherited arguments
+	initComponents: ->
+		@inherited arguments
 
-  create: ->
-    @inherited arguments
-    me = @
-    if me.model isnt null and me.model isnt undefined
-      me.setLine me.model
-      me.$.product.setContent me.model.attributes.product.attributes._identifier
-      me.$.price.setContent me.model.attributes.price
+	create: ->
+		@inherited arguments
+		me = @
+		if me.model isnt null and me.model isnt undefined
+			me.setLine me.model
+			me.$.product.setContent me.model.attributes.product.attributes._identifier
+			me.$.price.setContent me.model.attributes.price
 
-  lineChanged: ->
-    console.log 'line has changed'
+	lineChanged: ->
+		console.log 'line has changed'
 
-  render: ->
-    console.log 'line rendered'
+	render: ->
+		console.log 'line rendered'
 
-  tap: (inSender, inEvent) ->
-    me = @
-    _.each @parent.parent.parent.parent.$.order1.$.lines.$, (elem) ->
-      elem.applyStyle('background-color', 'white')
-    _.each @parent.parent.parent.parent.$.order2.$.lines.$, (elem) ->
-      elem.applyStyle('background-color', 'white')
-    @applyStyle 'background-color', 'green'
-    @$.product.addClass 'selected-line'
-    me.parent.parent.parent.parent.setSelectedLine(me.model)
-
-
-enyo.kind
-  name: "TSRR.UI.OrderLinesView"
-  published:
-    orderLines: null
-  create: ->
-    @inherited arguments
-  orderLinesChanged: ->
-    console.log 'order line changed, creating Components'
-    me = @
-    line = me.createComponent(
-      kind: "TSRR.UI.OrderLineView"
-      model: me.orderLines
-    )
-
-enyo.kind
-  name: "TSRR.UI.SingleOrderView"
-  kind: "enyo.Scroller"
-  maxHeight: "1000px"
-  published:
-    singleOrder: null
-  components: [
-    name: "lines"
-    kind: "TSRR.UI.OrderLinesView"
-  ]
-
-  create: ->
-    @inherited arguments
-
-  singleOrderChanged: ->
-    console.log 'single order changed'
-
-    me = @
-    enyo.forEach me.singleOrder.attributes.lines.models, (lines) ->
-      me.$.lines.setOrderLines lines
+	tap: (inSender, inEvent) ->
+		me = @
+		_.each @parent.parent.parent.parent.$.order1.$.lines.$, (elem) ->
+			elem.applyStyle('background-color', 'white')
+		_.each @parent.parent.parent.parent.$.order2.$.lines.$, (elem) ->
+			elem.applyStyle('background-color', 'white')
+		@applyStyle 'background-color', 'green'
+		@$.product.addClass 'selected-line'
+		me.parent.parent.parent.parent.setSelectedLine(me.model)
 
 
 enyo.kind
-  name: "TSRR.UI.SplitOrderView"
-  classes: "row-fluid cleafix"
-  fromOrder: ""
-  toOrder: ""
-  components: [
-    kind: "TSRR.UI.SingleOrderView"
-    name: "order1"
-    classes: "span5"
-  ,
-    kind: "onyx.Button"
-    name: "Switch"
-    content: "Switch Order"
-    classes: "span2"
-    style: "margin-top: 60px;"
-    ontap: 'buttonTapped'
-  ,
-    kind: "TSRR.UI.SingleOrderView"
-    name: "order2"
-    classes: "span5"
-  ,
-    style: "clear: both;"
-  ]
-  published:
-    orders: null
-    selectedLine: null
-  handlers:
-    onSplitOrderOkButton: "splitOrderOkPressed"
+	name: "TSRR.UI.OrderLinesView"
+	published:
+		orderLines: null
+	create: ->
+		@inherited arguments
+	orderLinesChanged: ->
+		console.log 'order line changed, creating Components'
+		me = @
+		line = me.createComponent(
+			kind: "TSRR.UI.OrderLineView"
+			model: me.orderLines
+		)
 
-  buttonTapped: (inSender, inEvent) ->
-    me = @
-    line = me.getSelectedLine()
-    console.log 'button was tapped again'
-    addLineComponentToAnotherOrder(line, me)
+enyo.kind
+	name: "TSRR.UI.SingleOrderView"
+	kind: "enyo.Scroller"
+	maxHeight: "1000px"
+	published:
+		singleOrder: null
+	components: [
+		name: "lines"
+		kind: "TSRR.UI.OrderLinesView"
+	]
 
-  splitOrderOkPressed: (inSender, inEvent) ->
-    me = @
-    console.log "CALLING SplitOrderOkPressed"
-    ordersOnPopup = inSender.parent.getOrders()
-    _.each ordersOnPopup.models, (order) ->
-      order.calculateGross()
-      order.save()
-    inSender.parent.hide()
+	create: ->
+		@inherited arguments
+
+	singleOrderChanged: ->
+		console.log 'single order changed'
+
+		me = @
+		enyo.forEach me.singleOrder.attributes.lines.models, (lines) ->
+			me.$.lines.setOrderLines lines
+
+
+enyo.kind
+	name: "TSRR.UI.SplitOrderView"
+	classes: "row-fluid cleafix"
+	fromOrder: ""
+	toOrder: ""
+	components: [
+		kind: "TSRR.UI.SingleOrderView"
+		name: "order1"
+		classes: "span5"
+	,
+		kind: "onyx.Button"
+		name: "Switch"
+		content: "Switch Order"
+		classes: "span2"
+		style: "margin-top: 60px;"
+		ontap: 'buttonTapped'
+	,
+		kind: "TSRR.UI.SingleOrderView"
+		name: "order2"
+		classes: "span5"
+	,
+		style: "clear: both;"
+	]
+	published:
+		orders: null
+		selectedLine: null
+	handlers:
+		onSplitOrderOkButton: "splitOrderOkPressed"
+
+	buttonTapped: (inSender, inEvent) ->
+		me = @
+		line = me.getSelectedLine()
+		console.log 'button was tapped again'
+		addLineComponentToAnotherOrder(line, me)
+
+	splitOrderOkPressed: (inSender, inEvent) ->
+		me = @
+		console.log "CALLING SplitOrderOkPressed"
+		ordersOnPopup = inSender.parent.getOrders()
+		_.each ordersOnPopup.models, (order) ->
+			order.calculateGross()
+			order.save()
+		inSender.parent.hide()
 #		@parent.parent.parent.parent.hide()
 #		OB.POS.navigate "retail.pointofsale"
-  create: ->
-    @inherited arguments
-  ordersChanged: ->
-    @inherited arguments
-    console.log 'main order(containing two single orders) has been changed'
-    me = @
-    if me.orders.models.length is 1
-      newOrder = tsrrNewOrder()
-      @orders.add(newOrder)
-      me.$.order1.setSingleOrder me.orders.models[0]
-      me.$.order2.setSingleOrder newOrder
-      TSRR.Main.order2 = newOrder
-      TSRR.Main.order1 = me.orders.models[0]
+	create: ->
+		@inherited arguments
+	ordersChanged: ->
+		@inherited arguments
+		console.log 'main order(containing two single orders) has been changed'
+		me = @
+		if me.orders.models.length is 1
+			newOrder = tsrrNewOrder()
+			@orders.add(newOrder)
+			me.$.order1.setSingleOrder me.orders.models[0]
+			me.$.order2.setSingleOrder newOrder
+			TSRR.Main.order2 = newOrder
+			TSRR.Main.order1 = me.orders.models[0]
 
-    else
-      i = 1
-      enyo.forEach me.orders.models, (model)->
-        if 1 == i
-          TSRR.Main.order1 = model
-          me.$.order1.setSingleOrder model
-        else
-          TSRR.Main.order2 = model
-          me.$.order2.setSingleOrder model
-        i++
+		else
+			i = 1
+			enyo.forEach me.orders.models, (model)->
+				if 1 == i
+					TSRR.Main.order1 = model
+					me.$.order1.setSingleOrder model
+				else
+					TSRR.Main.order2 = model
+					me.$.order2.setSingleOrder model
+				i++
 
-  selectedLineChange: ->
-    console.log 'selected line has been changed'
+	selectedLineChange: ->
+		console.log 'selected line has been changed'
 
 
 addLineComponentToAnotherOrder = (line, orderComponents) ->
-  anotherOrderComponent = findAnotherOrderComponent(line, orderComponents)
+	anotherOrderComponent = findAnotherOrderComponent(line, orderComponents)
 
-  containingOrderComponent = findLineContainingOrderComponent(line, orderComponents)
+	containingOrderComponent = findLineContainingOrderComponent(line, orderComponents)
 
-  lineComponent = findLineComponent(line, containingOrderComponent)
+	lineComponent = findLineComponent(line, containingOrderComponent)
 
-  anotherOrderComponent.singleOrder.attributes.lines.add lineComponent.model
-  containingOrderComponent.singleOrder.attributes.lines.remove lineComponent.model
+	anotherOrderComponent.singleOrder.attributes.lines.add lineComponent.model
+	containingOrderComponent.singleOrder.attributes.lines.remove lineComponent.model
 
-  anotherOrderComponent.$.lines.destroyComponents()
+	anotherOrderComponent.$.lines.destroyComponents()
 
-  containingOrderComponent.$.lines.destroyComponents()
+	containingOrderComponent.$.lines.destroyComponents()
 
-  orderComponents.ordersChanged()
+	orderComponents.ordersChanged()
 
-  anotherOrderComponent.singleOrderChanged()
-  anotherOrderComponent.render()
-  containingOrderComponent.singleOrderChanged()
-  containingOrderComponent.render()
+	anotherOrderComponent.singleOrderChanged()
+	anotherOrderComponent.render()
+	containingOrderComponent.singleOrderChanged()
+	containingOrderComponent.render()
 
 
 #    attributes:
@@ -200,55 +200,55 @@ addLineComponentToAnotherOrder = (line, orderComponents) ->
 
 
 findLineContainingOrder = (line, bothOrders) ->
-  containingOrder = null
+	containingOrder = null
 
-  _.each(bothOrders, (orderOb) ->
-    _.each orderOb.attributes.lines._byCid, (orderLine) ->
-      if line.cid is orderLine.cid
-        containingOrder = orderOb
-  )
-  containingOrder
+	_.each(bothOrders, (orderOb) ->
+		_.each orderOb.attributes.lines._byCid, (orderLine) ->
+			if line.cid is orderLine.cid
+				containingOrder = orderOb
+	)
+	containingOrder
 
 
 findAnotherOrder = (containingOrder, bothOrders) ->
-  anotherOrder = null
+	anotherOrder = null
 
-  _.each bothOrders, (orderOb) ->
-    if containingOrder isnt orderOb
-      anotherOrder = orderOb
+	_.each bothOrders, (orderOb) ->
+		if containingOrder isnt orderOb
+			anotherOrder = orderOb
 
-  anotherOrder
+	anotherOrder
 
 
 findLineContainingOrderComponent = (line, bothComponents) ->
-  containingComponent = null
-  containingOrder = findLineContainingOrder(line, bothComponents.getOrders()._byCid)
-  _.each bothComponents.$, (orderComponent) ->
-    if orderComponent.singleOrder is containingOrder
-      containingComponent = orderComponent
+	containingComponent = null
+	containingOrder = findLineContainingOrder(line, bothComponents.getOrders()._byCid)
+	_.each bothComponents.$, (orderComponent) ->
+		if orderComponent.singleOrder is containingOrder
+			containingComponent = orderComponent
 
-  containingComponent
+	containingComponent
 
 
 findAnotherOrderComponent = (line, bothComponents) ->
-  anotherComponent = null
+	anotherComponent = null
 
-  containingOrder = findLineContainingOrder(line, bothComponents.getOrders()._byCid)
-  anotherOrder = findAnotherOrder(containingOrder, bothComponents.getOrders()._byCid)
-  _.each bothComponents.$, (orderComponent) ->
-    if orderComponent.singleOrder is anotherOrder
-      anotherComponent = orderComponent
+	containingOrder = findLineContainingOrder(line, bothComponents.getOrders()._byCid)
+	anotherOrder = findAnotherOrder(containingOrder, bothComponents.getOrders()._byCid)
+	_.each bothComponents.$, (orderComponent) ->
+		if orderComponent.singleOrder is anotherOrder
+			anotherComponent = orderComponent
 
-  anotherComponent
+	anotherComponent
 
 
 findLineComponent = (line, containingOrderComponent) ->
-  lineComponent = null
-  _.each containingOrderComponent.$.lines.children, (lineButton) ->
-    if lineButton.model is line
-      lineComponent = lineButton
+	lineComponent = null
+	_.each containingOrderComponent.$.lines.children, (lineButton) ->
+		if lineButton.model is line
+			lineComponent = lineButton
 
-  lineComponent
+	lineComponent
 
 
 #ctx.parent.parent.parent.parent.parent.model.attributes.orderList._reset()
@@ -263,24 +263,19 @@ findLineComponent = (line, containingOrderComponent) ->
 #_.each(this.parent.$, function(x){console.log(x);});
 
 tsrrNewOrder = ->
-  if TSRR.Tables.Config.currentTable
-    enyo.Signals.send "onCurrentTableSet", "sms"
-    console.info 'table loaded'
-    TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder OB.POS.modelterminal.get("businessPartner")
-  else
-    OB.Dal.find OB.Model.Table,
-      locked: false
-    , ((collection) -> # inline callback
-        console.log 'there are ' + collection.length + ' table'
-        return  unless collection.length # no record found
-        TSRR.Tables.Config.currentTable = collection.models[0]
-
-        console.error 'table loaded'
-        TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder OB.POS.modelterminal.get("businessPartner")
-      ), (tx) ->
-      #console.log tx
-
-  TSRR.Tables.Config.currentOrder
+	if TSRR.Tables.Config.currentTable
+		TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder OB.POS.modelterminal.get("businessPartner")
+	else
+		OB.Dal.find OB.Model.Table,
+			locked: false
+		, ((collection) -> # inline callback
+				console.log 'there are ' + collection.length + ' table'
+				return  unless collection.length # no record found
+				TSRR.Tables.Config.currentTable = collection.models[0]
+				TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder OB.POS.modelterminal.get("businessPartner")
+			), (tx) ->
+				#console.log tx
+	TSRR.Tables.Config.currentOrder
 #	order = new OB.Model.Order()
 #	order.set "client", OB.POS.modelterminal.get("terminal").client
 #	order.set "organization", OB.POS.modelterminal.get("terminal").organization

@@ -23,7 +23,7 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
         processData: false
         contentType: "application/json"
         beforeSend: (xhr)->
-          xhr.setRequestHeader {headers: Authorization: "Basic " + atob(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password)}
+          xhr.setRequestHeader "Authorization", "Basic " + btoa(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password)
         success: (resp) ->
           console.info 'DONE'
           OB.UTIL.showSuccess '[DONE] table with name: "' + table.name + '" has been locked succussfully'
@@ -80,6 +80,8 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
         type: "PUT"
         processData: false
         contentType: "application/json"
+        beforeSend: (xhr)->
+          xhr.setRequestHeader "Authorization", "Basic " + btoa(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password)
         success: (resp) ->
           console.info 'DONE'
           OB.UTIL.showSuccess '[DONE] table with name: "' + table.name + '" has been unlocked succussfully'

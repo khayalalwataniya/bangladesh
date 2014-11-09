@@ -129,34 +129,34 @@ class Table extends OB.Data.ExtensibleModel
 		salesOrder.set 'bp', businessPartner
 		salesOrder.set 'restaurantTable', me
 		#salesOrder.set 'restaurantTable$_identifier', me.name
-		salesOrder.set "client", OB.POS.modelterminal.get("terminal").client
+#		salesOrder.set "client", OB.POS.modelterminal.get("terminal").client
 #		salesOrder.set "organization", OB.POS.modelterminal.get("terminal").organization
 #		salesOrder.set "createdBy", OB.POS.modelterminal.get("orgUserId")
 #		salesOrder.set "updatedBy", OB.POS.modelterminal.get("orgUserId")
-		salesOrder.set "documentType", OB.POS.modelterminal.get("terminal").terminalType.documentType
-		salesOrder.set "orderType", 0 # 0: Sales order, 1: Return order, 2: Layaway, 3: Void Layaway
-		salesOrder.set "generateInvoice", false
-		salesOrder.set "isQuotation", false
+#		salesOrder.set "documentType", OB.POS.modelterminal.get("terminal").terminalType.documentType
+#		salesOrder.set "orderType", 0 # 0: Sales order, 1: Return order, 2: Layaway, 3: Void Layaway
+#		salesOrder.set "generateInvoice", false
+#		salesOrder.set "isQuotation", false
 #		salesOrder.set "oldId", null
-		salesOrder.set "session", OB.POS.modelterminal.get("session")
-		salesOrder.set "priceList", OB.POS.modelterminal.get("terminal").priceList
-		salesOrder.set "priceIncludesTax", OB.POS.modelterminal.get("pricelist").priceIncludesTax
-		salesOrder.set "generateInvoice", OB.POS.modelterminal.get("terminal").terminalType.generateInvoice
-		salesOrder.set "currency", OB.POS.modelterminal.get("terminal").currency
-		salesOrder.set "currency" + OB.Constants.FIELDSEPARATOR + OB.Constants.IDENTIFIER, OB.POS.modelterminal.get("terminal")["currency" + OB.Constants.FIELDSEPARATOR + OB.Constants.IDENTIFIER]
-		salesOrder.set "warehouse", OB.POS.modelterminal.get("terminal").warehouse
-		salesOrder.set "salesRepresentative", OB.POS.modelterminal.get("context").user.id
-		salesOrder.set "salesRepresentative" + OB.Constants.FIELDSEPARATOR + OB.Constants.IDENTIFIER, OB.POS.modelterminal.get("context").user._identifier
-		salesOrder.set "posTerminal", OB.POS.modelterminal.get("terminal").id
-		salesOrder.set "posTerminal" + OB.Constants.FIELDSEPARATOR + OB.Constants.IDENTIFIER, OB.POS.modelterminal.get("terminal")._identifier
+#		salesOrder.set "session", OB.POS.modelterminal.get("session")
+#		salesOrder.set "priceList", OB.POS.modelterminal.get("terminal").priceList
+#		salesOrder.set "priceIncludesTax", OB.POS.modelterminal.get("pricelist").priceIncludesTax
+#		salesOrder.set "generateInvoice", OB.POS.modelterminal.get("terminal").terminalType.generateInvoice
+#		salesOrder.set "currency", OB.POS.modelterminal.get("terminal").currency
+#		salesOrder.set "currency" + OB.Constants.FIELDSEPARATOR + OB.Constants.IDENTIFIER, OB.POS.modelterminal.get("terminal")["currency" + OB.Constants.FIELDSEPARATOR + OB.Constants.IDENTIFIER]
+#		salesOrder.set "warehouse", OB.POS.modelterminal.get("terminal").warehouse
+#		salesOrder.set "salesRepresentative", OB.POS.modelterminal.get("context").user.id
+#		salesOrder.set "salesRepresentative" + OB.Constants.FIELDSEPARATOR + OB.Constants.IDENTIFIER, OB.POS.modelterminal.get("context").user._identifier
+#		salesOrder.set "posTerminal", OB.POS.modelterminal.get("terminal").id
+#		salesOrder.set "posTerminal" + OB.Constants.FIELDSEPARATOR + OB.Constants.IDENTIFIER, OB.POS.modelterminal.get("terminal")._identifier
 #		salesOrder.set "orderDate", new Date()
-		salesOrder.set "isPaid", false
+#		salesOrder.set "isPaid", false
 #		salesOrder.set "paidOnCredit", false
-		salesOrder.set "isLayaway", false
-		salesOrder.set "taxes", null
-		salesOrder.set "print", true
-		salesOrder.set "sendEmail", false
-		salesOrder.set "openDrawer", false
+#		salesOrder.set "isLayaway", false
+#		salesOrder.set "taxes", null
+#		salesOrder.set "print", true
+#		salesOrder.set "sendEmail", false
+#		salesOrder.set "openDrawer", false
 		salesOrder.save()
 
 		bi = new OB.Model.BookingInfo()
@@ -168,7 +168,7 @@ class Table extends OB.Data.ExtensibleModel
 		bi.save()
 		TSRR.Tables.Config.currentOrderId = salesOrder.get 'id'
 		TSRR.Tables.Config.currentOrder = salesOrder
-		TSRR.Tables.Config.currentTable = me
+		TSRR.Tables.Config.currentTable = JSON.parse(localStorage.getItem('currentTable'))
 		TSRR.Tables.Config.currentBookingInfo = bi
 
 		salesOrder

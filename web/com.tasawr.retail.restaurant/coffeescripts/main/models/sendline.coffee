@@ -7,6 +7,7 @@
 #  definition:
 #    stateless: true
 #    action: (keyboard, txt) ->
+
 #      OB.UI.printingUtils.prepareReceipt(keyboard)
 #      gpi = keyboard.line.attributes.product.attributes.generic_product_id
 #      if gpi isnt null

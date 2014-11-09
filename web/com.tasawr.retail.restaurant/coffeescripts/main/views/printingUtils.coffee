@@ -29,7 +29,7 @@ uniquePrinterAndProductGenerator = (callback, lines) ->
     TSRR.Main.TempVars.printersAndProducts[j][0] = uniquePrinters[j]
     TSRR.Main.TempVars.printersAndProducts[j][1] = prodQtyDesc
     j++
-
+  TSRR.Main.TempVars.productsAndPrinters = []
   TSRR.Main.TempVars.printersAndProducts
 
 assignVar = (requests, lines) ->
@@ -66,9 +66,9 @@ productInfoGetter = (lines) ->
         url: "../../org.openbravo.mobile.core.service.jsonrest/" + "com.tasawr.retail.restaurant.data.OrderLineService" + "/" + encodeURI(JSON.stringify({product: lines.models[i].get('product').id, terminal:OB.POS.modelterminal.get('terminal').id}))
         cacheBust: false
         sync: true
-        beforeSend: (xhr)->
-          xhr.setRequestHeader {headers: Authorization: "Basic " + atob(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password)}
         method: "GET"
+        beforeSend: (xhr)->
+          xhr.setRequestHeader "Authorization", "Basic " + btoa(OB.POS.modelterminal.user + ":" + OB.POS.modelterminal.password)
         handleAs: "json"
         contentType: "application/json;charset=utf-8"
         success: (inSender, inResponse) ->
@@ -85,11 +85,9 @@ productInfoGetter = (lines) ->
 
 prepareReceipt =  (keyboard) ->
 
-  if keyboard.receipt.get('resaurantTable') is null or undefined
-    keyboard.receipt.attributes.restaurantTable.attributes.name = "Unspecified"
-  if keyboard.receipt.attributes.numberOfGuests is null or undefined
-      keyboard.receipt.attributes.numberOfGuests = "Unspecified"
-  if keyboard.receipt.attributes.description is null or undefined
+  if typeof(keyboard.receipt.attributes.numberOfGuests) is "undefined"
+    keyboard.receipt.attributes.numberOfGuests = "Unspecified"
+  if typeof(keyboard.receipt.attributes.description) is "undefined"
     console.error 'receipt description not found'
 
 
@@ -107,8 +105,9 @@ buildModel = (keyboard, data, message) ->
 
 
 getFilteredLines = (keyboard, gpi) ->
-  allLines = keyboard.receipt.get('lines')
-  newArray = jQuery.extend(true, {}, keyboard.receipt.get('lines'));
+  allLines = TSRR.Tables.Config.currentOrder.get('lines')
+
+  newArray = jQuery.extend(true, {}, TSRR.Tables.Config.currentOrder.get('lines'));
   for line in allLines.models
     if line.get('product').get('generic_product_id') is gpi
       console.info 'present'
@@ -118,14 +117,12 @@ getFilteredLines = (keyboard, gpi) ->
   newArray
 
 printNonGenericLine = (keyboard, messageParam, successMessage, lineMessage) ->
-
   new OB.DS.Request("com.tasawr.retail.restaurant.data.OrderLineService").exec
     product: keyboard.line.get('product').id
     terminal: OB.POS.modelterminal.get('terminal').id
   , (data) ->
     if data[0]
-      message = messageParam
-      sendModel = OB.UI.printingUtils.buildModel(keyboard, data, message)
+      sendModel = OB.UI.printingUtils.buildModel(keyboard, data, messageParam)
       templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.NonGenericLineTemplate)
       OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendModel)
       enyo.Signals.send "onTransmission", {message: lineMessage, cid: keyboard.line.cid}
@@ -144,7 +141,7 @@ printGenericLine = (keyboard, gpi, message, statusMessage) ->
   OB.POS.hwserver.print templatereceipt,
     order: sendToPrinter
     receiptNo: keyboard.receipt.get('documentNo')
-    tableNo: keyboard.receipt.get('restaurantTable').name
+    tableNo: JSON.parse(localStorage.getItem('currentTable')).name
     sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
     guestNo: keyboard.receipt.get('numberOfGuests')
     message: message
@@ -163,7 +160,7 @@ printLineOrReceipt = (keyboard, templatereceipt, sendToPrinter) ->
   OB.POS.hwserver.print templatereceipt,
     order: sendToPrinter
     receiptNo: keyboard.receipt.get('documentNo')
-    tableNo: keyboard.receipt.get('restaurantTable').name
+    tableNo: JSON.parse(localStorage.getItem('currentTable')).name
     sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
     guestNo: keyboard.receipt.get('numberOfGuests')
     user: keyboard.receipt.get('salesRepresentative$_identifier')
@@ -180,7 +177,3 @@ OB.UI.printingUtils =
   getFilteredLines:getFilteredLines
   printNonGenericLine:printNonGenericLine
   printLineOrReceipt:printLineOrReceipt
-
-
-#333F06B4FB6341D3A9F103B968CA0F21
-#OB.POS.modelterminal.get('terminal')

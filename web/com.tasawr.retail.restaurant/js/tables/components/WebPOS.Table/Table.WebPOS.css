@@ -167,3 +167,6 @@ div.modal-dialog-body-content {
   background: #fff;
   color: #333333;
   padding: 20px 0px; }
+
+.ob-body-standard {
+  background: darkgrey url("../../../../../../web/com.tasawr.retail.restaurant/images/linen_bg_tile.jpg") top left; }
