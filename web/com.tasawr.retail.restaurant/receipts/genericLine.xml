@@ -22,8 +22,8 @@
         </line>
 
         <line></line>
-        <line>
-            <text align="left" length="22">Receipt: </text>
+        <line size="2">
+            <text align="left" length="10">Receipt: </text>
             <text><%= OB.UTIL.encodeXMLComponent(receiptNo) %></text>
         </line>
         <line>

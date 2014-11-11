@@ -94,15 +94,28 @@
       if (this.attributes.tsrrSection) {
         this.set('tsrrSection', this.get('tsrrSection'));
       }
-      this.set('name', this.get('name'));
-      this.set('chairs', this.get('chairs'));
-      this.set('smokingType', this.get('smokingType'));
-      this.set('locked', this.get('locked'));
-      this.set('locker', this.get('locker'));
+      if (this.attributes.name) {
+        this.set('name', this.get('name'));
+      }
+      if (this.attributes.chairs) {
+        this.set('chairs', this.get('chairs'));
+      }
+      if (this.attributes.smokingType) {
+        this.set('smokingType', this.get('smokingType'));
+      }
+      if (this.attributes.locked) {
+        this.set('locked', this.get('locked'));
+      }
+      if (this.attributes.locker) {
+        this.set('locker', this.get('locker'));
+      }
+      if (this.attributes.id) {
+        this.set("_identifier", this.get("id"));
+      }
       if (!OB.POS.modelterminal.get("preventOrderSave")) {
         OB.Dal.save(this, (function() {
           me.trigger('sync');
-          return console.log('DONE');
+          return OB.info('DONE');
         }), function() {
           console.error(arguments);
         });
@@ -125,9 +138,9 @@
       if (!OB.POS.modelterminal.get("preventOrderSave")) {
         OB.Dal.save(this, (function() {
           me.trigger('sync');
-          return console.log('DONE');
+          return OB.info('DONE');
         }), function() {
-          console.error(arguments);
+          console.log(arguments);
         });
       }
     };

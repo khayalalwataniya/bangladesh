@@ -29,24 +29,24 @@
         </line>
         <line></line>
         <line>
-            <text align="center" length="42"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_tckheader_line1'))%></text>
+            <text align="center" length="42"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('TSRR_tckheader_line1'))%></text>
         </line>
         <line>
-            <text align="center" length="42"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_tckheader_line2'))%></text>
+            <text align="center" length="42"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('TSRR_tckheader_line2'))%></text>
         </line>
         <line></line>
-        <line>
-            <text align="left" length="22"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_ticket')) %></text>
-            <text><%= OB.UTIL.encodeXMLComponent(order.get('documentNo')) %></text>
+        <line size="2">
+          <text align="left" length="9"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_ticket')) %></text>
+          <text align="left"><%= OB.UTIL.encodeXMLComponent(order.get('documentNo')) %></text>
         </line>
         <line>
-            <text align="left" length="22"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_datetime')) %></text>
+            <text align="left" length="18"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_datetime')) %></text>
             <text><%= OB.I18N.formatDate(new Date()) %></text>
             <text> </text>
             <text><%= OB.I18N.formatHour(new Date()) %></text>
         </line>
         <line>
-            <text align="left" length="22"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_cashierPOS')) %></text>
+            <text align="left" length="18"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_cashierPOS')) %></text>
             <text><%= OB.UTIL.encodeXMLComponent(order.get('salesRepresentative'+OB.Constants.FIELDSEPARATOR + OB.Constants.IDENTIFIER)) %></text>
             <text>, </text>
             <text><%= OB.UTIL.encodeXMLComponent(order.get('posTerminal'+OB.Constants.FIELDSEPARATOR + OB.Constants.IDENTIFIER)) %></text>
@@ -68,14 +68,8 @@
 
         %>
         <line>
-            <text align ="left" length="21"><%= OB.UTIL.encodeXMLComponent(line.get('product').get('_identifier')) %></text>
-            <text align ="right" length="5"><%= line.printQty() %></text>
-            <text align ="right" length="8"><%= line.printPrice() %></text>
-            <%if(order.get('priceIncludesTax')){%>
-            <text align ="right" length="8"><%= line.printGross() %></text>
-            <%}else{%>
-            <text align ="right" length="8"><%= line.printNet() %></text>
-            <%}%>
+            <text align ="left" length="41"><%= OB.UTIL.encodeXMLComponent(line.get('product').get('_identifier')) %></text>
+            <text align="left" length="1"></text>
         </line>
         <line>
             <text align ="left" length="21"><%= OB.UTIL.encodeXMLComponent(line.attributes.product.attributes.searchkey) %></text>

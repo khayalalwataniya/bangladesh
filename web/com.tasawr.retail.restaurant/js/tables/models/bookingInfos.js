@@ -96,14 +96,19 @@
       if (this.attributes.salesOrder) {
         this.set('salesOrder', this.get('salesOrder').id);
       }
-      this.set('orderidlocal', this.get('orderidlocal'));
-      this.set('ebid', this.get('ebid'));
+      if (this.attributes.orderidlocal) {
+        this.set('orderidlocal', this.get('orderidlocal'));
+      }
+      if (this.attributes.ebid) {
+        this.set('ebid', this.get('ebid'));
+      }
       if (this.attributes.id) {
         this.set("_identifier", this.get("id"));
       }
       if (!OB.POS.modelterminal.get("preventOrderSave")) {
         OB.Dal.save(this, (function() {
-          return me.trigger("sync");
+          me.trigger("sync");
+          return OB.info("DONE");
         }), function() {
           console.error(arguments);
         });
@@ -115,23 +120,27 @@
       var me;
       me = this;
       if (this.attributes.restaurantTable) {
-        this.set('restaurantTable', this.get('restaurantTable').id);
+        this.set('restaurantTable', this.get('restaurantTable'));
       }
       if (this.attributes.businessPartner) {
-        this.set('businessPartner', this.get('businessPartner').id);
+        this.set('businessPartner', this.get('businessPartner'));
       }
       if (this.attributes.salesOrder) {
-        this.set('salesOrder', this.get('salesOrder').id);
+        this.set('salesOrder', this.get('salesOrder'));
       }
-      this.set('orderidlocal', this.get('orderidlocal'));
-      this.set('ebid', this.get('ebid'));
+      if (this.attributes.orderidlocal) {
+        this.set('orderidlocal', this.get('orderidlocal'));
+      }
+      if (this.attributes.ebid) {
+        this.set('ebid', this.get('ebid'));
+      }
       if (this.attributes.id) {
         this.set("_identifier", this.get("id"));
       }
       if (!OB.POS.modelterminal.get("preventOrderSave")) {
         OB.Dal.save(this, (function() {
           me.trigger('sync');
-          return console.log('DONE');
+          return OB.info('DONE');
         }), function() {
           console.error(arguments);
         });

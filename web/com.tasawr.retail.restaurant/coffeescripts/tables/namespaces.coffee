@@ -16,11 +16,10 @@ if OB.MobileApp.model.hookManager
     console.error tx
     return
 
+
   # delete related booking info once order has been paid
   OB.MobileApp.model.hookManager.registerHook "OBPRINT_PrePrint", (args, callbacks) ->
     console.log "calling... OBPRINT_PrePrint hook"
-#    debugger
-#    salesOrder = @.model.get 'order'
     OB.Dal.find OB.Model.BookingInfo,
       salesOrder: TSRR.Tables.Config.currentOrderId
     , ((collection) -> # inline callback
@@ -32,13 +31,6 @@ if OB.MobileApp.model.hookManager
     OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
     return
 
-  # delete related booking info once order has been paid
-  OB.MobileApp.model.hookManager.registerHook "OBRETUR_ReturnFromOrig", (args, callbacks) ->
-    console.log "calling... OBRETUR_ReturnFromOrig hook"
-    salesOrder = @.model.get 'order'
-    console.log salesOrder
-    OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
-    return
 
   OB.MobileApp.model.hookManager.registerHook "OBPOS_PreAddProductToOrder", (args, callbacks) ->
     console.log "calling... OBPOS_PreAddProductToOrder hook"
@@ -49,7 +41,6 @@ if OB.MobileApp.model.hookManager
     OB.Dal.find OB.Model.BookingInfo,
       salesOrder: me.order.get('id')
     , ((collection) -> # inline callback
-        console.info collection
         if collection and collection.length > 0
           bi = collection.at 0
         else
@@ -58,7 +49,7 @@ if OB.MobileApp.model.hookManager
           bi.set 'businessPartner', OB.POS.modelterminal.attributes.businessPartner
           bi.set 'salesOrder', me.order
           bi.set 'orderidlocal', me.order.get('id')
-          bi.set 'restaurantTable', JSON.parse(localStorage.getItem('currentTable')).name
+          bi.set 'restaurantTable', JSON.parse(localStorage.getItem('currentTable'))
           bi.set 'ebid', me.order.get('id')
           bi.save()
         return
@@ -66,6 +57,7 @@ if OB.MobileApp.model.hookManager
 
     OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
     return
+
 
   # delete related booking info when order has been deleted
   OB.MobileApp.model.hookManager.registerHook "OBPOS_PreDeleteCurrentOrder", (args, callbacks) ->
@@ -82,12 +74,7 @@ if OB.MobileApp.model.hookManager
 
     OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
     return
-#
-#  OB.MobileApp.model.hookManager.registerHook "OBPOS_PreSynchData", () ->
-#    OB.info 'calling... OBPOS_PreSynchData'
-#    OB.info arguments
-#    OB.MobileApp.model.hookManager.callbackExecutor
-#    return
+
 
 OB.OBPOSPointOfSale.Model.PointOfSale::loadUnpaidOrders = ->
   orderlist = @get("orderList")
@@ -99,7 +86,6 @@ OB.OBPOSPointOfSale.Model.PointOfSale::loadUnpaidOrders = ->
     currentOrder = undefined
     loadOrderStr = undefined
     if not ordersNotPaid or ordersNotPaid.length is 0
-
       # If there are no pending orders,
       #  add an initial empty order
       orderlist.addFirstOrder()
@@ -111,6 +97,7 @@ OB.OBPOSPointOfSale.Model.PointOfSale::loadUnpaidOrders = ->
         currentOrder = ordersNotPaid.get TSRR.Tables.Config.currentOrderId
       else
         currentOrder = ordersNotPaid.models[0]
+
       orderlist.load currentOrder
       TSRR.Tables.Config.currentOrder = currentOrder if currentOrder
       loadOrderStr = OB.I18N.getLabel("OBPOS_Order") + currentOrder.get("documentNo") + OB.I18N.getLabel("OBPOS_Loaded") if currentOrder

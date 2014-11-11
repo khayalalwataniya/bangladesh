@@ -32,13 +32,6 @@
       }), error);
       OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
     });
-    OB.MobileApp.model.hookManager.registerHook("OBRETUR_ReturnFromOrig", function(args, callbacks) {
-      var salesOrder;
-      console.log("calling... OBRETUR_ReturnFromOrig hook");
-      salesOrder = this.model.get('order');
-      console.log(salesOrder);
-      OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
-    });
     OB.MobileApp.model.hookManager.registerHook("OBPOS_PreAddProductToOrder", function(args, callbacks) {
       var bi, me;
       console.log("calling... OBPOS_PreAddProductToOrder hook");
@@ -49,7 +42,6 @@
       OB.Dal.find(OB.Model.BookingInfo, {
         salesOrder: me.order.get('id')
       }, (function(collection) {
-        console.info(collection);
         if (collection && collection.length > 0) {
           bi = collection.at(0);
         } else {
@@ -58,7 +50,7 @@
           bi.set('businessPartner', OB.POS.modelterminal.attributes.businessPartner);
           bi.set('salesOrder', me.order);
           bi.set('orderidlocal', me.order.get('id'));
-          bi.set('restaurantTable', JSON.parse(localStorage.getItem('currentTable')).name);
+          bi.set('restaurantTable', JSON.parse(localStorage.getItem('currentTable')));
           bi.set('ebid', me.order.get('id'));
           bi.save();
         }

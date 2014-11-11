@@ -7,6 +7,7 @@ class Table extends OB.Data.ExtensibleModel
 	url: '../../org.openbravo.service.json.jsonrest/TSRR_Table'
 	source: "com.tasawr.retail.restaurant.data.Table"
 	dataLimit: 300
+
 	_id: 'modeltable'
 
 	initialize: (attributes) ->
@@ -54,15 +55,16 @@ class Table extends OB.Data.ExtensibleModel
 		undoCopy = @get("undo")
 		@unset "undo"
 		@.set 'tsrrSection', @get('tsrrSection') if @attributes.tsrrSection
-		@.set 'name', @get 'name'
-		@.set 'chairs', @get 'chairs'
-		@.set 'smokingType', @get 'smokingType'
-		@.set 'locked', @get 'locked'
-		@.set 'locker', @get 'locker'
+		@.set 'name', @get 'name' if @attributes.name
+		@.set 'chairs', @get 'chairs' if @attributes.chairs
+		@.set 'smokingType', @get 'smokingType' if @attributes.smokingType
+		@.set 'locked', @get 'locked' if @attributes.locked
+		@.set 'locker', @get 'locker' if @attributes.locker
+		@set "_identifier", @get("id") if @attributes.id
 		unless OB.POS.modelterminal.get("preventOrderSave")
 			OB.Dal.save @, (->
 				me.trigger 'sync'
-				console.log 'DONE'
+				OB.info 'DONE'
 			), ->
 				console.error arguments
 				return
@@ -82,9 +84,9 @@ class Table extends OB.Data.ExtensibleModel
 		unless OB.POS.modelterminal.get("preventOrderSave")
 			OB.Dal.save @, (->
 				me.trigger 'sync'
-				console.log 'DONE'
+				OB.info 'DONE'
 			), ->
-				console.error arguments
+				console.log arguments
 				return
 		return
 
