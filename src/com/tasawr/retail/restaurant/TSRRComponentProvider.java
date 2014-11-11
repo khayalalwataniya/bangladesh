@@ -78,11 +78,9 @@ public class TSRRComponentProvider extends BaseComponentProvider {
 
 
 
-    grhelper.add("tables/namespaces.js");
     grhelper.add("tables/models/sections.js");
     grhelper.add("tables/models/tables.js");
     grhelper.add("tables/models/bookingInfos.js");
-    grhelper.add("tables/models/tablesWindow.js");
     grhelper.add("tables/models/tablesWindow.js");
     grhelper.add("tables/models/changedbookinginfo.js");
           

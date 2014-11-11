@@ -43,5 +43,8 @@
       <foreign-key foreignTable="AD_ORG" name="TSRR_SECTION_AD_ORG">
         <reference local="AD_ORG_ID" foreign="AD_ORG_ID"/>
       </foreign-key>
+      <unique name="TSRR_SECTION_NAME_UQ">
+        <unique-column name="NAME"/>
+      </unique>
     </table>
   </database>
