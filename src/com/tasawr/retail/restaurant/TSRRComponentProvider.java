@@ -77,7 +77,6 @@ public class TSRRComponentProvider extends BaseComponentProvider {
     grhelper.add("main/components/RestaurantSearchDialog.js");
 
 
-
     grhelper.add("tables/models/sections.js");
     grhelper.add("tables/models/tables.js");
     grhelper.add("tables/models/bookingInfos.js");

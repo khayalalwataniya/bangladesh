@@ -22,8 +22,8 @@
 
         <line></line>
         <line size="2">
-            <text align="left" length="9"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_ticket')) %></text>
-            <text align="left"><%= OB.UTIL.encodeXMLComponent(receiptNo) %></text>
+            <text align="left" length="9" bold="true"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_ticket')) %></text>
+            <text align="left" bold="true"><%= OB.UTIL.encodeXMLComponent(receiptNo) %></text>
         </line>
         <line>
             <text align="left" length="22"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_datetime')) %>:</text>
@@ -63,7 +63,7 @@
 
         <line><text>----------------------------------------</text></line>
         <line>  <text align="left" length="22">Guest No: <%= OB.UTIL.encodeXMLComponent(guestNo) %></text></line>
-        <line>  <text align="left" length="22">Table No: <%= OB.UTIL.encodeXMLComponent(tableNo) %></text></line>
+        <line size="2">  <text align="left" length="22" bold="true">Table No: <%= OB.UTIL.encodeXMLComponent(tableNo) %></text></line>
         <line>  <text align="left" length="22">User: <%= OB.UTIL.encodeXMLComponent(user) %></text></line>
 
     </ticket>
