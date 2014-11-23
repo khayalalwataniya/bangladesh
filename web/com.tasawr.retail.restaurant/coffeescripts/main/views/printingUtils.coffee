@@ -3,11 +3,40 @@ TSRR.Main.TempVars.allPrinters = []
 TSRR.Main.TempVars.allProducts = []
 TSRR.Main.TempVars.productsAndPrinters = []
 TSRR.Main.TempVars.requests = []
+TSRR.Main.TempVars.localModels = []
 
 
 uniquePrinterAndProductGenerator = (callback, lines) ->
   callback lines
 
+  qty = undefined
+  description = undefined
+  uniquePrinters = TSRR.Main.TempVars.allPrinters.filter((elem, pos) ->
+    TSRR.Main.TempVars.allPrinters.indexOf(elem) is pos
+  )
+  j = 0
+
+  while j < uniquePrinters.length
+    prodQtyDesc = new Array()
+    tempProducts = new Array()
+    i = 0
+
+    while i < TSRR.Main.TempVars.productsAndPrinters.length
+      if ($.inArray(uniquePrinters[j], TSRR.Main.TempVars.productsAndPrinters[i][1][0])) >= 0
+        prodQtyDesc.push TSRR.Main.TempVars.productsAndPrinters[i]
+
+      i++
+    TSRR.Main.TempVars.printersAndProducts[j] = []
+    TSRR.Main.TempVars.printersAndProducts[j][0] = uniquePrinters[j]
+    TSRR.Main.TempVars.printersAndProducts[j][1] = prodQtyDesc
+    j++
+  TSRR.Main.TempVars.productsAndPrinters = []
+  TSRR.Main.TempVars.printersAndProducts
+
+
+
+
+uniquePrinterAndProductGenerator2 = () ->
   qty = undefined
   description = undefined
   uniquePrinters = TSRR.Main.TempVars.allPrinters.filter((elem, pos) ->
@@ -39,6 +68,9 @@ assignVar = (requests, lines) ->
   while i < requests.length
     result = JSON.parse(requests[i].xhr.responseText)
     data = result.response.data[0]
+    console.error 'there '
+    console.error data
+
     if data
       tempPrinters = data.printerProperty.split(" ")
       j = 0
@@ -54,10 +86,29 @@ assignVar = (requests, lines) ->
 
     i++
 
+assignVar2 = (collection, lines)->
+
+  tempPrinters = []
+  i = 0
+  while i < collection.length
+
+    data = collection[i].models[0]
+    if data
+      tempPrinters = data.get('printerProperty').split(" ")
+      j = 0
+      while j < tempPrinters.length
+        TSRR.Main.TempVars.allPrinters.push tempPrinters[j]
+        j++
+      TSRR.Main.TempVars.productsAndPrinters[i] = []
+      TSRR.Main.TempVars.productsAndPrinters[i][0] = data.get('printCode')
+      TSRR.Main.TempVars.productsAndPrinters[i][1] = [tempPrinters]
+      TSRR.Main.TempVars.productsAndPrinters[i][2] = lines.models[i].get('qty')
+      TSRR.Main.TempVars.productsAndPrinters[i][3] = lines.models[i].get('description')
+    i++
+
+
 productInfoGetter = (lines) ->
   i = 0
-
-
   while i < lines.length
     if i >= lines.models.length
       break
@@ -82,6 +133,23 @@ productInfoGetter = (lines) ->
   TSRR.Main.TempVars.requests.length = 0
 
 
+productInfoGetter2 = (lines) ->
+  promises = []
+  for line in lines.models
+    promise = findModel(OB.Model.Printprodcode,
+      product: line.get("product").id
+      pOSTerminal: OB.POS.modelterminal.get("terminal").id
+    )
+    promises.push promise
+  return promises
+
+findModel = (model, params) ->
+  deferred = $.Deferred()
+  OB.Dal.find model, params, ((data) ->
+    deferred.resolve data
+  ), (err) ->
+    deferred.reject err
+  deferred.promise()
 
 prepareReceipt =  (keyboard) ->
 
@@ -103,6 +171,16 @@ buildModel = (keyboard, data, message) ->
     description: keyboard.line.get('description')
 
 
+buildModel2 = (keyboard, data, message) ->
+  new TSRR.Main.Model.GenericModelForPrinter
+    order: keyboard.receipt
+    message: message
+    printCode: data.models[0].get('printCode')
+    printerProperty: data.models[0].get('printerProperty')
+    productQty: String(keyboard.line.get('qty'))
+    description: keyboard.line.get('description')
+
+
 
 getFilteredLines = (keyboard, gpi) ->
   allLines = TSRR.Tables.Config.currentOrder.get('lines')
@@ -117,42 +195,67 @@ getFilteredLines = (keyboard, gpi) ->
   newArray
 
 printNonGenericLine = (keyboard, messageParam, successMessage, lineMessage) ->
-  new OB.DS.Request("com.tasawr.retail.restaurant.data.OrderLineService").exec
+  OB.Dal.find OB.Model.Printprodcode,
     product: keyboard.line.get('product').id
-    terminal: OB.POS.modelterminal.get('terminal').id
-  , (data) ->
-    if data[0]
-      sendModel = OB.UI.printingUtils.buildModel(keyboard, data, messageParam)
-      templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.NonGenericLineTemplate)
-      OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendModel)
-      enyo.Signals.send "onTransmission", {message: lineMessage, cid: keyboard.line.cid}
-      OB.UTIL.showSuccess successMessage
-    else
-      OB.UTIL.showError "No printer is assigned to this product"
+    pOSTerminal: OB.POS.modelterminal.get('terminal').id
+  , ((model)->
+      if model.models[0]
+        sendModel = OB.UI.printingUtils.buildModel2(keyboard, model, messageParam)
+        templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.NonGenericLineTemplate)
+        OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendModel)
+        enyo.Signals.send "onTransmission", {message: lineMessage, cid: keyboard.line.cid}
+        OB.UTIL.showSuccess successMessage
+      else
+        OB.UTIL.showError "No printer is assigned to this product"
+
+    ), ->
+      console.error "error"
+      return
+    return
+#  new OB.DS.Request("com.tasawr.retail.restaurant.data.OrderLineService").exec
+#    product: keyboard.line.get('product').id
+#    terminal: OB.POS.modelterminal.get('terminal').id
+#  , (data) ->
+#    if data[0]
+#      console.error 'here '
+#      debugger
+#      console.error data
+#      sendModel = OB.UI.printingUtils.buildModel(keyboard, data, messageParam)
+#      templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.NonGenericLineTemplate)
+#      OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendModel)
+#      enyo.Signals.send "onTransmission", {message: lineMessage, cid: keyboard.line.cid}
+#      OB.UTIL.showSuccess successMessage
+#    else
+#      OB.UTIL.showError "No printer is assigned to this product"
 
 
 printGenericLine = (keyboard, gpi, message, statusMessage) ->
 
   newArray = OB.UI.printingUtils.getFilteredLines(keyboard, gpi)
   TSRR.Main.TempVars.productsAndPrinters = []
-  sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, newArray)
-  templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.GenericLineTemplate)
+#  sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, newArray)
+  promises = OB.UI.printingUtils.productInfoGetter2(newArray)
+  $.when.apply(`undefined`, promises).then ((models...) ->
+    assignVar2(models, newArray)
+    sendToPrinter = uniquePrinterAndProductGenerator2()
+    templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.GenericLineTemplate)
+    OB.POS.hwserver.print templatereceipt,
+      order: sendToPrinter
+      receiptNo: keyboard.receipt.get('documentNo')
+      tableNo: JSON.parse(localStorage.getItem('currentTable')).name
+      sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
+      guestNo: keyboard.receipt.get('numberOfGuests')
+      message: message
+      user: keyboard.receipt.get('salesRepresentative$_identifier')
 
-  OB.POS.hwserver.print templatereceipt,
-    order: sendToPrinter
-    receiptNo: keyboard.receipt.get('documentNo')
-    tableNo: JSON.parse(localStorage.getItem('currentTable')).name
-    sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
-    guestNo: keyboard.receipt.get('numberOfGuests')
-    message: message
-    user: keyboard.receipt.get('salesRepresentative$_identifier')
+    _.each newArray.models, (model)->
+      enyo.Signals.send "onTransmission", {message: statusMessage, cid: model.cid}
 
-  _.each newArray.models, (model)->
-    enyo.Signals.send "onTransmission", {message: statusMessage, cid: model.cid}
+    OB.UTIL.showSuccess "Orders sent to printers successfully"
+    newArray = null
+    keyboard.receipt.trigger('scan')
 
-  OB.UTIL.showSuccess "Orders sent to printers successfully"
-  newArray = null
-  keyboard.receipt.trigger('scan')
+  )
 
 
 
@@ -177,3 +280,5 @@ OB.UI.printingUtils =
   getFilteredLines:getFilteredLines
   printNonGenericLine:printNonGenericLine
   printLineOrReceipt:printLineOrReceipt
+  buildModel2: buildModel2
+  productInfoGetter2:productInfoGetter2

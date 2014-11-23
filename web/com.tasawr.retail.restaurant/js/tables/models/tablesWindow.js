@@ -14,7 +14,7 @@
       return _ref;
     }
 
-    TablesWindow.prototype.models = [OB.Model.Section, OB.Model.Table, OB.Model.BookingInfo];
+    TablesWindow.prototype.models = [OB.Model.Section, OB.Model.Table, OB.Model.BookingInfo, OB.Model.Printprodcode];
 
     TablesWindow.prototype.init = function() {
       this.sections = new OB.Collection.SectionList();

@@ -5,6 +5,7 @@ class TablesWindow extends OB.Model.WindowModel
 		OB.Model.Section
 		OB.Model.Table
 		OB.Model.BookingInfo
+    OB.Model.Printprodcode
 	]
 
 	# defaults:
