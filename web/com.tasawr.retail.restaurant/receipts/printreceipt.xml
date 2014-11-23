@@ -36,8 +36,8 @@
         </line>
         <line></line>
         <line size="2">
-          <text align="left" length="9"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_ticket')) %></text>
-          <text align="left"><%= OB.UTIL.encodeXMLComponent(order.get('documentNo')) %></text>
+          <text align="left" length="9" bold="true"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_ticket')) %></text>
+          <text align="left" bold="true"><%= OB.UTIL.encodeXMLComponent(order.get('documentNo')) %></text>
         </line>
         <line>
             <text align="left" length="18"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_datetime')) %></text>
@@ -51,7 +51,8 @@
             <text>, </text>
             <text><%= OB.UTIL.encodeXMLComponent(order.get('posTerminal'+OB.Constants.FIELDSEPARATOR + OB.Constants.IDENTIFIER)) %></text>
         </line>
-        <line></line>
+	<line>
+	</line>
         <line>
             <text align ="left" length="21"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_LineItem'))%></text>
             <text align ="right" length="5">#</text>
@@ -68,17 +69,17 @@
 
         %>
         <line>
-            <text align ="left" length="41"><%= OB.UTIL.encodeXMLComponent(line.get('product').get('_identifier')) %></text>
+            <text align ="left" length="41" bold="true"><%= OB.UTIL.encodeXMLComponent(line.get('product').get('_identifier')) %></text>
             <text align="left" length="1"></text>
         </line>
         <line>
-            <text align ="left" length="21"><%= OB.UTIL.encodeXMLComponent(line.attributes.product.attributes.searchkey) %></text>
-            <text align ="right" length="5"><%= line.printQty() %></text>
-            <text align ="right" length="8"><%= line.printPrice() %></text>
+            <text align ="left" length="21" bold="true"><%= OB.UTIL.encodeXMLComponent(line.attributes.product.attributes.searchkey) %></text>
+            <text align ="right" length="5" bold="true"><%= line.printQty() %></text>
+            <text align ="right" length="8" bold="true"><%= line.printPrice() %></text>
             <%if(order.get('priceIncludesTax')){%>
-            <text align ="right" length="8"><%= line.printGross() %></text>
+            <text align ="right" length="8" bold="true"><%= line.printGross() %></text>
             <%}else{%>
-            <text align ="right" length="8"><%= line.printNet() %></text>
+            <text align ="right" length="8" bold="true"><%= line.printNet() %></text>
             <%}%>
         </line>
         <%
@@ -213,11 +214,13 @@
             <text>------------------------------------------</text>
         </line>
         <line>
-            <text align ="left" length="24"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_display_total'))%></text>
-            <text align ="left" length="12"><%= OB.I18N.formatCurrency(totAmount) %></text>
+            <text align ="left" length="24" bold="true"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_display_total'))%></text>
+            <text align ="left" length="12" bold="true"><%= OB.I18N.formatCurrency(totAmount) %></text>
         </line>
-
-        <line>
+	<line size="2">
+            <text bold="true"><%= order.get('restaurantTable').name %></text>
+        </line>
+	<line>
             <barcode type="CODE128" position="left"><%= OB.UTIL.encodeXMLComponent(order.get('documentNo')) %></barcode>
         </line>
 

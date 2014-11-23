@@ -23,8 +23,8 @@
 
         <line></line>
         <line size="2">
-            <text align="left" length="10">Receipt: </text>
-            <text><%= OB.UTIL.encodeXMLComponent(receiptNo) %></text>
+            <text align="left" length="10" bold="true">Receipt: </text>
+            <text bold="true"><%= OB.UTIL.encodeXMLComponent(receiptNo) %></text>
         </line>
         <line>
             <text align="left" length="22"><%= OB.UTIL.encodeXMLComponent(OB.I18N.getLabel('OBPOS_datetime')) %>:</text>
