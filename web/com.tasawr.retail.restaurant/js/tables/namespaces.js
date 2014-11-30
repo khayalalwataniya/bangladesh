@@ -13,52 +13,43 @@
 
   if (OB.MobileApp.model.hookManager) {
     success = function(model) {
-      console.info(model);
+      OB.info('DONE');
     };
     error = function(tx, error) {
-      console.error(tx);
+      OB.error(tx);
     };
-    OB.MobileApp.model.hookManager.registerHook("OBPRINT_PrePrint", function(args, callbacks) {
-      console.log("calling... OBPRINT_PrePrint hook");
-      OB.Dal.find(OB.Model.BookingInfo, {
-        salesOrder: TSRR.Tables.Config.currentOrderId
-      }, (function(collection) {
-        var bi;
-        if (!collection.length) {
-          return;
-        }
-        bi = collection.models[0];
-        OB.Dal.remove(bi, success, error);
-      }), error);
-      OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
-    });
-    OB.MobileApp.model.hookManager.registerHook("OBPOS_RenderOrderLine", function(args, callbacks) {
-      if (args.orderline.model.get('sendstatus') === void 0) {
-        args.orderline.model.set('sendstatus', 'Not Sent');
+    OB.MobileApp.model.hookManager.registerHook("OBPOS_PostSyncReceipt", function(args, callbacks) {
+      console.log("calling... OBPOS_PostSyncReceipt hook");
+      if (args.receipt.get('hasbeenpaid') !== 'N') {
+        OB.Dal.find(OB.Model.BookingInfo, {
+          salesOrder: args.receipt.id
+        }, (function(bookingInfoList) {
+          var bi;
+          if (!bookingInfoList.length) {
+            return;
+          }
+          bi = bookingInfoList.models[0];
+          OB.Dal.remove(bi, success, error);
+        }), error);
       }
       OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
     });
-    OB.MobileApp.model.hookManager.registerHook("OBPOS_PreAddProductToOrder", function(args, callbacks) {
+    OB.MobileApp.model.hookManager.registerHook("OBPOS_OrderDetailContentHook", function(args, callbacks) {
       var bi, me;
-      console.log("calling... OBPOS_PreAddProductToOrder hook");
+      console.log("calling... OBPOS_OrderDetailContentHook hook");
       me = this;
-      me.order = args.receipt;
-      TSRR.Tables.Config.currentOrder = args.receipt;
+      me.salesOrder = args.order;
+      if (!me.salesOrder.has('id')) {
+        return;
+      }
       bi = void 0;
       OB.Dal.find(OB.Model.BookingInfo, {
-        salesOrder: me.order.get('id')
-      }, (function(collection) {
-        if (collection && collection.length > 0) {
-          bi = collection.at(0);
+        salesOrder: me.salesOrder.get('id')
+      }, (function(bookingInfosFound) {
+        if (bookingInfosFound && bookingInfosFound.length > 0) {
+          bi = bookingInfosFound.models[0];
         } else {
-          console.log('no booking found for this order');
-          bi = new OB.Model.BookingInfo();
-          bi.set('businessPartner', OB.POS.modelterminal.attributes.businessPartner);
-          bi.set('salesOrder', me.order);
-          bi.set('orderidlocal', me.order.get('id'));
-          bi.set('restaurantTable', JSON.parse(localStorage.getItem('currentTable')));
-          bi.set('ebid', me.order.get('id'));
-          bi.save();
+          console.log('no booking found for this order' + me.salesOrder.get('id'));
         }
       }), error);
       OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
@@ -69,17 +60,15 @@
       receipt = args.receipt;
       OB.Dal.find(OB.Model.BookingInfo, {
         salesOrder: receipt.id
-      }, (function(collection) {
+      }, (function(bookingInfoList) {
         var bi;
-        if (!collection.length) {
-          return;
+        if (bookingInfoList && bookingInfoList.length > 0) {
+          bi = bookingInfoList.models[0];
+          OB.Dal.remove(bi, success, error);
         }
-        bi = collection.models[0];
-        OB.Dal.remove(bi, success, error);
       }), error);
       OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
     });
-    OB.MobileApp.model.hookManager.registerHook("OBPOS_RenderOrderLine", function(args, callback) {});
   }
 
   OB.OBPOSPointOfSale.Model.PointOfSale.prototype.loadUnpaidOrders = function() {
@@ -106,6 +95,9 @@
         orderlist.load(currentOrder);
         if (currentOrder) {
           TSRR.Tables.Config.currentOrder = currentOrder;
+        }
+        if (currentOrder) {
+          TSRR.Tables.Config.currentOrderId = currentOrder.id;
         }
         if (currentOrder) {
           loadOrderStr = OB.I18N.getLabel("OBPOS_Order") + currentOrder.get("documentNo") + OB.I18N.getLabel("OBPOS_Loaded");
