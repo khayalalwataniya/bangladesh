@@ -67,3 +67,48 @@ OB.Data.Registry.registerModel Printprodcode
 
 
 #'pOSTerminal':'obpos_applications_id','product':'m_product_id','printCode':'print_code','printerProperty':'printer_property','_identifier':'_identifier',
+
+
+#
+#class OrderLineStatus extends OB.Data.ExtensibleModel
+#  modelName: "OrderLineStatus"
+#  tableName: "tsrr_orderlinestatus"
+#  entityName: "TSRR_orderlinestatus"
+#
+#OrderLineStatus.addProperties [
+#  {
+#    name: "id"
+#    column: "tsrr_orderlinestatus"
+#    primaryKey: true
+#    type: "TEXT"
+#  }
+#  {
+#    name: "order"
+#    column: "obpos_applications_id"
+#    type: "TEXT"
+#  }
+#  {
+#    name: "product"
+#    column: "m_product_id"
+#    type: "TEXT"
+#  }
+#  {
+#    name: "printCode"
+#    column: "print_code"
+#    type: "TEXT"
+#  }
+#  {
+#    name: "printerProperty"
+#    column: "printer_property"
+#    type: "TEXT"
+#  }
+#
+#
+#
+#]
+#
+#OB.Data.Registry.registerModel Printprodcode
+
+
+
+

@@ -31,6 +31,13 @@ if OB.MobileApp.model.hookManager
     OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
     return
 
+#hook for overriding orderline
+  OB.MobileApp.model.hookManager.registerHook "OBPOS_RenderOrderLine", (args, callbacks) ->
+    if args.orderline.model.get('sendstatus') is undefined
+      args.orderline.model.set('sendstatus', 'Not Sent')
+    OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
+    return
+
 
   OB.MobileApp.model.hookManager.registerHook "OBPOS_PreAddProductToOrder", (args, callbacks) ->
     console.log "calling... OBPOS_PreAddProductToOrder hook"
@@ -74,6 +81,9 @@ if OB.MobileApp.model.hookManager
 
     OB.MobileApp.model.hookManager.callbackExecutor args, callbacks
     return
+
+  OB.MobileApp.model.hookManager.registerHook "OBPOS_RenderOrderLine", (args, callback)->
+#    debugger
 
 
 OB.OBPOSPointOfSale.Model.PointOfSale::loadUnpaidOrders = ->

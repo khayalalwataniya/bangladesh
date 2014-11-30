@@ -90,3 +90,20 @@ OB.UI.ModalReceiptPropertiesImpl.extend initComponents: ->
   @newAttributes = customAttributes
   @inherited arguments
   return
+
+
+
+#OB.POS.modelterminal.orderList.modelorder
+
+#OBPOS_RenderOrderLine
+#Available from: RR14Q2
+#Executed when: Each order line is initializated
+#Arguments:
+#  orderline: The order line component
+#Arguments for callback:
+#null
+
+
+
+
+#OBPOS_AddProductToOrder

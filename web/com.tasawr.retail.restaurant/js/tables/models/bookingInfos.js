@@ -107,7 +107,6 @@
       }
       if (!OB.POS.modelterminal.get("preventOrderSave")) {
         OB.Dal.save(this, (function() {
-          me.trigger("sync");
           return OB.info("DONE");
         }), function() {
           console.error(arguments);
@@ -139,7 +138,6 @@
       }
       if (!OB.POS.modelterminal.get("preventOrderSave")) {
         OB.Dal.save(this, (function() {
-          me.trigger('sync');
           return OB.info('DONE');
         }), function() {
           console.error(arguments);

@@ -15,8 +15,11 @@
         name: "checkBoxColumn",
         kind: "OB.UI.CheckboxButton",
         tag: "div",
-        tap: function() {},
-        style: "float: left; width: 10%;"
+        tap: function() {
+          return {
+            style: "float: left; width: 10%;"
+          };
+        }
       }, {
         name: "product",
         allowHtml: true,
@@ -47,6 +50,9 @@
         kind: "Signals",
         onTransmission: "transmission"
       }, {
+        kind: "Signals",
+        onTransmission2: "transmission2"
+      }, {
         style: "clear: both;"
       }
     ],
@@ -64,6 +70,7 @@
       } else {
         this.$.gross.setContent(this.model.printNet());
       }
+      this.$.sendstatus.setContent(this.model.get('sendstatus'));
       if (this.model.get("product").get("characteristicDescription")) {
         this.createComponent({
           style: "display: block;",
@@ -78,14 +85,6 @@
             }
           ]
         });
-      }
-      if (this.model.cid !== null) {
-        if (localStorage.getItem(this.model.cid) === null) {
-          this.$.sendstatus.setContent('Not sent');
-          localStorage.setItem(this.model.cid, 'Not sent');
-        } else {
-          this.$.sendstatus.setContent(localStorage.getItem(this.model.cid));
-        }
       }
       if (this.model.get("promotions")) {
         enyo.forEach(this.model.get("promotions"), (function(d) {
@@ -117,11 +116,20 @@
       }, function(args) {});
     },
     transmission: function(inSender, inPayload) {
+      var me;
       this.inherited(arguments);
-      if (this.model.cid === inPayload.cid) {
-        this.container.children[0].controls[5].setContent(inPayload.message);
-        return localStorage.setItem(inPayload.cid, inPayload.message);
-      }
+      me = this;
+      _.each(inPayload.keyboard.receipt.attributes.lines.models, function(model) {
+        if (model === inPayload.keyboard.line) {
+          model.attributes.sendstatus = inPayload.message;
+          return inPayload.keyboard.line.trigger('change');
+        }
+      });
+      return inPayload.keyboard.receipt.save();
+    },
+    transmission2: function(inSender, inPayload) {
+      this.inherited(arguments);
+      return this.container.children[0].controls[5].setContent(inPayload.message);
     },
     changeEditMode: function(inSender, inEvent) {
       this.addRemoveClass("btnselect-orderline-edit", inEvent.edit);

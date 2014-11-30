@@ -60,7 +60,6 @@ class  BookingInfo extends OB.Data.ExtensibleModel
 		@set "_identifier", @get("id") if @attributes.id
 		unless OB.POS.modelterminal.get("preventOrderSave")
 			OB.Dal.save @, (->
-				me.trigger "sync"
 				OB.info "DONE"
 			), ->
 				console.error arguments
@@ -79,7 +78,6 @@ class  BookingInfo extends OB.Data.ExtensibleModel
 		@set "_identifier", @get("id") if @attributes.id
 		unless OB.POS.modelterminal.get("preventOrderSave")
 			OB.Dal.save @, (->
-				me.trigger 'sync'
 				OB.info 'DONE'
 			), ->
 				console.error arguments

@@ -87,7 +87,7 @@ assignVar = (requests, lines) ->
     i++
 
 assignVar2 = (collection, lines)->
-
+  
   tempPrinters = []
   i = 0
   while i < collection.length
@@ -102,8 +102,10 @@ assignVar2 = (collection, lines)->
       TSRR.Main.TempVars.productsAndPrinters[i] = []
       TSRR.Main.TempVars.productsAndPrinters[i][0] = data.get('printCode')
       TSRR.Main.TempVars.productsAndPrinters[i][1] = [tempPrinters]
-      TSRR.Main.TempVars.productsAndPrinters[i][2] = lines.models[i].get('qty')
-      TSRR.Main.TempVars.productsAndPrinters[i][3] = lines.models[i].get('description')
+#      TSRR.Main.TempVars.productsAndPrinters[i][2] = lines.models[i].get('qty')
+#      TSRR.Main.TempVars.productsAndPrinters[i][3] = lines.models[i].get('description')
+      TSRR.Main.TempVars.productsAndPrinters[i][2] = lines._wrapped[i].get('qty')
+      TSRR.Main.TempVars.productsAndPrinters[i][3] = lines._wrapped[i].get('description')
     i++
 
 
@@ -135,7 +137,8 @@ productInfoGetter = (lines) ->
 
 productInfoGetter2 = (lines) ->
   promises = []
-  for line in lines.models
+  
+  for line in lines._wrapped
     promise = findModel(OB.Model.Printprodcode,
       product: line.get("product").id
       pOSTerminal: OB.POS.modelterminal.get("terminal").id
@@ -183,15 +186,10 @@ buildModel2 = (keyboard, data, message) ->
 
 
 getFilteredLines = (keyboard, gpi) ->
-  allLines = TSRR.Tables.Config.currentOrder.get('lines')
 
-  newArray = jQuery.extend(true, {}, TSRR.Tables.Config.currentOrder.get('lines'));
-  for line in allLines.models
-    if line.get('product').get('generic_product_id') is gpi
-      console.info 'present'
-    else
-      newArray.models.splice(newArray.models.indexOf(line), 1);
-
+  allLines = keyboard.receipt.get('lines')
+  newArray = _(allLines.filter (line) ->
+    line.attributes.product.attributes.generic_product_id is gpi)
   newArray
 
 printNonGenericLine = (keyboard, messageParam, successMessage, lineMessage) ->
@@ -203,7 +201,7 @@ printNonGenericLine = (keyboard, messageParam, successMessage, lineMessage) ->
         sendModel = OB.UI.printingUtils.buildModel2(keyboard, model, messageParam)
         templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.NonGenericLineTemplate)
         OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendModel)
-        enyo.Signals.send "onTransmission", {message: lineMessage, cid: keyboard.line.cid}
+        enyo.Signals.send "onTransmission", {message: lineMessage, keyboard: keyboard}
         OB.UTIL.showSuccess successMessage
       else
         OB.UTIL.showError "No printer is assigned to this product"
@@ -212,28 +210,13 @@ printNonGenericLine = (keyboard, messageParam, successMessage, lineMessage) ->
       console.error "error"
       return
     return
-#  new OB.DS.Request("com.tasawr.retail.restaurant.data.OrderLineService").exec
-#    product: keyboard.line.get('product').id
-#    terminal: OB.POS.modelterminal.get('terminal').id
-#  , (data) ->
-#    if data[0]
-#      console.error 'here '
-#      debugger
-#      console.error data
-#      sendModel = OB.UI.printingUtils.buildModel(keyboard, data, messageParam)
-#      templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.NonGenericLineTemplate)
-#      OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendModel)
-#      enyo.Signals.send "onTransmission", {message: lineMessage, cid: keyboard.line.cid}
-#      OB.UTIL.showSuccess successMessage
-#    else
-#      OB.UTIL.showError "No printer is assigned to this product"
 
 
 printGenericLine = (keyboard, gpi, message, statusMessage) ->
 
+  
   newArray = OB.UI.printingUtils.getFilteredLines(keyboard, gpi)
   TSRR.Main.TempVars.productsAndPrinters = []
-#  sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, newArray)
   promises = OB.UI.printingUtils.productInfoGetter2(newArray)
   $.when.apply(`undefined`, promises).then ((models...) ->
     assignVar2(models, newArray)
@@ -248,8 +231,11 @@ printGenericLine = (keyboard, gpi, message, statusMessage) ->
       message: message
       user: keyboard.receipt.get('salesRepresentative$_identifier')
 
-    _.each newArray.models, (model)->
-      enyo.Signals.send "onTransmission", {message: statusMessage, cid: model.cid}
+    _.each newArray._wrapped, (model)->
+      
+      model.set('sendstatus', statusMessage)
+      model.trigger('change')
+    keyboard.receipt.save()
 
     OB.UTIL.showSuccess "Orders sent to printers successfully"
     newArray = null
@@ -273,7 +259,9 @@ printLineOrReceipt = (keyboard, templatereceipt, sendToPrinter) ->
 OB.UI.printingUtils =
   uniquePrinterAndProductGenerator: uniquePrinterAndProductGenerator
   productInfoGetter:productInfoGetter
+  productInfoGetter2:productInfoGetter2
   assignVar:assignVar
+  assignVar2: assignVar2
   prepareReceipt: prepareReceipt
   printGenericLine: printGenericLine
   buildModel: buildModel
@@ -281,4 +269,5 @@ OB.UI.printingUtils =
   printNonGenericLine:printNonGenericLine
   printLineOrReceipt:printLineOrReceipt
   buildModel2: buildModel2
-  productInfoGetter2:productInfoGetter2
+
+  uniquePrinterAndProductGenerator2: uniquePrinterAndProductGenerator2

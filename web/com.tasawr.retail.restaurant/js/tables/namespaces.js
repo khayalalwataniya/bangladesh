@@ -32,6 +32,12 @@
       }), error);
       OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
     });
+    OB.MobileApp.model.hookManager.registerHook("OBPOS_RenderOrderLine", function(args, callbacks) {
+      if (args.orderline.model.get('sendstatus') === void 0) {
+        args.orderline.model.set('sendstatus', 'Not Sent');
+      }
+      OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
+    });
     OB.MobileApp.model.hookManager.registerHook("OBPOS_PreAddProductToOrder", function(args, callbacks) {
       var bi, me;
       console.log("calling... OBPOS_PreAddProductToOrder hook");
@@ -73,6 +79,7 @@
       }), error);
       OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
     });
+    OB.MobileApp.model.hookManager.registerHook("OBPOS_RenderOrderLine", function(args, callback) {});
   }
 
   OB.OBPOSPointOfSale.Model.PointOfSale.prototype.loadUnpaidOrders = function() {

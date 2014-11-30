@@ -7,12 +7,27 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
     action: (keyboard, txt) ->
       OB.UI.printingUtils.prepareReceipt(keyboard)
       lines = keyboard.receipt.attributes.lines
-      sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, lines)
-      templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate)
-      OB.UI.printingUtils.printLineOrReceipt(keyboard, templatereceipt, sendToPrinter)
+      lines._wrapped = lines.models
+      TSRR.Main.TempVars.productsAndPrinters = []
+      promises = OB.UI.printingUtils.productInfoGetter2(lines)
+      $.when.apply(`undefined`, promises).then((models...)->
+        OB.UI.printingUtils.assignVar2(models, lines)
+        sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator2()
+        templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate)
+        OB.POS.hwserver.print templatereceipt,
+          order: sendToPrinter
+          receiptNo: keyboard.receipt.get('documentNo')
+          tableNo: JSON.parse(localStorage.getItem('currentTable')).name
+          sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
+          guestNo: keyboard.receipt.get('numberOfGuests')
+          message: 'sent'
+          user: keyboard.receipt.get('salesRepresentative$_identifier')
 
-      _.each lines.models, (model)->
-        enyo.Signals.send "onTransmission", {message: 'sent', cid: model.cid}
+        _.each lines._wrapped, (model)->
+          model.set('sendstatus', 'sent')
+          model.trigger('change')
+        keyboard.receipt.save()
+      )
 
       OB.UTIL.showSuccess "Orders sent to printers successfully"
 
@@ -32,7 +47,6 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
           message: ""
           keyboard: keyboard
       return
-
 
 
 enyo.kind
@@ -71,24 +85,32 @@ enyo.kind
 
   okButtonPressed: (inSender, inEvent) ->
     @inherited arguments
-    @message = inSender.getControls()[0].getControls()[0].getControls()[0].getValue()
+    me = @
+    message = inSender.getControls()[0].getControls()[0].getControls()[0].getValue()
+    receiptNo = @parent.model.get('order').get('documentNo')
+    
+    user = @parent.model.get('order').get('salesRepresentative$_identifier')
     lines = OB.POS.modelterminal.orderList.modelorder.get('lines')
-
-    sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator(OB.UI.printingUtils.productInfoGetter, lines)
-    templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelOrderTemplate)
-
-    OB.POS.hwserver.print templatereceipt,
-      order: sendToPrinter
-      message: @message
-      receiptNo: @parent.model.get('order').get('documentNo')
-      tableNo: JSON.parse(localStorage.getItem('currentTable')).name
-      sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
-      guestNo: TSRR.Tables.Config.MyOrderList.modelorder.get('numberOfGuests') or "0"
-      user: @parent.model.get('order').get('salesRepresentative$_identifier')
-
-
-    _.each lines.models, (model)->
-      enyo.Signals.send "onTransmission", {message: 'cancelled', cid: model.cid}
+    lines._wrapped = lines.models
+    TSRR.Main.TempVars.productsAndPrinters = []
+    promises = OB.UI.printingUtils.productInfoGetter2(lines)
+    $.when.apply(`undefined`, promises).then((models...)->
+      OB.UI.printingUtils.assignVar2(models, lines)
+      sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator2()
+      templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.CancelOrderTemplate)
+      OB.POS.hwserver.print templatereceipt,
+        order: sendToPrinter
+        message: message
+        receiptNo: receiptNo
+        tableNo: JSON.parse(localStorage.getItem('currentTable')).name
+        sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
+        guestNo: TSRR.Tables.Config.MyOrderList.modelorder.get('numberOfGuests') or "0"
+        user: user
+      _.each lines._wrapped, (model)->
+        model.set('sendstatus', 'cancelled')
+        model.trigger('change')
+      OB.POS.modelterminal.orderList.modelorder.save()
+    )
 
     @hide()
     OB.UTIL.showSuccess "Order cancelled"
@@ -100,7 +122,6 @@ enyo.kind
 
   init: (model) ->
     @inherited arguments
-
 
 
 enyo.kind

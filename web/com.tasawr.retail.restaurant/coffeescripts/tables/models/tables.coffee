@@ -63,7 +63,6 @@ class Table extends OB.Data.ExtensibleModel
 		@set "_identifier", @get("id") if @attributes.id
 		unless OB.POS.modelterminal.get("preventOrderSave")
 			OB.Dal.save @, (->
-				me.trigger 'sync'
 				OB.info 'DONE'
 			), ->
 				console.error arguments
@@ -83,7 +82,7 @@ class Table extends OB.Data.ExtensibleModel
 		@set "_identifier", @get("name")
 		unless OB.POS.modelterminal.get("preventOrderSave")
 			OB.Dal.save @, (->
-				me.trigger 'sync'
+
 				OB.info 'DONE'
 			), ->
 				console.log arguments

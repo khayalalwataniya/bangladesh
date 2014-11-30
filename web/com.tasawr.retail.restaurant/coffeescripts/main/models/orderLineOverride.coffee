@@ -1,143 +1,131 @@
-#global B,_,moment,Backbone,localStorage, enyo
-
-# Sales.OrderLine Model
-#class OrderLine extends Backbone.Model
-#	modelName: "OrderLine"
-#	tableName: "c_orderline"
-#	entityName: "OrderLine"
-#	source: "org.openbravo.model.common.order.OrderLine"
-#	properties: [
-#		"id"
-#		"salesOrder"
-#		"lineNo"
-#		"businessPartner"
-#		"partnerAddress"
-#		"orderDate"
-#		"scheduledDeliveryDate"
-#		"dateDelivered"
-#		"invoiceDate"
-#		"description"
-#		"product"
-#		"warehouse"
-#		"directShipment"
-#		"uOM"
-#		"orderedQuantity"
-#		"reservedQuantity"
-#		"deliveredQuantity"
-#		"invoicedQuantity"
-#		"shippingCompany"
-#		"currency"
-#		"listPrice"
-#		"unitPrice"
-#		"priceLimit"
-#		"lineNetAmount"
-#		"discount"
-#		"freightAmount"
-#		"charge"
-#		"chargeAmount"
-#		"tax"
-#		"resourceAssignment"
-#		"sOPOReference"
-#		"attributeSetValue"
-#		"descriptionOnly"
-#		"orderQuantity"
-#		"orderUOM"
-#		"priceAdjustment"
-#		"standardPrice"
-#		"cancelPriceAdjustment"
-#		"orderDiscount"
-#		"editLineAmount"
-#		"taxableAmount"
-#		"goodsShipmentLine"
-#		"returnReason"
-#		"grossUnitPrice"
-#		"lineGrossAmount"
-#		"grossListPrice"
-#		"costcenter"
-#		"baseGrossUnitPrice"
-#		"asset"
-#		"warehouseRule"
-#		"stDimension"
-#		"quotationLine"
-#		"ndDimension"
-#		"createReservation"
-#		"project"
-#		"reservationStatus"
-#		"manageReservation"
-#		"managePrereservation"
-#		"explode"
-#		"bOMParent"
-#		"_identifier"
-#		"_idx"
-#	]
-#	propertyMap:
-#		id: "c_orderline_id"
-#		salesOrder: "c_order_id"
-#		lineNo: "line"
-#		businessPartner: "c_bpartner_id"
-#		partnerAddress: "c_bpartner_location_id"
-#		orderDate: "dateordered"
-#		scheduledDeliveryDate: "datepromised"
-#		dateDelivered: "datedelivered"
-#		invoiceDate: "dateinvoiced"
-#		description: "description"
-#		product: "m_product_id"
-#		warehouse: "m_warehouse_id"
-#		directShipment: "directship"
-#		uOM: "c_uom_id"
-#		orderedQuantity: "qtyordered"
-#		reservedQuantity: "qtyreserved"
-#		deliveredQuantity: "qtydelivered"
-#		invoicedQuantity: "qtyinvoiced"
-#		shippingCompany: "m_shipper_id"
-#		currency: "c_currency_id"
-#		listPrice: "pricelist"
-#		unitPrice: "priceactual"
-#		priceLimit: "pricelimit"
-#		lineNetAmount: "linenetamt"
-#		discount: "discount"
-#		freightAmount: "freightamt"
-#		charge: "c_charge_id"
-#		chargeAmount: "chargeamt"
-#		tax: "c_tax_id"
-#		resourceAssignment: "s_resourceassignment_id"
-#		sOPOReference: "ref_orderline_id"
-#		attributeSetValue: "m_attributesetinstance_id"
-#		descriptionOnly: "isdescription"
-#		orderQuantity: "quantityorder"
-#		orderUOM: "m_product_uom_id"
-#		priceAdjustment: "m_offer_id"
-#		standardPrice: "pricestd"
-#		cancelPriceAdjustment: "cancelpricead"
-#		orderDiscount: "c_order_discount_id"
-#		editLineAmount: "iseditlinenetamt"
-#		taxableAmount: "taxbaseamt"
-#		goodsShipmentLine: "m_inoutline_id"
-#		returnReason: "c_return_reason_id"
-#		grossUnitPrice: "gross_unit_price"
-#		lineGrossAmount: "line_gross_amount"
-#		grossListPrice: "grosspricelist"
-#		costcenter: "c_costcenter_id"
-#		baseGrossUnitPrice: "grosspricestd"
-#		asset: "a_asset_id"
-#		warehouseRule: "m_warehouse_rule_id"
-#		stDimension: "user1_id"
-#		quotationLine: "quotationline_id"
-#		ndDimension: "user2_id"
-#		createReservation: "create_reservation"
-#		project: "c_project_id"
-#		reservationStatus: "so_res_status"
-#		manageReservation: "manage_reservation"
-#		managePrereservation: "manage_prereservation"
-#		explode: "explode"
-#		bOMParent: "bom_parent_id"
-#		_identifier: "_identifier"
-#		_idx: "_idx"
+#OrderLine = Backbone.Model.extend(
+#  modelName: "OrderLine"
+#  defaults:
+#    product: null
+#    productidentifier: null
+#    uOM: null
+#    qty: OB.DEC.Zero
+#    price: OB.DEC.Zero
+#    priceList: OB.DEC.Zero
+#    gross: OB.DEC.Zero
+#    net: OB.DEC.Zero
+#    description: ""
+#    status: "Not Sent"
 #
-#	createStatement: "CREATE TABLE IF NOT EXISTS c_orderline (c_orderline_id TEXT PRIMARY KEY , c_order_id TEXT , line NUMERIC , c_bpartner_id TEXT , c_bpartner_location_id TEXT , dateordered TEXT , datepromised TEXT , datedelivered TEXT , dateinvoiced TEXT , description TEXT , m_product_id TEXT , m_warehouse_id TEXT , directship TEXT , c_uom_id TEXT , qtyordered NUMERIC , qtyreserved NUMERIC , qtydelivered NUMERIC , qtyinvoiced NUMERIC , m_shipper_id TEXT , c_currency_id TEXT , pricelist NUMERIC , priceactual NUMERIC , pricelimit NUMERIC , linenetamt NUMERIC , discount NUMERIC , freightamt NUMERIC , c_charge_id TEXT , chargeamt NUMERIC , c_tax_id TEXT , s_resourceassignment_id TEXT , ref_orderline_id TEXT , m_attributesetinstance_id TEXT , isdescription TEXT , quantityorder NUMERIC , m_product_uom_id TEXT , m_offer_id TEXT , pricestd NUMERIC , cancelpricead TEXT , c_order_discount_id TEXT , iseditlinenetamt TEXT , taxbaseamt NUMERIC , m_inoutline_id TEXT , c_return_reason_id TEXT , gross_unit_price NUMERIC , line_gross_amount NUMERIC , grosspricelist NUMERIC , c_costcenter_id TEXT , grosspricestd NUMERIC , a_asset_id TEXT , m_warehouse_rule_id TEXT , user1_id TEXT , quotationline_id TEXT , user2_id TEXT , create_reservation TEXT , c_project_id TEXT , so_res_status TEXT , manage_reservation TEXT , manage_prereservation TEXT , explode TEXT , bom_parent_id TEXT , _identifier TEXT , _idx NUMERIC)"
-#	dropStatement: "DROP TABLE IF EXISTS c_orderline"
-#	insertStatement: "INSERT INTO c_orderline(c_orderline_id, c_order_id, line, c_bpartner_id, c_bpartner_location_id, dateordered, datepromised, datedelivered, dateinvoiced, description, m_product_id, m_warehouse_id, directship, c_uom_id, qtyordered, qtyreserved, qtydelivered, qtyinvoiced, m_shipper_id, c_currency_id, pricelist, priceactual, pricelimit, linenetamt, discount, freightamt, c_charge_id, chargeamt, c_tax_id, s_resourceassignment_id, ref_orderline_id, m_attributesetinstance_id, isdescription, quantityorder, m_product_uom_id, m_offer_id, pricestd, cancelpricead, c_order_discount_id, iseditlinenetamt, taxbaseamt, m_inoutline_id, c_return_reason_id, gross_unit_price, line_gross_amount, grosspricelist, c_costcenter_id, grosspricestd, a_asset_id, m_warehouse_rule_id, user1_id, quotationline_id, user2_id, create_reservation, c_project_id, so_res_status, manage_reservation, manage_prereservation, explode, bom_parent_id, _identifier, _idx)  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+#  initialize: (attributes) ->
+#    debugger
+#    if attributes and attributes.product
+#      @set "product", new OB.Model.Product(attributes.product)
+#      @set "productidentifier", attributes.productidentifier
+#      @set "uOM", attributes.uOM
+#      @set "qty", attributes.qty
+#      @set "price", attributes.price
+#      @set "priceList", attributes.priceList
+#      @set "gross", attributes.gross
+#      @set "net", attributes.net
+#      @set "status", attributes.status if status
+#      @set "promotions", attributes.promotions
+#      @set "priceIncludesTax", attributes.priceIncludesTax
+#      @set "grossListPrice", attributes.product.listPrice  if not attributes.grossListPrice and attributes.product and attributes.product.listPrice
+#    return
+#
+#  getQty: ->
+#    @get "qty"
+#
+#  printQty: ->
+#    @get("qty").toString()
+#
+#  printPrice: ->
+#    OB.I18N.formatCurrency @get("_price") or @get("nondiscountedprice") or @get("price")
+#
+#  printDiscount: ->
+#    disc = OB.DEC.sub(@get("product").get("standardPrice"), @get("price"))
+#    prom = @getTotalAmountOfPromotions()
+#
+#    # if there is a discount no promotion then only discount no promotion is shown
+#    # if there is not a discount no promotion and there is a promotion then promotion is shown
+#    if OB.DEC.compare(disc) is 0
+#      if OB.DEC.compare(prom) is 0
+#        ""
+#      else
+#        OB.I18N.formatCurrency prom
+#    else
+#      OB.I18N.formatCurrency disc
 #
 #
-#OrderLineList = Backbone.Collection.extend(model: OrderLine)
+## returns the discount to substract in total
+#  discountInTotal: ->
+#    disc = OB.DEC.sub(@get("product").get("standardPrice"), @get("price"))
+#
+#    # if there is a discount no promotion then total is price*qty
+#    # otherwise total is price*qty - discount
+#    if OB.DEC.compare(disc) is 0
+#      @getTotalAmountOfPromotions()
+#    else
+#      0
+#
+#  calculateGross: ->
+#    if @get("priceIncludesTax")
+#      @set "gross", OB.DEC.mul(@get("qty"), @get("price"))
+#    else
+#      @set "net", OB.DEC.mul(@get("qty"), @get("price"))
+#    return
+#
+#  getGross: ->
+#    @get "gross"
+#
+#  getNet: ->
+#    @get "net"
+#
+#  getStatus: ->
+#    @get 'status'
+#
+#  setStatus: (status) ->
+#    @set 'status', status
+#
+#  printGross: ->
+#    OB.I18N.formatCurrency @get("_gross") or @getGross()
+#
+#  printNet: ->
+#    OB.I18N.formatCurrency @get("nondiscountednet") or @getNet()
+#
+#  getTotalAmountOfPromotions: ->
+#    memo = 0
+#    if @get("promotions") and @get("promotions").length > 0
+#      _.reduce @get("promotions"), ((memo, prom) ->
+#        return memo  if OB.UTIL.isNullOrUndefined(prom.amt)
+#        memo + prom.amt
+#      ), memo, this
+#    else
+#      0
+#
+#  isAffectedByPack: ->
+#    _.find @get("promotions"), ((promotion) ->
+#      true  if promotion.pack
+#    ), this
+#
+#  stopApplyingPromotions: ->
+#    promotions = @get("promotions")
+#    i = undefined
+#    if promotions
+#
+#      # best deal case can only apply one promotion per line
+#      return true  if OB.POS.modelterminal.get("terminal").bestDealCase and promotions.length > 0
+#      i = 0
+#      while i < promotions.length
+#        return true  unless promotions[i].applyNext
+#        i++
+#    false
+#
+#  lastAppliedPromotion: ->
+#    promotions = @get("promotions")
+#    i = undefined
+#    if @get("promotions")
+#      i = 0
+#      while i < promotions.length
+#        return promotions[i]  if promotions[i].lastApplied
+#        i++
+#    null
+#)
+#
 #OB.Data.Registry.registerModel OrderLine

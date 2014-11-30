@@ -73,8 +73,20 @@
       primaryKey: true,
       type: "TEXT"
     }, {
+      name: "pOSTerminal",
+      column: "obpos_applications_id",
+      type: "TEXT"
+    }, {
+      name: "product",
+      column: "m_product_id",
+      type: "TEXT"
+    }, {
       name: "printCode",
-      column: "printCode",
+      column: "print_code",
+      type: "TEXT"
+    }, {
+      name: "printerProperty",
+      column: "printer_property",
       type: "TEXT"
     }
   ]);
