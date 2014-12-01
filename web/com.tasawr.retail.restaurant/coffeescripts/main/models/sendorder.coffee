@@ -6,32 +6,34 @@ OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push
     stateless: true
     action: (keyboard, txt) ->
       OB.UI.printingUtils.prepareReceipt(keyboard)
-      lines = keyboard.receipt.attributes.lines
-      lines._wrapped = lines.models
-      TSRR.Main.TempVars.productsAndPrinters = []
-      promises = OB.UI.printingUtils.productInfoGetter2(lines)
-      $.when.apply(`undefined`, promises).then((models...)->
-        OB.UI.printingUtils.assignVar2(models, lines)
-        sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator2()
-        templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate)
-        OB.POS.hwserver.print templatereceipt,
-          order: sendToPrinter
-          receiptNo: keyboard.receipt.get('documentNo')
-          tableNo: JSON.parse(localStorage.getItem('currentTable')).name
-          sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
-          guestNo: keyboard.receipt.get('numberOfGuests')
-          message: 'sent'
-          user: keyboard.receipt.get('salesRepresentative$_identifier')
+      lines = OB.UI.printingUtils.filterAlreadySent(keyboard.receipt.attributes.lines)
+      if lines._wrapped.length isnt 0
+        TSRR.Main.TempVars.productsAndPrinters = []
+        promises = OB.UI.printingUtils.productInfoGetter2(lines)
+        $.when.apply(`undefined`, promises).then((models...)->
+          OB.UI.printingUtils.assignVar2(models, lines)
+          sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator2()
+          templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate)
+          OB.POS.hwserver.print templatereceipt,
+            order: sendToPrinter
+            receiptNo: keyboard.receipt.get('documentNo')
+            tableNo: JSON.parse(localStorage.getItem('currentTable')).name
+            sectionNo: JSON.parse(localStorage.getItem('currentSection')).name
+            guestNo: keyboard.receipt.get('numberOfGuests')
+            message: 'sent'
+            user: keyboard.receipt.get('salesRepresentative$_identifier')
 
-        _.each lines._wrapped, (model)->
-          model.set('sendstatus', 'sent')
-          model.trigger('change')
-        keyboard.receipt.save()
-      )
+          _.each lines._wrapped, (model)->
+            model.set('sendstatus', 'sent')
+            model.trigger('change')
+          keyboard.receipt.save()
+        )
 
-      OB.UTIL.showSuccess "Orders sent to printers successfully"
+        OB.UTIL.showSuccess "Orders sent to printers successfully"
+        return
 
-      return
+      else
+        OB.UTIL.showSuccess "Nothing more to send"
 
 
 OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push

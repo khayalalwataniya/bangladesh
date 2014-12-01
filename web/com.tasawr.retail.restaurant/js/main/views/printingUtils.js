@@ -1,5 +1,5 @@
 (function() {
-  var assignVar, assignVar2, buildModel, buildModel2, findModel, getFilteredLines, prepareReceipt, printGenericLine, printLineOrReceipt, printNonGenericLine, productInfoGetter, productInfoGetter2, uniquePrinterAndProductGenerator, uniquePrinterAndProductGenerator2,
+  var assignVar, assignVar2, buildModel, buildModel2, filterAlreadySent, findModel, getFilteredLines, prepareReceipt, printGenericLine, printLineOrReceipt, printNonGenericLine, productInfoGetter, productInfoGetter2, uniquePrinterAndProductGenerator, uniquePrinterAndProductGenerator2,
     __slice = [].slice;
 
   TSRR.Main.TempVars.printersAndProducts = [];
@@ -290,7 +290,15 @@
     });
   };
 
+  filterAlreadySent = function(lines) {
+    var filteredLines;
+    return filteredLines = _(lines.models.filter(function(line) {
+      return line.attributes.sendstatus === "Not Sent";
+    }));
+  };
+
   OB.UI.printingUtils = {
+    filterAlreadySent: filterAlreadySent,
     uniquePrinterAndProductGenerator: uniquePrinterAndProductGenerator,
     productInfoGetter: productInfoGetter,
     productInfoGetter2: productInfoGetter2,

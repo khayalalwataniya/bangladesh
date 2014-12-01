@@ -255,8 +255,17 @@ printLineOrReceipt = (keyboard, templatereceipt, sendToPrinter) ->
     user: keyboard.receipt.get('salesRepresentative$_identifier')
 
 
+filterAlreadySent =  (lines)->
+  filteredLines = _(lines.models.filter (line) ->
+    line.attributes.sendstatus is "Not Sent")
+
+
+
+
+
 
 OB.UI.printingUtils =
+  filterAlreadySent: filterAlreadySent
   uniquePrinterAndProductGenerator: uniquePrinterAndProductGenerator
   productInfoGetter:productInfoGetter
   productInfoGetter2:productInfoGetter2

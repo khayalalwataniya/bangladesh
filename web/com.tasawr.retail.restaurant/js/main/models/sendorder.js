@@ -10,32 +10,35 @@
       action: function(keyboard, txt) {
         var lines, promises;
         OB.UI.printingUtils.prepareReceipt(keyboard);
-        lines = keyboard.receipt.attributes.lines;
-        lines._wrapped = lines.models;
-        TSRR.Main.TempVars.productsAndPrinters = [];
-        promises = OB.UI.printingUtils.productInfoGetter2(lines);
-        $.when.apply(undefined, promises).then(function() {
-          var models, sendToPrinter, templatereceipt;
-          models = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-          OB.UI.printingUtils.assignVar2(models, lines);
-          sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator2();
-          templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate);
-          OB.POS.hwserver.print(templatereceipt, {
-            order: sendToPrinter,
-            receiptNo: keyboard.receipt.get('documentNo'),
-            tableNo: JSON.parse(localStorage.getItem('currentTable')).name,
-            sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
-            guestNo: keyboard.receipt.get('numberOfGuests'),
-            message: 'sent',
-            user: keyboard.receipt.get('salesRepresentative$_identifier')
+        lines = OB.UI.printingUtils.filterAlreadySent(keyboard.receipt.attributes.lines);
+        if (lines._wrapped.length !== 0) {
+          TSRR.Main.TempVars.productsAndPrinters = [];
+          promises = OB.UI.printingUtils.productInfoGetter2(lines);
+          $.when.apply(undefined, promises).then(function() {
+            var models, sendToPrinter, templatereceipt;
+            models = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+            OB.UI.printingUtils.assignVar2(models, lines);
+            sendToPrinter = OB.UI.printingUtils.uniquePrinterAndProductGenerator2();
+            templatereceipt = new OB.DS.HWResource(OB.OBPOSPointOfSale.Print.SendOrderTemplate);
+            OB.POS.hwserver.print(templatereceipt, {
+              order: sendToPrinter,
+              receiptNo: keyboard.receipt.get('documentNo'),
+              tableNo: JSON.parse(localStorage.getItem('currentTable')).name,
+              sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
+              guestNo: keyboard.receipt.get('numberOfGuests'),
+              message: 'sent',
+              user: keyboard.receipt.get('salesRepresentative$_identifier')
+            });
+            _.each(lines._wrapped, function(model) {
+              model.set('sendstatus', 'sent');
+              return model.trigger('change');
+            });
+            return keyboard.receipt.save();
           });
-          _.each(lines._wrapped, function(model) {
-            model.set('sendstatus', 'sent');
-            return model.trigger('change');
-          });
-          return keyboard.receipt.save();
-        });
-        OB.UTIL.showSuccess("Orders sent to printers successfully");
+          OB.UTIL.showSuccess("Orders sent to printers successfully");
+        } else {
+          return OB.UTIL.showSuccess("Nothing more to send");
+        }
       }
     }
   });
