@@ -66,8 +66,5 @@
       <foreign-key foreignTable="TSRR_SECTION" name="TSRR_TABLE_SECTION_FK">
         <reference local="TSRR_SECTION_ID" foreign="TSRR_SECTION_ID"/>
       </foreign-key>
-      <unique name="TSRR_TABLE_NAME_UQ">
-        <unique-column name="NAME"/>
-      </unique>
     </table>
   </database>
