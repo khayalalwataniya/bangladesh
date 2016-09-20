@@ -1,3 +1,7 @@
+.onyx-icon-button { 
+    display: none;
+    visibility: hidden;
+}
 .span-cal {
   margin: 5px;
   height: 200px;
@@ -58,7 +62,7 @@ button.webpos-table.locked {
   color: #fff; }
 
 button.webpos-table {
-  height: 270px;
+  height: 150px;
   display: block;
   color: #333;
   position: relative;

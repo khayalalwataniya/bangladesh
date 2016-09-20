@@ -10,7 +10,7 @@
   OB.OBPOSPointOfSale.Print.NonGenericLineTemplate = "../com.tasawr.retail.restaurant/receipts/nonGenericLine.xml";
 
   OB.OBPOSPointOfSale.Print.GenericLineTemplate = "../com.tasawr.retail.restaurant/receipts/genericLine.xml";
-
+/*
   OB.UI.ModalReceiptPropertiesImpl.extend({
     initComponents: function() {
       var customAttributes, i;
@@ -95,5 +95,5 @@
       this.inherited(arguments);
     }
   });
-
+*/
 }).call(this);

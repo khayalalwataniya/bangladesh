@@ -17,20 +17,43 @@
 
   document.getElementsByTagName("head")[0].appendChild(link);
 
-  if (OB.MobileApp.model.hookManager) {
+ var isnew = 0;
+ 
+  if (OB.UTIL.HookManager) {
     success = function(model) {
       OB.info("DONE");
+     OB.POS.navigate('retail.restaurantmode');
     };
     error = function(tx, error) {
       OB.error(tx);
     };
-    OB.MobileApp.model.hookManager.registerHook("OBPOS_RenderOrderLine", function(args, callbacks) {
+  //}/* bykazi*/
+  //my
+  /*OB.UTIL.HookManager.registerHook("OBPOS_RenderOrderLine", function(args, callbacks) {
       if (args.orderline.model.get("sendstatus") === void 0) {
         args.orderline.model.set("sendstatus", "Not Sent");
       }
-      OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
+      OB.UTIL.HookManager.callbackExecutor(args, callbacks);
+    });*/
+  //my
+    
+    OB.UTIL.HookManager.registerHook("OBPOS_RenderOrderLine", function(args, callbacks) {
+            //bykazi
+     if (OB.POS.modelterminal.orderList.current.get('orderType') === 0) {
+      console.log("OB.POS.modelterminal.orderList.current.get('orderType')" + OB.POS.modelterminal.orderList.current.get('orderType'));
+        args.orderline.model.set("sendstatus", "sent");
+      }
+      //bykazi // (args.orderline.model.get("sendstatus") === void 0) 
+      else if (args.orderline.model.get("sendstatus") === void 0) {
+        if (args.orderline.model.get("sendstatus") !== "sent") {
+        args.orderline.model.set("sendstatus", "Not Sent");
+      }
+      }
+
+      OB.UTIL.HookManager.callbackExecutor(args, callbacks);
     });
-    OB.MobileApp.model.hookManager.registerHook("OBPOS_PostSyncReceipt", function(args, callbacks) {
+    
+    OB.UTIL.HookManager.registerHook("OBPOS_PostSyncReceipt", function(args, callbacks) {
       console.log("calling... OBPOS_PostSyncReceipt hook");
       if (args.receipt.get("hasbeenpaid") !== "N") {
         OB.Dal.find(OB.Model.BookingInfo, {
@@ -45,9 +68,9 @@
           OB.Dal.remove(bi, success, error);
         }), error);
       }
-      OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
+      OB.UTIL.HookManager.callbackExecutor(args, callbacks);
     });
-    OB.MobileApp.model.hookManager.registerHook("OBPOS_OrderDetailContentHook", function(args, callbacks) {
+    OB.UTIL.HookManager.registerHook("OBPOS_OrderDetailContentHook", function(args, callbacks) {
       var bi, me;
       bi = void 0;
       me = void 0;
@@ -64,12 +87,18 @@
         if (bookingInfosFound && bookingInfosFound.length > 0) {
           bi = bookingInfosFound.models[0];
         } else {
+      if (OB.POS.modelterminal.orderList.current.get('orderType') === 2) {
+        if (isnew === 0){
+          OB.POS.modelterminal.orderList.addNewOrder();
+          isnew = isnew + 1;
+        }
+           }
           console.log("no booking found for this order" + me.salesOrder.get("id"));
         }
       }), error);
-      OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
+      OB.UTIL.HookManager.callbackExecutor(args, callbacks);
     });
-    OB.MobileApp.model.hookManager.registerHook("OBPOS_PreDeleteCurrentOrder", function(args, callbacks) {
+    OB.UTIL.HookManager.registerHook("OBPOS_PreDeleteCurrentOrder", function(args, callbacks) {
       var receipt;
       receipt = void 0;
       OB.info("calling... OBPOS_PreDeleteCurrentOrder");
@@ -84,10 +113,10 @@
           OB.Dal.remove(bi, success, error);
         }
       }), error);
-      OB.MobileApp.model.hookManager.callbackExecutor(args, callbacks);
+      OB.UTIL.HookManager.callbackExecutor(args, callbacks);
     });
-  }
-
+  }//my
+/*
   OB.OBPOSPointOfSale.Model.PointOfSale.prototype.loadUnpaidOrders = function() {
     var criteria, orderlist;
     criteria = void 0;
@@ -131,6 +160,6 @@
       OB.UTIL.showError("something went wrong while loading unpaid orders");
       orderlist.addFirstOrder();
     });
-  };
+  };*/
 
 }).call(this);

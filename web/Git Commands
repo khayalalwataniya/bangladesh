@@ -1,0 +1,19 @@
+git clone git@146.185.141.136:/opt/git/com.tasawr.retail.restaurant.git
+
+
+git config --global user.name "kazi"
+git config --global user.email kazi@ka.sa
+
+git config --list
+git add .
+
+git commit -m 'initial project version'
+
+git push -u origin master
+git fetch origin master
+git merge origin/master
+
+
+
+
+

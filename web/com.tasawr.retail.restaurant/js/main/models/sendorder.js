@@ -23,9 +23,12 @@
             OB.POS.hwserver.print(templatereceipt, {
               order: sendToPrinter,
               receiptNo: keyboard.receipt.get('documentNo'),
-              tableNo: JSON.parse(localStorage.getItem('currentTable')).name,
-              sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
-              guestNo: keyboard.receipt.get('numberOfGuests'),
+              //tableNo: JSON.parse(localStorage.getItem('currentTable')).name,
+              //my  add table no into printer
+              tableNo: OB.POS.modelterminal.orderList.current.get('bp').get('_identifier'),
+              //my
+              sectionNo: OB.POS.modelterminal.orderList.current.get('bp').get('locName'), // JSON.parse(localStorage.getItem('currentSection')).name,
+              guestNo: OB.POS.modelterminal.orderList.current.get('bp').get('locName'), //keyboard.receipt.get('numberOfGuests'),
               message: 'sent',
               user: keyboard.receipt.get('salesRepresentative$_identifier')
             });
@@ -36,6 +39,67 @@
             return keyboard.receipt.save();
           });
           OB.UTIL.showSuccess("Orders sent to printers successfully");
+
+
+          //mykazi
+
+var sqlblockingCustomer = "update c_bpartner set customerBlocking='true' where c_bpartner_id='" + OB.POS.modelterminal.orderList.current.get('bp').get('id') + "'";
+          var db = OB.Data.localDB;
+          db.transaction(function(tx){
+            tx.executeSql(sqlblockingCustomer);
+          });
+        /*var criteria = {};
+        criteria._whereClause = "where c_bpartner_id =='" + OB.POS.modelterminal.orderList.current.get('bp').get('id') + "'";
+         OB.Dal.find(OB.Model.BusinessPartner, criteria, function (bps, blocks) {
+          console.log(bps);
+                    if (bps.length > 0) {
+
+                      console.log("Start " + bps.models[0].get('customerBlocking'));
+                      bps.models[0].set('customerBlocking', 'true');
+                      console.log("End " + bps.models[0].get('customerBlocking'));
+                      //me.bps.set('customerBlocking', true);
+                    }
+
+                console.log(bps);
+                  });
+      OB.Dal.save(OB.Model.BusinessPartner, success, error);*/
+         // sqlblockingCustomer = "update c_bpartner set customerBlocking='true' where c_bpartner_id='" + OB.POS.modelterminal.orderList.current.get('bp').get('id') + "'";
+         // OB.DATA(sqlblockingCustomer);
+
+          
+          
+          //console.
+          console.log(sqlblockingCustomer);
+          //var bCustomer = new OB.Model.BusinessPartner();
+          // bCustomer.set('blockingCustomer', true);
+
+        OB.DATA.executeCustomerSave = function (customer, callback) {
+          var customersList, customerId = OB.POS.modelterminal.orderList.current.get('bp').get('id'),
+          isNew = false,
+          bpToSave = new OB.Model.BusinessPartners(),
+          bpLocation, bpLocToSave = new OB.Model.BPLocation(),
+          customersListToChange;
+          console.log(customerId);
+    
+        
+        if (customerId) {
+        customer.set('posTerminal', OB.MobileApp.model.get('terminal').id);
+        var now = new Date();
+        customer.set('updated', OB.I18N.normalizeDate(now));
+        customer.set('timezoneOffset', now.getTimezoneOffset());
+        customer.set('loaded', OB.I18N.normalizeDate(new Date(customer.get('loaded'))));
+        bpToSave.set('json', JSON.stringify(this.customer.serializeEditedToJSON()));
+        bpToSave.set('c_bpartner_id', this.customer.get('id'));
+        bpToSave.set('customerBlocking', 'true');
+        }
+        bpToSave.set('isbeingprocessed', 'Y');
+      }; 
+            
+
+        //OB.Dal.save(bCustomer, success, error);
+//OB.POS.modelterminal.orderList.addNewOrder();
+//mykazi
+          //OB.POS.modelterminal.orderList.addNewOrder();
         } else {
           return OB.UTIL.showSuccess("Nothing more to send");
         }
@@ -99,12 +163,15 @@
       ]
     },
     okButtonPressed: function(inSender, inEvent) {
-      var lines, me, message, promises, receiptNo, user;
+      var lines, me, message, promises, receiptNo, tableNo , user;
       this.inherited(arguments);
       me = this;
       message = inSender.getControls()[0].getControls()[0].getControls()[0].getValue();
       receiptNo = this.parent.model.get('order').get('documentNo');
       user = this.parent.model.get('order').get('salesRepresentative$_identifier');
+      //my add table no into printer
+      tableNo = OB.POS.modelterminal.orderList.current.get('bp').get('_identifier');
+      //my
       lines = OB.POS.modelterminal.orderList.modelorder.get('lines');
       lines._wrapped = lines.models;
       TSRR.Main.TempVars.productsAndPrinters = [];
@@ -119,9 +186,12 @@
           order: sendToPrinter,
           message: message,
           receiptNo: receiptNo,
-          tableNo: JSON.parse(localStorage.getItem('currentTable')).name,
-          sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
-          guestNo: TSRR.Tables.Config.MyOrderList.modelorder.get('numberOfGuests') || "0",
+          //tableNo: JSON.parse(localStorage.getItem('currentTable')).name,
+          //my add table no into printer
+          tableNo: tableNo,
+          //my
+          sectionNo: '', //JSON.parse(localStorage.getItem('currentSection')).name,
+          guestNo: receiptNo, // TSRR.Tables.Config.MyOrderList.modelorder.get('numberOfGuests') || "0",
           user: user
         });
         _.each(lines._wrapped, function(model) {

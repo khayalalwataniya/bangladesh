@@ -1,5 +1,5 @@
 (function() {
-  OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push({
+ /* OB.OBPOSPointOfSale.UI.ToolbarScan.buttons.push({
     i18nLabel: "TSRR_Lock_Table",
     command: 'line:lockCommand',
     classButtonActive: "btnactive-blue",
@@ -150,5 +150,5 @@
       }
     }
   });
-
+*/
 }).call(this);

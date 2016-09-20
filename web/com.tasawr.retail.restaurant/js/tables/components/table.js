@@ -1,7 +1,7 @@
 (function() {
   enyo.kind({
     name: 'TSRR.Tables.TableItem',
-    classes: 'span4 table-item',
+    classes: 'span1 table-item',
     amount: 0,
     components: [
       {

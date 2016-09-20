@@ -91,7 +91,10 @@
     ],
     create: function() {
       this.inherited(arguments);
-      this.$.bp.setContent("<b>" + this.model.get('documentNo') + " - " + this.model.get("bp").get("_identifier") + " - " + this.model.get('lines').length + " line items" + " </b><br/>");
+      //my
+      this.$.bp.setContent("<b>" + this.model.get('documentNo') + " - " + OB.POS.modelterminal.orderList.current.get('bp').get('_identifier') + " - " + this.model.get('lines').length + " line items" + " </b><br/>");
+      //my
+      //this.$.bp.setContent("<b>" + this.model.get('documentNo') + " - " + this.model.get("bp").get("_identifier") + " - " + this.model.get('lines').length + " line items" + " </b><br/>");
     }
   });
 

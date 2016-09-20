@@ -1,0 +1,16 @@
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+        ignorecase = true
+        precomposeunicode = true
+[remote "origin"]
+        url = git@146.185.141.136:/opt/git/com.tasawr.retail.restaurant.git
+        fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+        remote = origin
+        merge = refs/heads/master
+[branch "receipt-design-modifications"]
+        remote = origin
+        merge = refs/heads/receipt-design-modifications

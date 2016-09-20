@@ -53,17 +53,19 @@
     }
   });
 
+
   enyo.kind({
     name: "TSRR.Main.UI.RestaurantHomeButton",
     kind: "OB.UI.ToolbarButton",
-    i18nLabel: "TSRR_LblRestaurants",
+    i18nLabel: "TSRR_LblLogout",
     tap: function() {
-      return OB.POS.navigate("retail.restaurantmode");
+      OB.MobileApp.model.lock();
     },
     initComponents: function() {
       return this.inherited(arguments);
     }
   });
+  //my off
 
   OB.OBPOSPointOfSale.UI.LeftToolbarImpl.prototype.buttons = [
     {
@@ -81,7 +83,25 @@
       span: 4
     }
   ];
-
+  //my
+  
+  //my
+  /*
+  OB.OBPOSPointOfSale.UI.LeftToolbarImpl.prototype.buttons = [
+  {
+    kind: "OB.UI.ButtonNew",
+    span: 4
+  }, {
+    kind: "OB.UI.ButtonDelete",
+    span: 4
+  }, {
+    kind: "OB.OBPOSPointOfSale.UI.ButtonTabPayment",
+    name: "payment",
+    span: 4
+  }
+];
+  //my
+/*
   OB.OBPOSPointOfSale.UI.ToolbarPayment.prototype.sideButtons.push({
     command: "SplitOrder",
     i18nLabel: "TSRR_BtnSplitOrder",
@@ -109,5 +129,5 @@
   splitOrder = function(model) {};
 
   OB.Model.modelLoaders.push(splitOrder);
-
+*/
 }).call(this);

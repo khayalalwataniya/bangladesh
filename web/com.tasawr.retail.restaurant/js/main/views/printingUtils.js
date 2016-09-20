@@ -262,7 +262,10 @@
       OB.POS.hwserver.print(templatereceipt, {
         order: sendToPrinter,
         receiptNo: keyboard.receipt.get('documentNo'),
-        tableNo: JSON.parse(localStorage.getItem('currentTable')).name,
+        //tableNo: JSON.parse(localStorage.getItem('currentTable')).name,
+        //my  add table no into printer
+        tableNo: OB.POS.modelterminal.orderList.current.get('bp').get('_identifier'),
+        //my
         sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
         guestNo: keyboard.receipt.get('numberOfGuests'),
         message: message,
@@ -283,8 +286,11 @@
     return OB.POS.hwserver.print(templatereceipt, {
       order: sendToPrinter,
       receiptNo: keyboard.receipt.get('documentNo'),
-      tableNo: JSON.parse(localStorage.getItem('currentTable')).name,
-      sectionNo: JSON.parse(localStorage.getItem('currentSection')).name,
+      //tableNo: JSON.parse(localStorage.getItem('currentTable')).name,
+      //my  add table no into printer
+      tableNo: OB.POS.modelterminal.orderList.current.get('bp').get('_identifier'),
+      //my
+      sectionNo: OB.POS.modelterminal.orderList.current.get('bp').get('locName'),
       guestNo: keyboard.receipt.get('numberOfGuests'),
       user: keyboard.receipt.get('salesRepresentative$_identifier')
     });

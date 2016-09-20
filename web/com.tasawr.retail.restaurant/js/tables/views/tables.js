@@ -21,7 +21,7 @@
       }, {
         kind: "OB.UI.ToolbarButton",
         name: "btnPos",
-        disabled: false,
+        disabled: true,
         i18nLabel: "TSRR_Lbl_POS",
         stepCount: 0,
         span: 3,
@@ -39,7 +39,7 @@
         stepCount: 0,
         span: 5,
         init: function() {
-          return this.setContent(OB.POS.modelterminal.attributes.businessPartner.attributes.name);
+        //  return this.setContent(OB.POS.modelterminal.attributes.businessPartner.attributes.name);
         }
       }
     ]

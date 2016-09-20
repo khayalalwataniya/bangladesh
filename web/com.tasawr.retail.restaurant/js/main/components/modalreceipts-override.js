@@ -95,7 +95,13 @@
       var me;
       console.log('single order changed');
       me = this;
+      //my
+      console.log(me);
+      //my
       return enyo.forEach(me.singleOrder.attributes.lines.models, function(lines) {
+      //my
+      //return enyo.forEach(OB.POS.modelterminal.orderList.current.attributes.lines.models, function(lines) {
+      //my
         return me.$.lines.setOrderLines(lines);
       });
     }
@@ -263,7 +269,10 @@
 
   tsrrNewOrder = function() {
     if (TSRR.Tables.Config.currentTable) {
-      TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder(OB.POS.modelterminal.get("businessPartner"));
+      //TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder(OB.POS.modelterminal.get("businessPartner"));
+    	//my
+    	//TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder(OB.POS.modelterminal.get("businessPartner"));
+    	//
     } else {
       OB.Dal.find(OB.Model.Table, {
         locked: false
@@ -273,7 +282,10 @@
           return;
         }
         TSRR.Tables.Config.currentTable = collection.models[0];
-        return TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder(OB.POS.modelterminal.get("businessPartner"));
+        //return TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder(OB.POS.modelterminal.get("businessPartner"));
+        //my
+        return '';//TSRR.Tables.Config.currentTable.setBusinessPartnerAndCreateOrder(OB.POS.modelterminal.get("businessPartner"));
+        //my
       }), function(tx) {});
     }
     return TSRR.Tables.Config.currentOrder;

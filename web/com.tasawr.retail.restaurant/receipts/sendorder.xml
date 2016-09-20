@@ -6,7 +6,13 @@
     for (var i = 0; i < order.length; i++){
     printer = order[i][0];
     %>
-    <ticket printer = "<%= printer %>">
+    <%
+    if (!(printer == "")){
+    %> 
+    <%
+       if (!(order[i][1].length == 0)){
+    %>
+  <ticket printer = "<%= printer %>">
         <line></line>
         <line></line>
 
@@ -67,7 +73,12 @@
         <line>  <text align="left" length="22">User: <%= OB.UTIL.encodeXMLComponent(user) %></text></line>
 
     </ticket>
-
+ <%
+    }
+    %>
+ <%
+    }
+    %>
     <%
     }
     %>

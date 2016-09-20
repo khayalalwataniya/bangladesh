@@ -111,7 +111,7 @@
           });
         }), this);
       }
-      OB.MobileApp.model.hookManager.executeHooks("OBPOS_RenderOrderLine", {
+      OB.UTIL.HookManager.executeHooks("OBPOS_RenderOrderLine", {
         orderline: this
       }, function(args) {});
     },

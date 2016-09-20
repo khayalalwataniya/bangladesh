@@ -5,5 +5,4 @@
     imageUrl = "../com.tasawr.retail.restaurant/images/linen_bg_tile.jpg";
     return $(".enyo-body-fit").css("background-image", "url(" + imageUrl + ")");
   });
-
 }).call(this);

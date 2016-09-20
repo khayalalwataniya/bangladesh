@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+  <database name="TRIGGER TSRR_RESERVATION_TRG">
+    <trigger name="TSRR_RESERVATION_TRG" table="TSRR_RESERVATION" fires="after" insert="true" update="true" delete="false" foreach="row">
+      <body><![CDATA[
+
+
+
+
+
+/*************************************************************************
+* The contents of this file are subject to the Openbravo  Public  License
+* Version  1.1  (the  "License"),  being   the  Mozilla   Public  License
+* Version 1.1  with a permitted attribution clause; you may not  use this
+* file except in compliance with the License. You  may  obtain  a copy of
+* the License at http://www.openbravo.com/legal/license.html
+* Software distributed under the License  is  distributed  on  an "AS IS"
+* basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+* License for the specific  language  governing  rights  and  limitations
+* under the License.
+* The Original Code is Openbravo ERP.
+* The Initial Developer of the Original Code is Openbravo SLU
+* All portions are Copyright (C) 2001-2012 Openbravo SLU
+* All Rights Reserved.
+* Contributor(s):  ______________________________________.
+************************************************************************/
+    /*************************************************************************
+    * Title: Check in deleting, invoice not processed
+    ************************************************************************/
+    v_booking_info_id character varying(32);
+    v_order_id character varying(32);
+BEGIN
+    
+    IF AD_isTriggerEnabled()='N' THEN RETURN;
+    END IF;
+select c_order_id into v_order_id from c_order where ad_client_id<>:NEW.ad_client_id order by created asc limit 1;
+
+    -- If invoice is processed, is not allowed to change C_BPartner
+    IF UPDATING THEN  
+    if(:NEW.Isdone='Y') THEN
+
+v_booking_info_id :=get_uuid();
+INSERT INTO  tsrr_booking_info
+VALUES
+ (v_booking_info_id,
+  :NEW.ad_org_id,
+  :NEW.ad_client_id ,
+  :NEW.isactive,
+  :NEW.created,
+  :NEW.createdby,
+  :NEW.updated,
+  :NEW.updatedby,
+  :NEW.tsrr_table_id,
+  :NEW.c_bpartner_id,
+  v_order_id,
+  'Y',
+  v_order_id,
+  '') ;
+     END IF;
+ END IF;
+ IF(INSERTING) THEN
+IF (:NEW.Isdone='Y') THEN
+ v_booking_info_id :=get_uuid();
+INSERT INTO  tsrr_booking_info
+VALUES
+(v_booking_info_id,
+  :NEW.ad_org_id,
+  :NEW.ad_client_id ,
+  :NEW.isactive,
+  :NEW.created,
+  :NEW.createdby,
+  :NEW.updated,
+  :NEW.updatedby,
+  :NEW.tsrr_table_id,
+  :NEW.c_bpartner_id,
+  v_order_id,
+  'Y',
+  v_order_id,
+  '') ;
+    end if;
+ END IF;
+END TSRR_RESERVATION_TRG
+]]></body>
+    </trigger>
+  </database>

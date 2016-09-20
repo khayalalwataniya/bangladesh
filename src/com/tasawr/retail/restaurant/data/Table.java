@@ -32,7 +32,8 @@ public class Table extends ProcessHQLQuery {
     return Arrays.asList(new String[] { "SELECT " + tableProperties.getHqlSelect()
         + " from TSRR_Table tbl"
         + " where tbl.active = true"
-        + " and tbl.$naturalOrgCriteria and tbl.$readableClientCriteria and (tbl.$incrementalUpdateCriteria)" });
+        + " and tbl.$naturalOrgCriteria and tbl.$readableClientCriteria and (tbl.$incrementalUpdateCriteria)"
+        + " order by tbl.name" });
   }
   
   @Override
